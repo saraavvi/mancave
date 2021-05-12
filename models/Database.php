@@ -1,4 +1,4 @@
-<?php  
+<?php
 
 class Database
 {
@@ -42,7 +42,6 @@ class Database
     public function select($statement, $input_parameters = [])
     {
         $stmt = $this->execute($statement, $input_parameters);
-
         return $stmt->fetchAll();
     }
 
@@ -69,7 +68,8 @@ class Database
      */
     public function delete($statement, $input_parameters = [])
     {
-        $this->execute($statement, $input_parameters);
-    }
+        $stmt = $this->execute($statement, $input_parameters);
 
+        return $stmt->rowCount();
+    }
 }
