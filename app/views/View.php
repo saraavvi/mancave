@@ -19,7 +19,7 @@ class View
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderAdminPage($products)
+    public function renderAdminIndexPage($products)
     {
         $this->renderHeader("Admin Page - Products");
         $this->renderAdminHeader();
@@ -30,7 +30,7 @@ class View
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderCreatePage()
+    public function renderAdminProductCreatePage()
     {
         $this->renderHeader("Admin Page - Create");
         $this->renderAdminHeader();
@@ -39,6 +39,15 @@ class View
             "name" => "Big",
         ];
         $this->renderForm($myArray);
+        include_once "app/views/partials/footer.php";
+    }
+
+    public function renderAdminProductUpdatePage($product_data)
+    {
+        $this->renderHeader("Admin Page - Update");
+        $this->renderAdminHeader();
+        echo '<a class="btn btn-secondary d-flex justify-content-center" href="?page=admin">Go back to product list</a></br>';
+        $this->renderForm($product_data);
         include_once "app/views/partials/footer.php";
     }
 

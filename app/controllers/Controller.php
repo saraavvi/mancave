@@ -9,7 +9,7 @@ class Controller
     private $routes;
 
     /**
-     *  
+     *
      */
     public function __construct($product_model, $view, $routes)
     {
@@ -20,18 +20,15 @@ class Controller
     }
 
     /**
-     *  
+     *
      */
     private function resolveRoute()
     {
-        $page = $_GET['page'] ?? "";
+        $page = $_GET["page"] ?? "";
 
         $function = $this->routes[$page] ?? null; // 'create'
 
-        if (!$function) {
-            echo 'Page not found';
-            exit;
-        }
+        $this->conditionForExit(!$function);
         echo call_user_func([$this, $function]);
     }
 
@@ -43,30 +40,50 @@ class Controller
     private function adminIndex()
     {
         $products = $this->product_model->fetchAllProducts();
-        $this->view->renderAdminPage($products);
+        $this->view->renderAdminIndexPage($products);
     }
 
     private function adminProductCreate()
     {
-        $product_data = array();
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $product_data['name'] = $this->sanitize($_POST['name']);
-            $product_data['price'] = (int)$this->sanitize($_POST['price']);
-            $product_data['description'] = $this->sanitize($_POST['description']);
-            $product_data['category_id'] = (int)$this->sanitize($_POST['category']);
-            if ($_POST['brand'] !== "") {
-                $product_data['brand_id'] = (int)$this->sanitize($_POST['brand']);
+        $product_data = [];
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $product_data["name"] = $this->sanitize($_POST["name"]);
+            $product_data["price"] = (int) $this->sanitize($_POST["price"]);
+            $product_data["description"] = $this->sanitize(
+                $_POST["description"]
+            );
+            $product_data["category_id"] = (int) $this->sanitize(
+                $_POST["category"]
+            );
+            if ($_POST["brand"] !== "") {
+                $product_data["brand_id"] = (int) $this->sanitize(
+                    $_POST["brand"]
+                );
+            } else {
+                $product_data["brand_id"] = null;
             }
-            else $product_data['brand_id'] = null;
-            $product_data['stock'] = (int)$this->sanitize($_POST['stock']);
-            $product_data['image'] = $this->sanitize($_POST['image']);
-            $product_data['specification'] = $this->sanitize($_POST['specification']);
+            $product_data["stock"] = (int) $this->sanitize($_POST["stock"]);
+            $product_data["image"] = $this->sanitize($_POST["image"]);
+            $product_data["specification"] = $this->sanitize(
+                $_POST["specification"]
+            );
             $this->product_model->createProduct($product_data);
-            header('Location: ?page=admin/products');
-            exit;
+            header("Location: ?page=admin/products");
+            exit();
         }
 
-        $this->view->renderCreatePage();
+        $this->view->renderAdminProductCreatePage();
+    }
+
+    private function adminProductUpdate()
+    {
+        $this->conditionForExit(empty($_GET['id']));
+        $id = $this->sanitize($_GET['id']);
+        
+        $product_data = $this->product_model->fetchProductById($id);
+        //TODO: Better error handling
+        if (!$product_data) echo 'Product id does not exist.';
+        else $this->view->renderAdminProductUpdatePage($product_data);
     }
 
     private function sanitize($text)
@@ -77,4 +94,11 @@ class Controller
         return $text;
     }
 
+    private function conditionForExit($condition)
+    {
+        if ($condition) {
+            echo "Page not found";
+            exit();
+        }
+    }
 }
