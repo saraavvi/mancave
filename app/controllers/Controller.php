@@ -48,21 +48,21 @@ class Controller
         $product_data = [];
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $product_data["name"] = $this->sanitize($_POST["name"]);
-            $product_data["price"] = (int) $this->sanitize($_POST["price"]);
+            $product_data["price"] = (int)$this->sanitize($_POST["price"]);
             $product_data["description"] = $this->sanitize(
                 $_POST["description"]
             );
-            $product_data["category_id"] = (int) $this->sanitize(
+            $product_data["category_id"] = (int)$this->sanitize(
                 $_POST["category_id"]
             );
             if ($_POST["brand_id"] !== "") {
-                $product_data["brand_id"] = (int) $this->sanitize(
+                $product_data["brand_id"] = (int)$this->sanitize(
                     $_POST["brand_id"]
                 );
             } else {
                 $product_data["brand_id"] = null;
             }
-            $product_data["stock"] = (int) $this->sanitize($_POST["stock"]);
+            $product_data["stock"] = (int)$this->sanitize($_POST["stock"]);
             $product_data["image"] = $this->sanitize($_POST["image"]);
             $product_data["specification"] = $this->sanitize(
                 $_POST["specification"]
