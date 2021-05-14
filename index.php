@@ -13,18 +13,14 @@ $database = new Database("mancaveshop_db");
 $product_model = new ProductModel($database);
 $view = new View();
 
-
-
-$controller = new Controller($product_model, $view);
-
-
 $routes = array(
     '' => 'index', // behövs den?
-    'products' => [$controller, 'index'],
-    'products/index' => [$controller, 'index'],
-    'products/create' => [$controller, 'create'],
-    'products/update' => [$controller, 'update'],
-    'products/delete' => [$controller, 'delete']
+    'products' => 'index',
+    'products/index' => 'index',
+    'products/create' => 'create',
+    'products/update' => 'update',
+    'products/delete' => 'delete'
 );
 
-$controller->addRoutes($routes);
+$controller = new Controller($product_model, $view, $routes);
+
