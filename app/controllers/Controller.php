@@ -72,7 +72,9 @@ class Controller
             exit();
         }
 
-        $this->view->renderAdminProductCreatePage();
+        $brands = $this->product_model->fetchAllBrands();
+        $categories = $this->product_model->fetchAllCategories();
+        $this->view->renderAdminProductCreatePage($brands, $categories);
     }
 
     private function adminProductUpdate()
@@ -95,11 +97,12 @@ class Controller
             header('Location: ?page=admin/products');
             exit;
         }
-
+        $brands = $this->product_model->fetchAllBrands();
+        $categories = $this->product_model->fetchAllCategories();
         $product_data = $this->product_model->fetchProductById($id);
         //TODO: Better error handling
         if (!$product_data) echo 'Product id does not exist.';
-        else $this->view->renderAdminProductUpdatePage($product_data);
+        else $this->view->renderAdminProductUpdatePage($product_data, $brands, $categories);
     }
 
     private function sanitize($text)
