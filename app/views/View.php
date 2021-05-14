@@ -11,7 +11,12 @@ class View
    */
   public function renderForm($data = null)
   {
-    include_once "app/views/partials/form.php";
+    include_once 'app/views/partials/form.php';
+  }
+
+  public function renderCustomerProducts($products)
+  {
+    var_dump($products);
   }
 
   public function renderFooter()
@@ -81,12 +86,6 @@ class View
 
 
 
-  public function renderCustomerProducts($products)
-  {
-    var_dump($products);
-  }
-
-
 
   public function renderAdminPage($products)
   {
@@ -110,7 +109,6 @@ class View
     $this->renderForm($myArray);
     include_once 'app/views/partials/footer.php';
   }
-
 
 
 
