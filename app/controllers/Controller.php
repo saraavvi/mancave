@@ -54,7 +54,10 @@ class Controller
             $product_data['price'] = (int)$this->sanitize($_POST['price']);
             $product_data['description'] = $this->sanitize($_POST['description']);
             $product_data['category_id'] = (int)$this->sanitize($_POST['category']);
-            $product_data['brand_id'] = (int)$this->sanitize($_POST['brand']);
+            if ($_POST['brand'] !== "") {
+                $product_data['brand_id'] = (int)$this->sanitize($_POST['brand']);
+            }
+            else $product_data['brand_id'] = null;
             $product_data['stock'] = (int)$this->sanitize($_POST['stock']);
             $product_data['image'] = $this->sanitize($_POST['image']);
             $product_data['specification'] = $this->sanitize($_POST['specification']);

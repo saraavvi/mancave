@@ -25,10 +25,10 @@ $name = $data['name'] ?? "";
                 <label for="brand" class="form-label">Brand:</label>
                 <select class="form-select" id="brand" name="brand">
                     <option selected value="">Make a selection</option>
-                    <option value="1">First</option>
+                    <option value="1">LEGO</option>
                     <option value="2">Second</option>
                     <option value="3">Third</option>
-                    <option value="NULL">No brand</option>
+                    <option value="">No brand</option>
                 </select>
             </div>
             <div class="mb-3">
