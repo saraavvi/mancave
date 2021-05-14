@@ -126,4 +126,18 @@ class ProductModel
 
         return $last_insert_id;
     }
+
+    public function fetchAllBrands()
+    {
+        $statement = "SELECT * FROM brands";
+        $brands = $this->db->select($statement);
+        return $brands;
+    }
+
+    public function fetchAllCategories()
+    {
+        $statement = "SELECT * FROM categories";
+        $categories = $this->db->select($statement);
+        return $categories;
+    }
 }
