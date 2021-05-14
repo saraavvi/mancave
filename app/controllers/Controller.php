@@ -37,7 +37,17 @@ class Controller
 
     private function index()
     {
-        echo "This is index";
+        $this->view->renderHeader("mancave - home");
+        $this->view->renderFooter();
+    }
+
+    private function getProductsByCategory()
+    {
+        $category = $_GET['category'] ?? "";
+        $this->view->renderHeader("mancave - home");
+        $products = $this->product_model->fetchProductsByCategory($category);
+        $this->view->renderCustomerProducts($products);
+        $this->view->renderFooter();
     }
 
     private function adminIndex()
@@ -73,5 +83,4 @@ class Controller
         $text = htmlspecialchars($text);
         return $text;
     }
-
 }

@@ -40,8 +40,18 @@ class ProductModel
         return $products ?? false;
     }
 
+    public function fetchProductsByCategory($category)
+    {
+        $statement = "SELECT * FROM products WHERE category_id = :category";
+        $params = array(":category" => $category);
+        $products = $this->db->select($statement, $params);
+
+        // return to controller
+        return $products ?? false;
+    }
+
     //TODO: Create update products function
-  /*   public function updateProductById($id)
+    /*   public function updateProductById($id)
     {
         $statement = 
         $params =
@@ -56,7 +66,7 @@ class ProductModel
         $statement = "DELETE FROM products WHERE id = :id";
         $params = array(':id' => $id);
         $row_count = $this->db->delete($statement, $params);
-        
+
         // return number of rows deleted to controller
         return $row_count;
     }
@@ -89,11 +99,11 @@ class ProductModel
             )";
 
         $params = array(
-            ':name' => $data['name'], 
-            ':price' => $data['price'], 
-            ':description' => $data['description'], 
+            ':name' => $data['name'],
+            ':price' => $data['price'],
+            ':description' => $data['description'],
             ':category_id' => $data['category_id'],
-            ':brand_id' => $data['brand_id'], 
+            ':brand_id' => $data['brand_id'],
             ':stock' => $data['stock'],
             ':image' => $data['image'],
             ':specification' => $data['specification']
@@ -104,5 +114,4 @@ class ProductModel
 
         return $last_insert_id;
     }
-
 }
