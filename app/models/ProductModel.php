@@ -44,9 +44,9 @@ class ProductModel
     /**
      *
      */
-    public function updateProductById($data)
+    public function updateProductById($id, $data)
     {
-        $statement = "UPDATE products SET (
+        $statement = "UPDATE products SET
             name = :name, 
             price = :price, 
             description = :description, 
@@ -55,9 +55,9 @@ class ProductModel
             stock = :stock, 
             image = :image, 
             specification = :specification
-        ) WHERE id = :id";
+        WHERE id = :id";
         $params = array(
-            ':id' => $data['id'],
+            ':id' => $id,
             ':name' => $data['name'],
             ':price' => $data['price'],
             ':description' => $data['description'],
