@@ -40,13 +40,35 @@ class ProductModel
         return $products ?? false;
     }
 
-    //TODO: Create update products function
-  /*   public function updateProductById($id)
+    // WIP: Create update products function
+    /**
+     *
+     */
+    public function updateProductById($data)
     {
-        $statement = 
-        $params =
-
-    } */
+        $statement = "UPDATE products SET (
+            name = :name, 
+            price = :price, 
+            description = :description, 
+            category_id = :category_id, 
+            brand_id = :brand_id, 
+            stock = :stock, 
+            image = :image, 
+            specification = :specification
+        ) WHERE id = :id";
+        $params = array(
+            ':id' => $data['id'],
+            ':name' => $data['name'],
+            ':price' => $data['price'],
+            ':description' => $data['description'],
+            ':category_id' => $data['category_id'],
+            ':brand_id' => $data['brand_id'],
+            ':stock' => $data['stock'],
+            ':image' => $data['image'],
+            ':specification' => $data['specification']
+        );
+        $this->db->update($statement, $params);
+    }
 
     /***
      * Delete product by id and return no of rows affected
@@ -56,7 +78,7 @@ class ProductModel
         $statement = "DELETE FROM products WHERE id = :id";
         $params = array(':id' => $id);
         $row_count = $this->db->delete($statement, $params);
-        
+
         // return number of rows deleted to controller
         return $row_count;
     }
@@ -89,11 +111,11 @@ class ProductModel
             )";
 
         $params = array(
-            ':name' => $data['name'], 
-            ':price' => $data['price'], 
-            ':description' => $data['description'], 
+            ':name' => $data['name'],
+            ':price' => $data['price'],
+            ':description' => $data['description'],
             ':category_id' => $data['category_id'],
-            ':brand_id' => $data['brand_id'], 
+            ':brand_id' => $data['brand_id'],
             ':stock' => $data['stock'],
             ':image' => $data['image'],
             ':specification' => $data['specification']
@@ -104,5 +126,4 @@ class ProductModel
 
         return $last_insert_id;
     }
-
 }

@@ -60,7 +60,9 @@ class Database
      */
     public function update($statement, $input_parameters = [])
     {
-        $this->execute($statement, $input_parameters);
+       $stmt =  $this->execute($statement, $input_parameters);
+
+        return $stmt->rowCount();
     }
 
     /**********************
