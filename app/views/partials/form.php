@@ -10,7 +10,6 @@ $specification = $data['specification'] ?? "";
 $image = $data['image'] ?? "";
 ?>
 
-
 <div class="row d-flex justify-content-center">
     <div class="col-md-6 col-lg-4">
         <form action="#" method="POST">
@@ -21,20 +20,23 @@ $image = $data['image'] ?? "";
             <div class="mb-3">
                 <label for="category_id" class="form-label">Category:</label>
                 <select class="form-select" id="category_id" name="category_id">
-                    <option selected value="">Make a selection</option>
-                    <option value="1">Hobbies</option>
-                    <option value="2">Books</option>
-                    <option value="3">Interior Decoration</option>
-                    <option value="4">Health & Beauty</option>
+                    <option value="" selected disabled hidden>Make a selection</option>
+                    <?php
+                    foreach ($categories as $category) {
+                        echo "<option value='$category[id]'>$category[name]</option>";
+                    }
+                    ?>
                 </select>
             </div>
             <div class="mb-3">
                 <label for="brand_id" class="form-label">Brand:</label>
                 <select class="form-select" id="brand_id" name="brand_id">
-                    <option selected value="">Make a selection</option>
-                    <option value="1">LEGO</option>
-                    <option value="2">Second</option>
-                    <option value="3">Third</option>
+                    <option selected value="" selected disabled hidden>Make a selection</option>
+                    <?php
+                    foreach ($brands as $brand) {
+                        echo "<option value='$brand[id]'>$brand[name]</option>";
+                    }
+                    ?>
                     <option value="">No brand</option>
                 </select>
             </div>
