@@ -16,7 +16,7 @@ $view = new View();
 $routes = array(
     // Customer routes
     '' => 'index', // In case no /?page=...
-    'products' => 'index',
+    'products' => 'getProductsByCategory',
     // Admin routes
     'admin' => 'adminIndex',
     'admin/products' => 'adminIndex',
@@ -27,4 +27,3 @@ $routes = array(
 );
 
 $controller = new Controller($product_model, $view, $routes);
-
