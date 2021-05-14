@@ -6,7 +6,7 @@ deleteProduct
 updateProduct
 delete product */
 
-class Product
+class ProductModel
 {
     private $db;
 

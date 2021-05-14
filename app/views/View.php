@@ -6,6 +6,9 @@ class View
         include_once 'views/partials/header.php';
     }
 
+    /**
+     * Receive null by default for create form, or data for update form
+     */
     public function renderForm($data = null)
     {
         include_once 'views/partials/form.php';
