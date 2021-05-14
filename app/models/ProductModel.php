@@ -40,10 +40,17 @@ class ProductModel
         return $products ?? false;
     }
 
-    // WIP: Create update products function
-    /**
-     *
-     */
+    public function fetchProductsByCategory($category)
+    {
+        $statement = "SELECT * FROM products WHERE category_id = :category";
+        $params = array(":category" => $category);
+        $products = $this->db->select($statement, $params);
+
+        // return to controller
+        return $products ?? false;
+    }
+
+    //TODO: Create update products function
     public function updateProductById($data)
     {
         $statement = "UPDATE products SET (

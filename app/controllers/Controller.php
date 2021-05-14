@@ -34,7 +34,17 @@ class Controller
 
     private function index()
     {
-        echo "This is index";
+        $this->view->renderHeader("mancave - home");
+        $this->view->renderFooter();
+    }
+
+    private function getProductsByCategory()
+    {
+        $category = $_GET['category'] ?? "";
+        $this->view->renderHeader("mancave - home");
+        $products = $this->product_model->fetchProductsByCategory($category);
+        $this->view->renderCustomerProducts($products);
+        $this->view->renderFooter();
     }
 
     private function adminIndex()
@@ -79,7 +89,7 @@ class Controller
     {
         $this->conditionForExit(empty($_GET['id']));
         $id = $this->sanitize($_GET['id']);
-        
+
         $product_data = $this->product_model->fetchProductById($id);
         //TODO: Better error handling
         if (!$product_data) echo 'Product id does not exist.';
