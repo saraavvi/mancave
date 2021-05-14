@@ -28,12 +28,20 @@ $name = $data['name'] ?? "";
                     <option value="1">First</option>
                     <option value="2">Second</option>
                     <option value="3">Third</option>
-                    <option value="4">Miscellaneous</option>
+                    <option value="NULL">No brand</option>
                 </select>
+            </div>
+            <div class="mb-3">
+                <label for="new_brand" class="form-label">Add new brand:</label>
+                <input type="text" class="form-control" id="new_brand" name="new_brand">
             </div>
             <div class="mb-3">
                 <label for="price" class="form-label">Price:</label>
                 <input type="number" class="form-control" id="price" name="price">
+            </div>
+            <div class="mb-3">
+                <label for="stock" class="form-label">Stock:</label>
+                <input type="number" class="form-control" id="stock" name="stock">
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description:</label>

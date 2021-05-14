@@ -14,12 +14,16 @@ $product_model = new ProductModel($database);
 $view = new View();
 
 $routes = array(
-    '' => 'index', // behövs den?
+    // Customer routes
+    '' => 'index', // In case no /?page=...
     'products' => 'index',
-    'products/index' => 'index',
-    'products/create' => 'create',
-    'products/update' => 'update',
-    'products/delete' => 'delete'
+    // Admin routes
+    'admin' => 'adminIndex',
+    'admin/products' => 'adminIndex',
+    'admin/products/index' => 'adminIndex',
+    'admin/products/create' => 'adminProductCreate',
+    'admin/products/update' => 'adminProductUpdate',
+    'admin/products/delete' => 'adminProductDelete'
 );
 
 $controller = new Controller($product_model, $view, $routes);

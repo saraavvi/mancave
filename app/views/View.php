@@ -3,7 +3,7 @@ class View
 {
     public function renderHeader($title)
     {
-        include_once 'views/partials/header.php';
+        include_once 'app/views/partials/header.php';
     }
 
     /**
@@ -11,36 +11,35 @@ class View
      */
     public function renderForm($data = null)
     {
-        include_once 'views/partials/form.php';
+        include_once 'app/views/partials/form.php';
     }
 
     public function renderFooter()
     {
-        include_once 'views/partials/footer.php';
+        include_once 'app/views/partials/footer.php';
     }
 
-    public function renderAdminPage()
+    public function renderAdminPage($products)
     {
         $this->renderHeader('Admin Page - Products');
         $this->renderAdminHeader();
-        echo '<a class="btn btn-primary d-flex justify-content-center" href="./create.php">Add new product</a></br>';
-        $this->renderProductListStart();
-        $this->renderProduct();
-        $this->renderProduct();
-        $this->renderProductListEnd();
-        include_once 'views/partials/footer.php';
+        echo '<a class="btn btn-primary d-flex justify-content-center" href="?page=admin/products/create">Add new product</a></br>';
+        $this->renderProductsListStart();
+        $this->renderProducts($products);
+        $this->renderProductsListEnd();
+        include_once 'app/views/partials/footer.php';
     }
 
     public function renderCreatePage()
     {
         $this->renderHeader('Admin Page - Create');
         $this->renderAdminHeader();
-        echo '<a class="btn btn-secondary d-flex justify-content-center" href="./">Go back to product list</a></br>';
+        echo '<a class="btn btn-secondary d-flex justify-content-center" href="?page=admin">Go back to product list</a></br>';
         $myArray = array(
             'name' => 'Big'
         );
         $this->renderForm($myArray);
-        include_once 'views/partials/footer.php';
+        include_once 'app/views/partials/footer.php';
     }
 
     public function renderAdminHeader()
@@ -51,7 +50,7 @@ class View
     }
 
 
-    public function renderProductListStart()
+    public function renderProductsListStart()
     {
         $html = <<<HTML
 
@@ -73,7 +72,7 @@ class View
         echo $html;
     }
 
-    public function renderProductListEnd()
+    public function renderProductsListEnd()
     {
         $html = <<<HTML
 
@@ -87,19 +86,25 @@ class View
         echo $html;
     }
 
-    public function renderProduct()
+    public function renderProducts($products)
     {
+      foreach ($products as $product) {
         $html = <<<HTML
-
-  <tr>
-    <th scope="row">1</th>
-    <td>Mark</td>
-    <td>Otto</td>
-    <td>@mdo</td>
-  </tr>
-
-HTML;
+          <tr>
+            <th scope="row">$product[id]</th>
+            <td>$product[name]</td>
+            <td>$product[stock]</td>
+            <td>
+              <a href="index.php/products/update?id=$product[id]" class="btn btn-sm btn-outline-primary">Edit</a>
+                  <form method="post" action="index.php/products/delete" style="display: inline-block">
+                      <input  type="hidden" name="id" value="$product[id]"/>
+                      <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                  </form>
+            </td>
+          </tr>
+        HTML;
 
         echo $html;
+      }
     }
 }
