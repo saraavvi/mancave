@@ -9,7 +9,7 @@ class View
     /**
      * Receive null by default for create form, or data for update form
      */
-    public function renderForm($data = null)
+    public function renderForm($data = null, $brands, $categories)
     {
         include_once "app/views/partials/form.php";
     }
@@ -54,24 +54,21 @@ class View
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderAdminProductCreatePage()
+    public function renderAdminProductCreatePage($brands, $categories)
     {
         $this->renderHeader("Admin Page - Create");
         $this->renderAdminHeader();
         echo '<a class="btn btn-secondary d-flex justify-content-center" href="?page=admin">Go back to product list</a></br>';
-        $myArray = [
-            "name" => "Big",
-        ];
-        $this->renderForm($myArray);
+        $this->renderForm(null, $brands, $categories);
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderAdminProductUpdatePage($product_data)
+    public function renderAdminProductUpdatePage($product_data, $brands, $categories)
     {
         $this->renderHeader("Admin Page - Update");
         $this->renderAdminHeader();
         echo '<a class="btn btn-secondary d-flex justify-content-center" href="?page=admin">Go back to product list</a></br>';
-        $this->renderForm($product_data);
+        $this->renderForm($product_data, $brands, $categories);
         include_once "app/views/partials/footer.php";
     }
 
