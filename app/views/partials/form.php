@@ -20,10 +20,11 @@ $image = $data['image'] ?? "";
             <div class="mb-3">
                 <label for="category_id" class="form-label">Category:</label>
                 <select class="form-select" id="category_id" name="category_id">
-                    <option value="" selected disabled hidden>Make a selection</option>
+                    <option selected value="" disabled hidden>Make a selection</option>
                     <?php
                     foreach ($categories as $category) {
-                        echo "<option value='$category[id]'>$category[name]</option>";
+                        $selected = ($data['category_id'] === $category['id']) ? "selected" : "";
+                        echo "<option value='$category[id]' $selected >$category[name]</option>";
                     }
                     ?>
                 </select>
@@ -31,10 +32,11 @@ $image = $data['image'] ?? "";
             <div class="mb-3">
                 <label for="brand_id" class="form-label">Brand:</label>
                 <select class="form-select" id="brand_id" name="brand_id">
-                    <option selected value="" selected disabled hidden>Make a selection</option>
+                    <option selected value="" disabled hidden>Make a selection</option>
                     <?php
                     foreach ($brands as $brand) {
-                        echo "<option value='$brand[id]'>$brand[name]</option>";
+                        $selected = ($data['brand_id'] === $brand['id']) ? "selected" : "";
+                        echo "<option value='$brand[id]' $selected >$brand[name]</option>";
                     }
                     ?>
                     <option value="">No brand</option>
