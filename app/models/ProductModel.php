@@ -40,15 +40,18 @@ class ProductModel
         return $products ?? false;
     }
 
-public function fetchProductsByCategory($category)
-{
-    $statement = "SELECT * FROM products WHERE category_id = :category";
-    $params = array(":category" => $category);
-    $products = $this->db->select($statement, $params);
-    
-    // return to controller
-    return $products ?? false;
-}
+    /***
+     * Fetch products from a specific category, return an array with all products.
+     */
+    public function fetchProductsByCategory($category)
+    {
+        $statement = "SELECT * FROM products WHERE category_id = :category";
+        $params = array(":category" => $category);
+        $products = $this->db->select($statement, $params);
+
+        // return to controller
+        return $products ?? false;
+    }
 
 // WIP: Create update products function
 /**
