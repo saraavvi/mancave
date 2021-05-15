@@ -38,11 +38,6 @@ class View
         echo $html;
     }
 
-    public function renderFooter()
-    {
-        include_once "app/views/partials/footer.php";
-    }
-
     public function renderButton($text, $href, $primary = true)
     {
         $class = $primary ? "btn-primary" : "btn-secondary";
@@ -80,8 +75,17 @@ class View
     {
         $this->renderHeader("Admin Page - Update");
         $this->renderAdminHeader();
-        echo '<a class="btn btn-secondary d-flex justify-content-center" href="?page=admin">Go back to product list</a></br>';
+        $this->renderButton("Go back to product list", "?page=admin", false);
         $this->renderForm($product_data, $brands, $categories);
+        include_once "app/views/partials/footer.php";
+    }
+
+    public function renderAdminOrderListPage(/* $orders */)
+    {
+        $this->renderHeader("Admin - Order List");
+        $this->renderAdminHeader();
+        $this->renderButton("Go back to product list", "?page=admin", false);
+        echo "Placeholder for order list";
         include_once "app/views/partials/footer.php";
     }
 

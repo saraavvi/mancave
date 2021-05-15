@@ -35,7 +35,8 @@ class Controller
     private function index()
     {
         $this->view->renderHeader("mancave - home");
-        $this->view->renderFooter();
+        echo 'placeholder for landing page';
+        include_once "app/views/partials/footer.php";
     }
 
     private function getProductsByCategory()
@@ -44,7 +45,7 @@ class Controller
         $this->view->renderHeader("mancave - products");
         $products = $this->product_model->fetchProductsByCategory($category);
         $this->view->renderCustomerProducts($products);
-        $this->view->renderFooter();
+        include_once "app/views/partials/footer.php";
     }
 
     private function adminIndex()
@@ -115,6 +116,14 @@ class Controller
         else $this->view->renderAdminProductUpdatePage($product_data, $brands, $categories);
     }
 
+    private function adminOrderList()
+    {
+        //TODO: create order functionality
+        //$orders = $this->order_model->fetchAllOrders();
+        $this->view->renderAdminOrderListPage(/* $orders */);
+    }
+
+    //Helper methods:
     private function sanitize($text)
     {
         $text = trim($text);
