@@ -16,7 +16,9 @@ class View
 
   public function renderCustomerProducts($products)
   {
-    var_dump($products);
+    echo "<pre>";
+    print_r($products);
+    echo "</pre>";
   }
 
   public function renderFooter()
