@@ -40,6 +40,9 @@ class ProductModel
         return $products ?? false;
     }
 
+    /***
+     * Fetch products from a specific category, return an array with all products.
+     */
     public function fetchProductsByCategory($category)
     {
         $statement = "SELECT * FROM products WHERE category_id = :category";
