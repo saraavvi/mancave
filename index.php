@@ -23,7 +23,8 @@ $routes = array(
     'admin/products/index' => 'adminIndex',
     'admin/products/create' => 'adminProductCreate',
     'admin/products/update' => 'adminProductUpdate',
-    'admin/products/delete' => 'adminProductDelete'
+    'admin/products/delete' => 'adminProductDelete',
+    'admin/orders' => 'adminOrders',
 );
 
 $controller = new Controller($product_model, $view, $routes);

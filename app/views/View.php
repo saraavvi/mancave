@@ -43,11 +43,23 @@ class View
         include_once "app/views/partials/footer.php";
     }
 
+    public function renderButton($text, $href, $primary = true)
+    {
+        $class = $primary ? "btn-primary" : "btn-secondary";
+        $html = <<<HTML
+            <div class="d-flex justify-content-center p-1">
+                <a class="btn $class" href="$href">$text</a>
+            </div>
+        HTML;
+        echo $html;
+    }
+
     public function renderAdminIndexPage($products)
     {
         $this->renderHeader("Admin Page - Products");
         $this->renderAdminHeader();
-        echo '<a class="btn btn-primary d-flex justify-content-center" href="?page=admin/products/create">Add new product</a></br>';
+        $this->renderButton("Add new product", "?page=admin/products/create");
+        $this->renderButton("Go to order list", "?page=admin/orders", false);
         $this->renderProductsListStart();
         $this->renderProducts($products);
         $this->renderProductsListEnd();
@@ -58,7 +70,8 @@ class View
     {
         $this->renderHeader("Admin Page - Create");
         $this->renderAdminHeader();
-        echo '<a class="btn btn-secondary d-flex justify-content-center" href="?page=admin">Go back to product list</a></br>';
+        $this->renderButton("Go back to product list", "?page=admin", false);
+        $this->renderButton("Go to order list", "?page=admin/orders", false);
         $this->renderForm(null, $brands, $categories);
         include_once "app/views/partials/footer.php";
     }
@@ -97,29 +110,6 @@ class View
                         <tbody>
         HTML;
         echo $html;
-    }
-
-    public function renderAdminPage($products)
-    {
-        $this->renderHeader("Admin Page - Products");
-        $this->renderAdminHeader();
-        echo '<a class="btn btn-primary d-flex justify-content-center" href="?page=admin/products/create">Add new product</a></br>';
-        $this->renderProductsListStart();
-        $this->renderProducts($products);
-        $this->renderProductsListEnd();
-        include_once "app/views/partials/footer.php";
-    }
-
-    public function renderCreatePage()
-    {
-        $this->renderHeader("Admin Page - Create");
-        $this->renderAdminHeader();
-        echo '<a class="btn btn-secondary d-flex justify-content-center" href="?page=admin">Go back to product list</a></br>';
-        $myArray = [
-            "name" => "Big",
-        ];
-        $this->renderForm($myArray);
-        include_once "app/views/partials/footer.php";
     }
 
     public function renderProductsListEnd()
