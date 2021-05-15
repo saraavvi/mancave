@@ -16,9 +16,29 @@ class View
 
   public function renderCustomerProducts($products)
   {
-    echo "<pre>";
-    print_r($products);
-    echo "</pre>";
+    foreach ($products as $product) {
+      $this->renderOneCustomerProduct($product);
+    }
+  }
+
+  public function renderOneCustomerProduct($product)
+  {
+
+    $html = <<<HTML
+    <div class="col-md-3 mt-3">
+      <div class="card" style="width: 18rem;">
+        <img src="$product[image]" class="card-img-top p-3" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">$product[name]</h5>
+          <p class="card-text">$product[price] sek</p>
+          <a href="#" class="btn btn-primary">add to cart</a>
+        </div>
+      </div>
+    </div>
+
+    HTML;
+
+    echo $html;
   }
 
   public function renderFooter()

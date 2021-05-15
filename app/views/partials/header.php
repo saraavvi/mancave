@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="../../styles/styles.css">
 </head>
 <header>
-    <h1 class="text-center">Mancave</h1>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <h1 class="text-center mt-5">ManCave</h1>
+    <nav class="navbar navbar-expand-lg ">
         <div class="container-fluid">
             <a class="navbar-brand" href="/mancave">Home</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,3 +48,4 @@
 </header>
 
 <body class="container">
+    <div class="row">
