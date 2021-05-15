@@ -6,13 +6,40 @@ class View
         include_once "app/views/partials/header.php";
     }
 
-    /**
-     * Receive null by default for create form, or data for update form
-     */
-    public function renderForm($data = null, $brands, $categories)
-    {
-        include_once "app/views/partials/form.php";
+  /**
+   * Receive null by default for create form, or data for update form
+   */
+  public function renderForm($data = null)
+  {
+    include_once 'app/views/partials/form.php';
+  }
+
+  public function renderCustomerProducts($products)
+  {
+    foreach ($products as $product) {
+      $this->renderOneCustomerProduct($product);
     }
+  }
+
+  public function renderOneCustomerProduct($product)
+  {
+
+    $html = <<<HTML
+    <div class="col-md-3 mt-3">
+      <div class="card" style="width: 18rem;">
+        <img src="$product[image]" class="card-img-top p-3" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">$product[name]</h5>
+          <p class="card-text">$product[price] sek</p>
+          <a href="#" class="btn btn-primary">add to cart</a>
+        </div>
+      </div>
+    </div>
+
+    HTML;
+
+    echo $html;
+  }
 
     public function renderFooter()
     {
@@ -56,11 +83,6 @@ class View
         echo '<h1 class="text-center">ManCave</h1>';
         echo '<h2 class="text-center">Admin</h2>';
         echo '<h3 class="text-center">Nav placeholder</h3>';
-    }
-    
-    public function renderCustomerProducts($products)
-    {
-        var_dump($products);
     }
     
     public function renderAdminPage($products)
