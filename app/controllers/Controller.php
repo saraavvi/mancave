@@ -102,7 +102,7 @@ class Controller
         $product_data = $this->product_model->fetchProductById($id);
         //TODO: Better error handling
         if (!$product_data) echo 'Product id does not exist.';
-        else $this->view->renderAdminProductUpdatePage($product_data, $brands, $categories);
+        else $this->view->renderAdminProductUpdatePage($brands, $categories, $product_data);
     }
 
     private function sanitize($text)
