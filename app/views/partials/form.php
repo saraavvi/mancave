@@ -31,21 +31,36 @@ $image = $data['image'] ?? "";
             </div>
             <div class="mb-3">
                 <label for="brand_id" class="form-label">Brand:</label>
-                <select class="form-select" id="brand_id" name="brand_id">
-                    <option selected value="" disabled hidden>Make a selection</option>
+                <?php
+                // If product data has selected brand, preselect the name of it in the datalist input
+                $selected_brand = "";
+                if ($data) {
+                    $filtered = array_filter($brands, function($brand) use($data){
+                        return $brand['id'] === $data['brand_id'];
+                    });
+                    $selected_brand = array_shift($filtered)['name'];
+                }
+                echo "<input value='$selected_brand' data-value='NEW' name='brand_id' list='brand_id' class='form-select' type='text'>"
+                ?>
+                <datalist id="brand_id" name="brand_id">
                     <?php
                     foreach ($brands as $brand) {
-                        $selected = ($data['brand_id'] === $brand['id']) ? "selected" : "";
-                        echo "<option value='$brand[id]' $selected >$brand[name]</option>";
+                        echo "<option value='$brand[name]' data-value='$brand[id]' $selected >$brand[name]</option>";
                     }
                     ?>
-                    <option value="">No brand</option>
-                </select>
+                </datalist>
             </div>
-            <div class="mb-3">
-                <label for="new_brand" class="form-label">Add new brand:</label>
-                <input type="text" class="form-control" id="new_brand" name="new_brand">
-            </div>
+            <?php
+            if (isset($_GET['brand_id']) && $_GET['brand_id'] === "0") {
+                echo "
+                    <div class='mb-3'>
+                    <label for='new_brand' class='form-label'>Add new brand:</label>
+                    <input type='text' class='form-control' id='new_brand' name='new_brand'>
+                    </div>
+                ";
+            }
+            
+            ?>
             <div class="mb-3">
                 <label for="price" class="form-label">Price:</label>
                 <input type="number" class="form-control" id="price" name="price" value="<?= $price ?>">
