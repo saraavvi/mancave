@@ -140,4 +140,14 @@ class ProductModel
         $categories = $this->db->select($statement);
         return $categories;
     }
+
+    public function createBrand($name)
+    {
+        $statement = "INSERT INTO brands ( name ) VALUES ( :name )";
+        $params = array(':name' => $name);
+
+        $last_insert_id = $this->db->insert($statement, $params);
+
+        return $last_insert_id;
+    }
 }
