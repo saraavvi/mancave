@@ -30,20 +30,22 @@ class View
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderAdminProductCreatePage($brands, $categories)
+    public function renderAdminProductCreatePage($brands, $categories, $errors)
     {
         $this->renderHeader("Admin Page - Create");
         $this->renderAdminHeader();
         echo '<a class="btn btn-secondary d-flex justify-content-center" href="?page=admin">Go back to product list</a></br>';
+        $this->renderErrors($errors);
         $this->renderForm($brands, $categories);
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderAdminProductUpdatePage($brands, $categories, $product_data)
+    public function renderAdminProductUpdatePage($brands, $categories, $product_data, $errors = array())
     {
         $this->renderHeader("Admin Page - Update");
         $this->renderAdminHeader();
         echo '<a class="btn btn-secondary d-flex justify-content-center" href="?page=admin">Go back to product list</a></br>';
+        $this->renderErrors($errors);
         $this->renderForm($brands, $categories, $product_data);
         include_once "app/views/partials/footer.php";
     }
@@ -53,6 +55,14 @@ class View
         echo '<h1 class="text-center">ManCave</h1>';
         echo '<h2 class="text-center">Admin</h2>';
         echo '<h3 class="text-center">Nav placeholder</h3>';
+    }
+
+    public function renderErrors($errors) {
+      foreach ($errors as $message) {
+        echo "<div class='alert alert-danger' role='alert'>
+          $message
+        </div>";
+      }
     }
 
     public function renderProductsListStart()
