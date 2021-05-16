@@ -38,12 +38,11 @@ class View
         echo $html;
     }
 
-    public function renderButton($text, $href, $primary = true)
+    public function renderButton($text, $href, $style = "primary")
     {
-        $class = $primary ? "btn-primary" : "btn-secondary";
         $html = <<<HTML
             <div class="d-flex justify-content-center p-1">
-                <a class="btn $class" href="$href">$text</a>
+                <a class="btn btn-$style" href="$href">$text</a>
             </div>
         HTML;
         echo $html;
@@ -54,7 +53,7 @@ class View
         $this->renderHeader("Admin Page - Products");
         $this->renderAdminHeader();
         $this->renderButton("Add new product", "?page=admin/products/create");
-        $this->renderButton("Go to order list", "?page=admin/orders", false);
+        $this->renderButton("Go to order list", "?page=admin/orders", "secondary");
         $this->renderListStart(["#", "Name", "Stock", "Edit", "Delete"]);
         $this->renderListItemsProducts($products);
         $this->renderListEnd();
@@ -65,8 +64,8 @@ class View
     {
         $this->renderHeader("Admin Page - Create");
         $this->renderAdminHeader();
-        $this->renderButton("Go back to product list", "?page=admin", false);
-        $this->renderButton("Go to order list", "?page=admin/orders", false);
+        $this->renderButton("Go back to product list", "?page=admin", "secondary");
+        $this->renderButton("Go to order list", "?page=admin/orders", "secondary");
         $this->renderForm(null, $brands, $categories);
         include_once "app/views/partials/footer.php";
     }
@@ -75,7 +74,7 @@ class View
     {
         $this->renderHeader("Admin Page - Update");
         $this->renderAdminHeader();
-        $this->renderButton("Go back to product list", "?page=admin", false);
+        $this->renderButton("Go back to product list", "?page=admin", "secondary");
         $this->renderForm($product_data, $brands, $categories);
         include_once "app/views/partials/footer.php";
     }
@@ -84,8 +83,8 @@ class View
     {
         $this->renderHeader("Admin - Order List");
         $this->renderAdminHeader();
-        $this->renderButton("Go back to product list", "?page=admin", false);
-        $this->renderListStart(["#", "Name", "Stock", "Edit", "Delete"]);
+        $this->renderButton("Go back to product list", "?page=admin", "secondary");
+        $this->renderListStart(["#", "Date Placed", "Customer Name", "Status", "Change Status", "View Order"]);
         $this->renderListItemsOrders();
         $this->renderListEnd();
         include_once "app/views/partials/footer.php";
@@ -118,27 +117,6 @@ class View
         echo $html;
     }
 
-    public function renderListItemsOrders()
-    {
-        $html = <<<HTML
-            <tr>
-                <th scope="row">product[id]</th>
-                <td>product[name]</td>
-                <td>product[stock]</td>
-                <td>
-                    <a href="?page=admin/products/update&id=product[id]" class="btn btn-sm btn-outline-primary">Edit</a>
-                </td>
-                <td>
-                    <form method="post" action="?page=admin/products/delete" style="display: inline-block">
-                        <input  type="hidden" name="id" value="product[id]"/>
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        HTML;
-        echo $html;
-    }
-
     public function renderListEnd()
     {
         $html = <<<HTML
@@ -148,6 +126,35 @@ class View
             </div>
         HTML;
         echo $html;
+    }
+    
+    public function renderListItemsOrders(/* $orders */)
+    {
+        /* foreach ($products as $product) { */
+            $html = <<<HTML
+                <tr>
+                    <th scope="row">8348</th>
+                    <td>1/5 2021</td>
+                    <td>Glenniffer Viktorsson</td>
+                    <td>Pending</td>
+                    <td class="dropdown">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            Change Status
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item" href="#&id=1&newstaus=draft">Draft</a></li>
+                            <li><a class="dropdown-item" href="#&id=1&newstaus=cancelled">Cancelled</a></li>
+                            <li><a class="dropdown-item" href="#&id=1&newstaus=pending">Pending</a></li>
+                            <li><a class="dropdown-item" href="#&id=1&newstaus=shipped">Shipped</a></li>
+                        </ul>
+                    </td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View Order</a>
+                    </td>
+                </tr>
+            HTML;
+            echo $html;
+        /* } */
     }
 
     public function renderListItemsProducts($products)
