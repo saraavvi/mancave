@@ -117,4 +117,29 @@ class OrderModel
 
         $this->db->insert($statement, $params);
     }
+
+    //TODO: Update order content
+    //TODO: Update order
+    //TODO: Update order status
+    public function updateOrderStatus($order_id, $status_id) {
+        $statement = "UPDATE orders 
+            SET status_id = :status_id 
+            WHERE orders.id = :order_id;";
+        $params = array(
+            ':status_id' => $status_id,
+            ':order_id' => $order_id
+        );
+        
+        $row_count = $this->db->update($statement, $params);
+
+    }
+
+    public function updateOrderShippedDate($order_id) {
+        $statement = "UPDATE orders 
+            SET shipped_date = CURRENT_TIMESTAMP()
+            WHERE orders.id = :order_id;";
+        $params = array(':order_id' => $order_id);
+        $row_count = $this->db->update($statement, $params);
+    }
+    
 }
