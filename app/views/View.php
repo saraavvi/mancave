@@ -6,10 +6,10 @@ class View
     //COMMON HELPER METHODS:
     //CUSTOMER MAIN METHODS:
 
-    public function renderCustomerRegister($errors = [], $customer_data = null)
+    public function renderCustomerRegister($alerts = [], $customer_data = null)
     {
         $this->renderHeader("New Customer");
-        $this->renderErrors($errors);
+        $this->renderAlerts($alerts);
         $this->renderRegisterForm($customer_data);
         include_once "app/views/partials/footer.php";
     }
@@ -159,7 +159,7 @@ class View
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderAdminProductCreatePage($brands, $categories, $errors)
+    public function renderAdminProductCreatePage($brands, $categories, $alerts)
     {
         $this->renderHeader("Admin Page - Create");
         $this->renderAdminHeader();
@@ -173,7 +173,7 @@ class View
             "?page=admin/orders",
             "secondary"
         );
-        $this->renderErrors($errors);
+        $this->renderAlerts($alerts);
         $this->renderForm($brands, $categories);
         include_once "app/views/partials/footer.php";
     }
@@ -191,12 +191,12 @@ class View
             "?page=admin",
             "secondary"
         );
-        $this->renderErrors($errors);
+        $this->renderAlerts($errors);
         $this->renderForm($brands, $categories, $product_data);
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderAdminOrderListPage(/* $orders */)
+    public function renderAdminOrderListPage($orders, $alerts)
     {
         $this->renderHeader("Admin - Order List");
         $this->renderAdminHeader();
@@ -205,6 +205,7 @@ class View
             "?page=admin",
             "secondary"
         );
+        $this->renderAlerts($alerts);
         $this->renderListStart([
             "#",
             "Date Placed",
@@ -212,8 +213,9 @@ class View
             "Status",
             "Change Status",
             "View Order",
+            "Delete Order"
         ]);
-        $this->renderListItemsOrders();
+        $this->renderListItemsOrders($orders);
         $this->renderListEnd();
         include_once "app/views/partials/footer.php";
     }
@@ -229,12 +231,14 @@ class View
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderErrors($errors)
+    public function renderAlerts($alerts)
     {
-        foreach ($errors as $message) {
-            echo "<div class='alert alert-danger' role='alert'>
-                $message
-            </div>";
+        foreach ($alerts as $category => $messages) {
+            foreach ($messages as $message) {
+                echo "<div class='alert alert-$category' role='alert'>
+                    $message
+                </div>";
+            }
         }
     }
 
@@ -269,33 +273,38 @@ class View
         echo $html;
     }
 
-    public function renderListItemsOrders(/* $orders */)
+    public function renderListItemsOrders($orders)
     {
-        /* foreach ($products as $product) { */
-        $html = <<<HTML
-            <tr>
-                <th scope="row">8348</th>
-                <td>1/5 2021</td>
-                <td>Glenniffer Viktorsson</td>
-                <td>Pending</td>
-                <td class="dropdown">
-                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Change Status
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="#&id=1&newstaus=draft">Draft</a></li>
-                        <li><a class="dropdown-item" href="#&id=1&newstaus=cancelled">Cancelled</a></li>
-                        <li><a class="dropdown-item" href="#&id=1&newstaus=pending">Pending</a></li>
-                        <li><a class="dropdown-item" href="#&id=1&newstaus=shipped">Shipped</a></li>
-                    </ul>
-                </td>
-                <td>
-                    <a href="#" class="btn btn-sm btn-outline-primary">View Order</a>
-                </td>
-            </tr>
-        HTML;
-        echo $html;
-        /* } */
+        foreach ($orders as $order) {
+            // current url path to append additional query params to (status)
+            $uri = $_SERVER['REQUEST_URI'];
+            $html = <<<HTML
+                <tr>
+                    <th scope="row">$order[id]</th>
+                    <td>$order[order_date]</td>
+                    <td>$order[customer_name]</td>
+                    <td>$order[status_name]</td>
+                    <td class="dropdown">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            Change Status
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item" href="{$uri}&id={$order['id']}&status_id=1">Draft</a></li>
+                            <li><a class="dropdown-item" href="{$uri}&id={$order['id']}&status_id=2">Shipped</a></li>
+                            <li><a class="dropdown-item" href="{$uri}&id={$order['id']}&status_id=3">Pending</a></li>
+                            <li><a class="dropdown-item" href="{$uri}&id={$order['id']}&status_id=4">Cancelled</a></li>
+                        </ul>
+                    </td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View Order</a>
+                    </td>
+                    <td>
+                        <a href="{$uri}&id={$order['id']}&action=delete" class="btn btn-sm btn-outline-danger">Delete Order</a>
+                    </td>
+                </tr>
+            HTML;
+            echo $html;
+        }
     }
 
     public function renderListItemsProducts($products)
