@@ -9,7 +9,7 @@ class View
     /**
      * Receive null by default for create form, or data for update form
      */
-    public function renderForm($data = null, $brands, $categories)
+    public function renderForm($brands, $categories, $data = null)
     {
         include_once "app/views/partials/form.php";
     }
@@ -60,22 +60,24 @@ class View
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderAdminProductCreatePage($brands, $categories)
+    public function renderAdminProductCreatePage($brands, $categories, $errors)
     {
         $this->renderHeader("Admin Page - Create");
         $this->renderAdminHeader();
         $this->renderButton("Go back to product list", "?page=admin", "secondary");
         $this->renderButton("Go to order list", "?page=admin/orders", "secondary");
-        $this->renderForm(null, $brands, $categories);
+        $this->renderErrors($errors);
+        $this->renderForm($brands, $categories);
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderAdminProductUpdatePage($product_data, $brands, $categories)
+    public function renderAdminProductUpdatePage($brands, $categories, $product_data, $errors = array())
     {
         $this->renderHeader("Admin Page - Update");
         $this->renderAdminHeader();
         $this->renderButton("Go back to product list", "?page=admin", "secondary");
-        $this->renderForm($product_data, $brands, $categories);
+        $this->renderErrors($errors);
+        $this->renderForm($brands, $categories, $product_data);
         include_once "app/views/partials/footer.php";
     }
 
@@ -97,7 +99,15 @@ class View
         echo '<h3 class="text-center">Nav placeholder</h3>';
     }
 
-    public function renderListStart($column_name_array)
+public function renderErrors($errors) {
+  foreach ($errors as $message) {
+    echo "<div class='alert alert-danger' role='alert'>
+    $message
+    </div>";
+  }
+}
+
+public function renderListStart($column_name_array)
     {
         $html = <<<HTML
             <div class="row d-flex justify-content-center">
