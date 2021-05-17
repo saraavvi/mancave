@@ -19,6 +19,78 @@ class Controller
         $this->routes = $routes;
         $this->resolveRoute();
     }
+    //CONTENT:
+    //COMMON MAIN METHODS:
+    //COMMON HELPER METHODS:
+    //CUSTOMER MAIN METHODS:
+
+    private function customerRegister()
+    {
+        $customer_data = array();
+        $errors = array();
+
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            try {
+                $customer_data = $this->handleCustomerPost();
+                $this->customer_model->createCustomer($customer_data);
+                header("Location: ");
+                exit();
+            } catch (Exception $error) {
+                $error_message = json_decode($error->getMessage(), true);
+                $errors = $error_message;
+            }
+        }
+
+        $this->view->customerRegister($errors);
+    }
+
+    //CUSTOMER HELPER METHODS:
+
+    private function handleCustomerPost()
+    {
+        /* $errors = array();
+
+        $name = $this->getAndValidatePost('name');
+        $price = $this->getAndValidatePost('price', true);
+        $description = $this->getAndValidatePost('description');
+        $category_id = $this->getAndValidatePost('category_id', true);
+        $stock = $this->getAndValidatePost('stock', true);
+        $image = $this->getAndValidatePost('image');
+        $specification = $this->getAndValidatePost('specification');
+
+        $chosen_brand = $this->getAndValidatePost('brand_id', true);
+        $new_brand_chosen = $this->getAndValidatePost('brand_id') === 'NEW';
+        $new_brand = $this->getAndValidatePost('new_brand');
+
+        if ((!$new_brand_chosen && $new_brand) || ($new_brand_chosen && !$new_brand) || (!$chosen_brand && !$new_brand)) {
+            array_push($errors, "To add a new brand, please pick option 'Add New Brand' and enter a brand name below.");
+        } else if ($new_brand_chosen && $new_brand) {
+            $product_data['brand_id'] = $this->product_model->createBrand($new_brand);
+        } else {
+            $product_data['brand_id'] = $chosen_brand;
+        }
+
+        if ($name && $price && $category_id) {
+            $product_data['name'] = $name;
+            $product_data['price'] = $price;
+            $product_data['description'] = $description;
+            $product_data['category_id'] = $category_id;
+            $product_data['stock'] = $stock;
+            $product_data['image'] = $image;
+            $product_data['specification'] = $specification;
+        } else {
+            array_push($errors, 'Please fill in all required fields');
+        }
+
+        if (count($errors) === 0) {
+            return $product_data;
+        } else {
+            throw new Exception(json_encode($errors));
+        } */
+    }
+
+    //ADMIN MAIN METHODS:
+    //ADMIN HELPER METHODS:
 
     /**
      *
@@ -179,7 +251,6 @@ class Controller
         $this->view->renderAdminOrderListPage(/* $orders */);
     }
 
-    //Helper methods:
     private function sanitize($text)
     {
         $text = trim($text);
