@@ -204,11 +204,24 @@ class Controller
 
     private function adminOrderList()
     {
+        if (isset($_GET['status_id'])) {
+            $this->handleOrderStatusUpdate();
+        }
         //TODO: create order functionality
         //$orders = $this->order_model->fetchAllOrders();
         $this->view->renderAdminOrderListPage(/* $orders */);
     }
 
+    public function handleOrderStatusUpdate() {
+        $order_id = (int)$_GET['id'];
+        $status_id = (int)$_GET['status_id'];
+        if ($status_id === 2) {
+            $this->order_model->updateOrderShippedDate($order_id);
+        }
+
+        $this->order_model->updateOrderStatus($order_id, $status_id);
+    }
+    
     //Helper methods:
     private function sanitize($text)
     {
