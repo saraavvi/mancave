@@ -42,10 +42,8 @@ class Controller
     private function getProductsByCategory()
     {
         $category = $this->sanitize($_GET['category']);
-        $this->view->renderHeader("mancave - products");
         $products = $this->product_model->fetchProductsByCategory($category);
-        $this->view->renderCustomerProducts($products);
-        $this->view->renderFooter();
+        $this->view->renderProductPage($products);
     }
 
     private function adminIndex()
@@ -108,9 +106,10 @@ class Controller
         else $this->view->renderAdminProductUpdatePage($brands, $categories, $product_data, $errors);
     }
 
-    private function handleProductPost() {
+    private function handleProductPost()
+    {
         $errors = array();
-        
+
         $name = $this->getAndValidatePost('name');
         $price = $this->getAndValidatePost('price', true);
         $description = $this->getAndValidatePost('description');
@@ -154,8 +153,9 @@ class Controller
      * Expects name of post key, 
      * optional bool (true for int values, default false) 
      * returns value or false
-    */
-    private function getAndValidatePost($name, $int = false) {
+     */
+    private function getAndValidatePost($name, $int = false)
+    {
         if (isset($_POST[$name])) {
             $value = $this->sanitize($_POST[$name]);
             if ($int) return (int)$value;
