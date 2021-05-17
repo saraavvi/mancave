@@ -54,7 +54,7 @@ class CustomerModel
 
     public function createCustomer($data)
     {
-        $statement = "INSERT INTO products (
+        $statement = "INSERT INTO customers (
                 first_name, 
                 last_name, 
                 email, 
@@ -77,7 +77,9 @@ class CustomerModel
             ':password' => $data['password'],
             ':address' => $data['address']
         );
+
         $last_insert_id = $this->db->insert($statement, $params);
+        var_dump($last_insert_id);
         return $last_insert_id;
     }
 }

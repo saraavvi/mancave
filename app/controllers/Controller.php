@@ -3,7 +3,7 @@
 class Controller
 {
     private $product_model;
-    private $order_model; // ta senare in som parameter i constr
+    private $order_model;
     private $customer_model;
     private $view;
     private $routes;
@@ -20,7 +20,10 @@ class Controller
         $this->routes = $routes;
         $this->resolveRoute();
     }
+
     //CONTENT:
+    //ROUTER MAIN METHODS:
+    //ROUTER HELPER METHODS:
     //COMMON MAIN METHODS:
     //COMMON HELPER METHODS:
     //CUSTOMER MAIN METHODS:
@@ -28,19 +31,20 @@ class Controller
     private function customerRegister()
     {
         $customer_data = array();
-        $errors = array();
+        $alerts = array();
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             try {
                 $customer_data = $this->handleCustomerPost();
-                $this->customer_model->createCustomer($customer_data);
-                header("Location: products");
-                exit();
+                var_dump($customer_data);
+                $customer_id = $this->customer_model->createCustomer($customer_data);
+                //header("Location: ?page=products");
+                $alerts['success'][] = "Customer id $customer_id successfully created. Thank you come again:)))";
             } catch (Exception $error) {
                 $error_message = json_decode($error->getMessage(), true);
-                if ($error_message) $errors = $error_message;
+                if ($error_message) $alerts = $error_message;
             }
         }
-        $this->view->renderCustomerRegister($errors, $customer_data);
+        $this->view->renderCustomerRegister($alerts, $customer_data);
     }
 
     //CUSTOMER HELPER METHODS:
