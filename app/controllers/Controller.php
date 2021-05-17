@@ -36,7 +36,7 @@ class Controller
     {
         $this->view->renderHeader("mancave - home");
         echo 'placeholder for landing page';
-        include_once "app/views/partials/footer.php";
+        $this->view->renderFooter();
     }
 
     private function getProductsByCategory()
@@ -45,7 +45,7 @@ class Controller
         $this->view->renderHeader("mancave - products");
         $products = $this->product_model->fetchProductsByCategory($category);
         $this->view->renderCustomerProducts($products);
-        include_once "app/views/partials/footer.php";
+        $this->view->renderFooter();
     }
 
     private function adminIndex()
@@ -79,6 +79,7 @@ class Controller
     private function adminProductUpdate()
     {
         $this->conditionForExit(empty($_GET['id']));
+
         $id = (int)$this->sanitize($_GET['id']);
         $product_data = array();
         $errors = array();
