@@ -208,6 +208,8 @@ HTML;
 
     public function renderListItemsOrders(/* $orders */)
     {
+        // current url path to append additional query params to (status)
+        $uri = $_SERVER['REQUEST_URI'];
         /* foreach ($products as $product) { */
         $html = <<<HTML
             <tr>
@@ -220,10 +222,10 @@ HTML;
                         Change Status
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="#&id=1&newstaus=draft">Draft</a></li>
-                        <li><a class="dropdown-item" href="#&id=1&newstaus=cancelled">Cancelled</a></li>
-                        <li><a class="dropdown-item" href="#&id=1&newstaus=pending">Pending</a></li>
-                        <li><a class="dropdown-item" href="#&id=1&newstaus=shipped">Shipped</a></li>
+                        <li><a class="dropdown-item" href="{$uri}&id=5&status_id=1">Draft</a></li>
+                        <li><a class="dropdown-item" href="{$uri}&id=5&status_id=4">Cancelled</a></li>
+                        <li><a class="dropdown-item" href="{$uri}&id=5&status_id=3">Pending</a></li>
+                        <li><a class="dropdown-item" href="{$uri}&id=5&status_id=2">Shipped</a></li>
                     </ul>
                 </td>
                 <td>
