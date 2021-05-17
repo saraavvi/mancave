@@ -48,45 +48,31 @@ class Controller
 
     private function handleCustomerPost()
     {
-        /* $errors = array();
+        $errors = array();
 
-        $name = $this->getAndValidatePost('name');
-        $price = $this->getAndValidatePost('price', true);
-        $description = $this->getAndValidatePost('description');
-        $category_id = $this->getAndValidatePost('category_id', true);
-        $stock = $this->getAndValidatePost('stock', true);
-        $image = $this->getAndValidatePost('image');
-        $specification = $this->getAndValidatePost('specification');
-
-        $chosen_brand = $this->getAndValidatePost('brand_id', true);
-        $new_brand_chosen = $this->getAndValidatePost('brand_id') === 'NEW';
-        $new_brand = $this->getAndValidatePost('new_brand');
-
-        if ((!$new_brand_chosen && $new_brand) || ($new_brand_chosen && !$new_brand) || (!$chosen_brand && !$new_brand)) {
-            array_push($errors, "To add a new brand, please pick option 'Add New Brand' and enter a brand name below.");
-        } else if ($new_brand_chosen && $new_brand) {
-            $product_data['brand_id'] = $this->product_model->createBrand($new_brand);
-        } else {
-            $product_data['brand_id'] = $chosen_brand;
+        $first_name = $this->getAndValidatePost('first_name');
+        $last_name = $this->getAndValidatePost('last_name');
+        $email = $this->getAndValidatePost('email');
+        $password = $this->getAndValidatePost('password');
+        $password_confirm = $this->getAndValidatePost('password_confirm');
+        if ($password !== $password_confirm) {
+            array_push($errors, 'Passwords do not match.');
         }
-
-        if ($name && $price && $category_id) {
-            $product_data['name'] = $name;
-            $product_data['price'] = $price;
-            $product_data['description'] = $description;
-            $product_data['category_id'] = $category_id;
-            $product_data['stock'] = $stock;
-            $product_data['image'] = $image;
-            $product_data['specification'] = $specification;
-        } else {
+        $address = $this->getAndValidatePost('address');
+        if (empty($email) || empty($password) || empty($password_confirm)) {
             array_push($errors, 'Please fill in all required fields');
         }
-
         if (count($errors) === 0) {
+            $product_data = array();
+            $product_data['first_name'] = $first_name;
+            $product_data['last_name'] = $last_name;
+            $product_data['email'] = $email;
+            $product_data['password'] = $password;
+            $product_data['address'] = $address;
             return $product_data;
         } else {
             throw new Exception(json_encode($errors));
-        } */
+        }
     }
 
     //ADMIN MAIN METHODS:
