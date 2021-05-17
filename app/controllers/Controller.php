@@ -58,7 +58,7 @@ class Controller
     private function adminProductCreate()
     {
         $product_data = array();
-        $errors = array();
+        $alerts = array();
 
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             try {
@@ -68,13 +68,13 @@ class Controller
                 exit();
             } catch (Exception $error) {
                 $error_message = json_decode($error->getMessage(), true);
-                $errors = $error_message;
+                $alerts['danger'] = $error_message;
             }
         }
 
         $brands = $this->product_model->fetchAllBrands();
         $categories = $this->product_model->fetchAllCategories();
-        $this->view->renderAdminProductCreatePage($brands, $categories, $errors);
+        $this->view->renderAdminProductCreatePage($brands, $categories, $alerts);
     }
 
     private function adminProductUpdate()
@@ -83,7 +83,7 @@ class Controller
 
         $id = (int)$this->sanitize($_GET['id']);
         $product_data = array();
-        $errors = array();
+        $alerts = array();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -92,12 +92,9 @@ class Controller
                 $this->product_model->updateProductById($id, $product_data);
                 header('Location: ?page=admin/products');
                 exit;
-                echo "<pre>";
-                var_dump($product_data);
-                echo "</pre>";
             } catch (Exception $error) {
                 $error_message = json_decode($error->getMessage(), true);
-                $errors = $error_message;
+                $alerts['danger'] = $error_message;
             }
         }
 
@@ -106,7 +103,7 @@ class Controller
         $product_data = $this->product_model->fetchProductById($id);
         //TODO: Better error handling
         if (!$product_data) echo 'Product id does not exist.';
-        else $this->view->renderAdminProductUpdatePage($brands, $categories, $product_data, $errors);
+        else $this->view->renderAdminProductUpdatePage($brands, $categories, $product_data, $alerts);
     }
 
     private function handleProductPost() {
@@ -181,8 +178,9 @@ class Controller
             foreach ($shopping_cart as $order_row) {
                 $this->order_model->createNewOrderContent($order_id, $order_row);
             }
+            $alerts['success'][] = 'Order successfully placed. Thank you come again:)))';
         } catch (Exception $e) {
-            $alerts['errors'][] = 'Failed to place order, please try again later or contact our customer service.';
+            $alerts['danger'][] = 'Failed to place order, please try again later or contact our customer service.';
         }
 
         // skicka vidare till view-> placed order view (customer) med $alerts
@@ -204,12 +202,22 @@ class Controller
 
     private function adminOrderList()
     {
+        $alerts = array();
         if (isset($_GET['status_id'])) {
             $this->handleOrderStatusUpdate();
         }
+        if (isset($_GET['action'])) {
+            try {
+                $row_count = $this->handleOrderDelete();
+                $alerts['success'][] = "Successfully deleted $row_count order(s).";
+            } catch (Exception $error) {
+                $alerts['danger'][] = "This order can not be deleted.";
+            }
+        }
         //TODO: create order functionality
-        //$orders = $this->order_model->fetchAllOrders();
-        $this->view->renderAdminOrderListPage(/* $orders */);
+        //$statuses = $this->order_model->fetchAllStatuses(); //värt?
+        $orders = $this->order_model->fetchAllOrders();
+        $this->view->renderAdminOrderListPage($orders, $alerts);
     }
 
     public function handleOrderStatusUpdate() {
@@ -220,6 +228,13 @@ class Controller
         }
 
         $this->order_model->updateOrderStatus($order_id, $status_id);
+    }
+
+    public function handleOrderDelete() {
+        if ($_GET['action'] === "delete")
+        $order_id = (int)$_GET['id'];
+        $row_count = $this->order_model->deleteOrder($order_id);
+        return $row_count;
     }
     
     //Helper methods:
