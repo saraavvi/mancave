@@ -11,9 +11,10 @@ class Controller
     /**
      *
      */
-    public function __construct($product_model, $view, $routes)
+    public function __construct($order_model, $product_model, $view, $routes)
     {
         $this->product_model = $product_model;
+        $this->order_model = $order_model;
         $this->view = $view;
         $this->routes = $routes;
         $this->resolveRoute();
@@ -148,6 +149,43 @@ class Controller
         } else {
             throw new Exception(json_encode($errors));
         }
+    }
+
+    /***
+     * Handle new order placed by customer
+     * take info from session and send to order_model
+     * send success/error msg to view
+     */
+    private function handleNewOrder()
+    {
+        $alerts = array();
+        // $shopping_cart = $_SESSION['shopping_cart']; eller hur man nu får den
+        // array_push($_SESSION['shopping_cart'], array(orderraden))
+        // $customer_id = $_SESSION['customer_id'];
+        $customer_id = 1;
+        // Vi tänker att shopping_cart ser ut såhär:
+        $shopping_cart = array(
+            array(
+                'product_id' => 1,
+                'quantity' => 2,
+                'price_each' => 30
+            ),
+            array(
+                'product_id' => 2,
+                'quantity' => 3,
+                'price_each' => 40
+            ),
+        );
+        try {
+            $order_id = $this->order_model->createNewOrder($customer_id);//order_id (lastInsertId)
+            foreach ($shopping_cart as $order_row) {
+                $this->order_model->createNewOrderContent($order_id, $order_row);
+            }
+        } catch (Exception $e) {
+            $alerts['errors'][] = 'Failed to place order, please try again later or contact our customer service.';
+        }
+
+        // skicka vidare till view-> placed order view (customer) med $alerts
     }
 
     /**
