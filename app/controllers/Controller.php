@@ -35,6 +35,7 @@ class Controller
     private function index()
     {
         $this->view->renderHeader("mancave - home");
+        echo 'placeholder for landing page';
         $this->view->renderFooter();
     }
 
@@ -55,34 +56,24 @@ class Controller
 
     private function adminProductCreate()
     {
-        $product_data = [];
+        $product_data = array();
+        $errors = array();
+
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            $product_data["name"] = $this->sanitize($_POST["name"]);
-            $product_data["price"] = (int) $this->sanitize($_POST["price"]);
-            $product_data["description"] = $this->sanitize(
-                $_POST["description"]
-            );
-            $product_data["category_id"] = (int) $this->sanitize(
-                $_POST["category_id"]
-            );
-            if ($_POST["brand_id"] !== "") {
-                $product_data["brand_id"] = (int) $this->sanitize(
-                    $_POST["brand_id"]
-                );
-            } else {
-                $product_data["brand_id"] = null;
+            try {
+                $product_data = $this->handleProductPost();
+                $this->product_model->createProduct($product_data);
+                header("Location: ?page=admin/products");
+                exit();
+            } catch (Exception $error) {
+                $error_message = json_decode($error->getMessage(), true);
+                $errors = $error_message;
             }
-            $product_data["stock"] = (int) $this->sanitize($_POST["stock"]);
-            $product_data["image"] = $this->sanitize($_POST["image"]);
-            $product_data["specification"] = $this->sanitize(
-                $_POST["specification"]
-            );
-            $this->product_model->createProduct($product_data);
-            header("Location: ?page=admin/products");
-            exit();
         }
 
-        $this->view->renderAdminProductCreatePage();
+        $brands = $this->product_model->fetchAllBrands();
+        $categories = $this->product_model->fetchAllCategories();
+        $this->view->renderAdminProductCreatePage($brands, $categories, $errors);
     }
 
     private function adminProductUpdate()
@@ -90,30 +81,97 @@ class Controller
         $this->conditionForExit(empty($_GET['id']));
 
         $id = (int)$this->sanitize($_GET['id']);
-    
         $product_data = array();
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $product_data['name'] = $this->sanitize($_POST['name']);
-            $product_data['price'] = (int)$this->sanitize($_POST['price']);
-            $product_data['description'] = $this->sanitize($_POST['description']);
-            $product_data['category_id'] = (int)$this->sanitize($_POST['category_id']);
-            $product_data['brand_id'] = (int)$this->sanitize($_POST['brand_id']);
-            $product_data['stock'] = (int)$this->sanitize($_POST['stock']);
-            $product_data['image'] = $this->sanitize($_POST['image']);
-            $product_data['specification'] = $this->sanitize($_POST['specification']);
+        $errors = array();
 
-            $this->product_model->updateProductById($id, $product_data);
-            header('Location: ?page=admin/products');
-            exit;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            try {
+                $product_data = $this->handleProductPost();
+                $this->product_model->updateProductById($id, $product_data);
+                header('Location: ?page=admin/products');
+                exit;
+                echo "<pre>";
+                var_dump($product_data);
+                echo "</pre>";
+            } catch (Exception $error) {
+                $error_message = json_decode($error->getMessage(), true);
+                $errors = $error_message;
+            }
         }
 
-
+        $brands = $this->product_model->fetchAllBrands();
+        $categories = $this->product_model->fetchAllCategories();
         $product_data = $this->product_model->fetchProductById($id);
         //TODO: Better error handling
         if (!$product_data) echo 'Product id does not exist.';
-        else $this->view->renderAdminProductUpdatePage($product_data);
+        else $this->view->renderAdminProductUpdatePage($brands, $categories, $product_data, $errors);
     }
 
+    private function handleProductPost() {
+        $errors = array();
+        
+        $name = $this->getAndValidatePost('name');
+        $price = $this->getAndValidatePost('price', true);
+        $description = $this->getAndValidatePost('description');
+        $category_id = $this->getAndValidatePost('category_id', true);
+        $stock = $this->getAndValidatePost('stock', true);
+        $image = $this->getAndValidatePost('image');
+        $specification = $this->getAndValidatePost('specification');
+
+        $chosen_brand = $this->getAndValidatePost('brand_id', true);
+        $new_brand_chosen = $this->getAndValidatePost('brand_id') === 'NEW';
+        $new_brand = $this->getAndValidatePost('new_brand');
+
+        if ((!$new_brand_chosen && $new_brand) || ($new_brand_chosen && !$new_brand) || (!$chosen_brand && !$new_brand)) {
+            array_push($errors, "To add a new brand, please pick option 'Add New Brand' and enter a brand name below.");
+        } else if ($new_brand_chosen && $new_brand) {
+            $product_data['brand_id'] = $this->product_model->createBrand($new_brand);
+        } else {
+            $product_data['brand_id'] = $chosen_brand;
+        }
+
+        if ($name && $price && $category_id) {
+            $product_data['name'] = $name;
+            $product_data['price'] = $price;
+            $product_data['description'] = $description;
+            $product_data['category_id'] = $category_id;
+            $product_data['stock'] = $stock;
+            $product_data['image'] = $image;
+            $product_data['specification'] = $specification;
+        } else {
+            array_push($errors, 'Please fill in all required fields');
+        }
+
+        if (count($errors) === 0) {
+            return $product_data;
+        } else {
+            throw new Exception(json_encode($errors));
+        }
+    }
+
+    /**
+     * Expects name of post key, 
+     * optional bool (true for int values, default false) 
+     * returns value or false
+    */
+    private function getAndValidatePost($name, $int = false) {
+        if (isset($_POST[$name])) {
+            $value = $this->sanitize($_POST[$name]);
+            if ($int) return (int)$value;
+            return $value;
+        }
+        return false;
+    }
+
+    private function adminOrderList()
+    {
+        //TODO: create order functionality
+        //$orders = $this->order_model->fetchAllOrders();
+        $this->view->renderAdminOrderListPage(/* $orders */);
+    }
+
+    //Helper methods:
     private function sanitize($text)
     {
         $text = trim($text);

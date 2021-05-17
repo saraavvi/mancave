@@ -10,7 +10,6 @@ $specification = $data['specification'] ?? "";
 $image = $data['image'] ?? "";
 ?>
 
-
 <div class="row d-flex justify-content-center">
     <div class="col-md-6 col-lg-4">
         <form action="#" method="POST">
@@ -21,26 +20,31 @@ $image = $data['image'] ?? "";
             <div class="mb-3">
                 <label for="category_id" class="form-label">Category:</label>
                 <select class="form-select" id="category_id" name="category_id">
-                    <option selected value="">Make a selection</option>
-                    <option value="1">Hobbies</option>
-                    <option value="2">Books</option>
-                    <option value="3">Interior Decoration</option>
-                    <option value="4">Health & Beauty</option>
+                    <option selected value="" disabled hidden>Make a selection</option>
+                    <?php
+                    foreach ($categories as $category) {
+                        $selected = ($data['category_id'] === $category['id']) ? "selected" : "";
+                        echo "<option value='$category[id]' $selected >$category[name]</option>";
+                    }
+                    ?>
                 </select>
             </div>
             <div class="mb-3">
                 <label for="brand_id" class="form-label">Brand:</label>
-                <select class="form-select" id="brand_id" name="brand_id">
-                    <option selected value="">Make a selection</option>
-                    <option value="1">LEGO</option>
-                    <option value="2">Second</option>
-                    <option value="3">Third</option>
-                    <option value="">No brand</option>
+                <select id="brand_id" name="brand_id" class="form-select">
+                    <option selected value="" disabled hidden>Make a selection or add new</option>
+                    <?php
+                    foreach ($brands as $brand) {
+                        $selected = ($data['brand_id'] === $brand['id']) ? "selected" : "";
+                        echo "<option value='$brand[id]' $selected >$brand[name]</option>";
+                    }
+                    ?>
+                    <option value='NEW'>Add New Brand</option>
                 </select>
             </div>
-            <div class="mb-3">
-                <label for="new_brand" class="form-label">Add new brand:</label>
-                <input type="text" class="form-control" id="new_brand" name="new_brand">
+            <div class='mb-3'>
+                <label for='new_brand' class='form-label'>Add new brand:</label>
+                <input type='text' class='form-control' id='new_brand' name='new_brand'>
             </div>
             <div class="mb-3">
                 <label for="price" class="form-label">Price:</label>

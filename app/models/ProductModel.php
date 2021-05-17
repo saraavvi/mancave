@@ -43,7 +43,6 @@ class ProductModel
     /***
      * Fetch products from a specific category, return an array with all products.
      */
-
     public function fetchProductsByCategory($category)
     {
         $statement = "SELECT * FROM products WHERE category_id = :category";
@@ -53,7 +52,6 @@ class ProductModel
         // return to controller
         return $products ?? false;
     }
-
 
     public function updateProductById($id, $data)
 
@@ -133,6 +131,30 @@ class ProductModel
             ':specification' => $data['specification']
         );
 
+
+        $last_insert_id = $this->db->insert($statement, $params);
+
+        return $last_insert_id;
+    }
+
+    public function fetchAllBrands()
+    {
+        $statement = "SELECT * FROM brands";
+        $brands = $this->db->select($statement);
+        return $brands;
+    }
+
+    public function fetchAllCategories()
+    {
+        $statement = "SELECT * FROM categories";
+        $categories = $this->db->select($statement);
+        return $categories;
+    }
+
+    public function createBrand($name)
+    {
+        $statement = "INSERT INTO brands ( name ) VALUES ( :name )";
+        $params = array(':name' => $name);
 
         $last_insert_id = $this->db->insert($statement, $params);
 
