@@ -27,7 +27,7 @@
                             <!-- hämta kategorier från från databasen och skriv ut här istället sen -->
                             <li><a class="dropdown-item" href="?page=products&category=1">Hobbies</a></li>
                             <li><a class="dropdown-item" href="?page=products&category=2">Books</a></li>
-                            <li><a class="dropdown-item" href="?page=products&category=3r">Interior</a></li>
+                            <li><a class="dropdown-item" href="?page=products&category=3">Interior</a></li>
                             <li><a class="dropdown-item" href="?page=products&category=4">Health & Beauty</a></li>
                         </ul>
                     </li>
