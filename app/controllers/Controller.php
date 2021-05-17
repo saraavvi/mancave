@@ -4,16 +4,17 @@ class Controller
 {
     private $product_model;
     private $order_model; // ta senare in som parameter i constr
-    private $customer_model; // ta senare in som parameter i constr
+    private $customer_model;
     private $view;
     private $routes;
 
     /**
      *
      */
-    public function __construct($product_model, $view, $routes)
+    public function __construct($product_model, $customer_model, $view, $routes)
     {
         $this->product_model = $product_model;
+        $this->customer_model = $customer_model;
         $this->view = $view;
         $this->routes = $routes;
         $this->resolveRoute();
