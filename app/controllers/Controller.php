@@ -46,6 +46,13 @@ class Controller
         $this->view->renderProductPage($products);
     }
 
+    private function getProductById()
+    {
+        $id = $this->sanitize($_GET['id']);
+        $product = $this->product_model->fetchProductById($id);
+        $this->view->renderDetailPage($product);
+    }
+
     private function adminIndex()
     {
         $products = $this->product_model->fetchAllProducts();

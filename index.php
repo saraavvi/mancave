@@ -17,6 +17,7 @@ $routes = array(
     // Customer routes
     '' => 'index', // In case no /?page=...
     'products' => 'getProductsByCategory',
+    'products/details' => 'getProductById',
     // Admin routes
     'admin' => 'adminIndex',
     'admin/products' => 'adminIndex',

@@ -21,7 +21,7 @@ class ProductModel
     public function fetchProductById($id)
     {
         $statement = "SELECT * FROM products WHERE id = :id";
-        $params = array(':id' => $id);
+        $params = array(":id" => $id);
         $product = $this->db->select($statement, $params);
 
         // return to controller

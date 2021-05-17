@@ -53,6 +53,33 @@ class View
     $this->renderFooter();
   }
 
+  public function renderDetailPage($product)
+  {
+    $this->renderHeader("mancave - products");
+    $this->renderProductDetails($product);
+    $this->renderFooter();
+  }
+
+  public function renderProductDetails($product)
+  {
+    //  Bara för att visa produkten just nu - byt ut detta mot vad vi vill visa på den här sidan.
+    $html = <<<HTML
+            <div class="col-md-3 mt-3">
+                <div class="card" style="width: 18rem;">
+                  <a href="?page=products/details&id=$product[id]"> 
+                    <img src="$product[image]" class="card-img-top p-3" alt="...">
+                  </a>
+                    <div class="card-body">
+                        <h5 class="card-title">$product[name]</h5>
+                        <p class="card-text">$product[price] sek</p>
+                        <a href="#" class="btn btn-primary">add to cart</a>
+                    </div>
+                </div>
+            </div>
+        HTML;
+    echo $html;
+  }
+
   public function renderCustomerProducts($products)
   {
     foreach ($products as $product) {
@@ -62,10 +89,13 @@ class View
 
   public function renderOneCustomerProduct($product)
   {
+    // print_r($product['id']);
     $html = <<<HTML
             <div class="col-md-3 mt-3">
                 <div class="card" style="width: 18rem;">
+                  <a href="?page=products/details&id=$product[id]"> 
                     <img src="$product[image]" class="card-img-top p-3" alt="...">
+                  </a>
                     <div class="card-body">
                         <h5 class="card-title">$product[name]</h5>
                         <p class="card-text">$product[price] sek</p>
