@@ -63,11 +63,11 @@ class Controller
                 $_POST["description"]
             );
             $product_data["category_id"] = (int) $this->sanitize(
-                $_POST["category"]
+                $_POST["category_id"]
             );
-            if ($_POST["brand"] !== "") {
+            if ($_POST["brand_id"] !== "") {
                 $product_data["brand_id"] = (int) $this->sanitize(
-                    $_POST["brand"]
+                    $_POST["brand_id"]
                 );
             } else {
                 $product_data["brand_id"] = null;
@@ -88,7 +88,25 @@ class Controller
     private function adminProductUpdate()
     {
         $this->conditionForExit(empty($_GET['id']));
-        $id = $this->sanitize($_GET['id']);
+
+        $id = (int)$this->sanitize($_GET['id']);
+    
+        $product_data = array();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $product_data['name'] = $this->sanitize($_POST['name']);
+            $product_data['price'] = (int)$this->sanitize($_POST['price']);
+            $product_data['description'] = $this->sanitize($_POST['description']);
+            $product_data['category_id'] = (int)$this->sanitize($_POST['category_id']);
+            $product_data['brand_id'] = (int)$this->sanitize($_POST['brand_id']);
+            $product_data['stock'] = (int)$this->sanitize($_POST['stock']);
+            $product_data['image'] = $this->sanitize($_POST['image']);
+            $product_data['specification'] = $this->sanitize($_POST['specification']);
+
+            $this->product_model->updateProductById($id, $product_data);
+            header('Location: ?page=admin/products');
+            exit;
+        }
+
 
         $product_data = $this->product_model->fetchProductById($id);
         //TODO: Better error handling

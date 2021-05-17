@@ -43,6 +43,7 @@ class ProductModel
     /***
      * Fetch products from a specific category, return an array with all products.
      */
+
     public function fetchProductsByCategory($category)
     {
         $statement = "SELECT * FROM products WHERE category_id = :category";
@@ -53,10 +54,11 @@ class ProductModel
         return $products ?? false;
     }
 
-    //TODO: Create update products function
-    public function updateProductById($data)
+
+    public function updateProductById($id, $data)
+
     {
-        $statement = "UPDATE products SET (
+        $statement = "UPDATE products SET
             name = :name, 
             price = :price, 
             description = :description, 
@@ -65,9 +67,9 @@ class ProductModel
             stock = :stock, 
             image = :image, 
             specification = :specification
-        ) WHERE id = :id";
+        WHERE id = :id";
         $params = array(
-            ':id' => $data['id'],
+            ':id' => $id,
             ':name' => $data['name'],
             ':price' => $data['price'],
             ':description' => $data['description'],
