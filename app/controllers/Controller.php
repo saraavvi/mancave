@@ -34,7 +34,17 @@ class Controller
 
     private function index()
     {
-        echo "This is index";
+        $this->view->renderHeader("mancave - home");
+        $this->view->renderFooter();
+    }
+
+    private function getProductsByCategory()
+    {
+        $category = $this->sanitize($_GET['category']);
+        $this->view->renderHeader("mancave - products");
+        $products = $this->product_model->fetchProductsByCategory($category);
+        $this->view->renderCustomerProducts($products);
+        $this->view->renderFooter();
     }
 
     private function adminIndex()
@@ -78,6 +88,7 @@ class Controller
     private function adminProductUpdate()
     {
         $this->conditionForExit(empty($_GET['id']));
+
         $id = (int)$this->sanitize($_GET['id']);
     
         $product_data = array();
@@ -95,6 +106,7 @@ class Controller
             header('Location: ?page=admin/products');
             exit;
         }
+
 
         $product_data = $this->product_model->fetchProductById($id);
         //TODO: Better error handling
