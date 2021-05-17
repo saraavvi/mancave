@@ -62,15 +62,16 @@ class OrderModel
             statuses.id AS status_id, statuses.name AS status_name, 
             SUM(order_contents.quantity * order_contents.price_each) AS order_total, 
             customers.id AS customer_id, CONCAT(customers.first_name, ' ', customers.last_name) AS customer_name, customers.email, customers.address
-        FROM `orders` 
-        INNER JOIN statuses ON orders.status_id = statuses.id 
-        INNER JOIN order_contents ON orders.id = order_contents.order_id 
-        INNER JOIN customers ON orders.customer_id = customers.id 
-        GROUP BY orders.id ";
+        FROM orders 
+        LEFT JOIN statuses ON orders.status_id = statuses.id 
+        LEFT JOIN order_contents ON orders.id = order_contents.order_id 
+        LEFT JOIN customers ON orders.customer_id = customers.id 
+        GROUP BY orders.id";
         $order = $this->db->select($statement);
 
         // return to controller
         if (count($order) === 0)
+
             return false;
 
         return $order;
@@ -118,9 +119,6 @@ class OrderModel
         $this->db->insert($statement, $params);
     }
 
-    //TODO: Update order content
-    //TODO: Update order
-    //TODO: Update order status
     public function updateOrderStatus($order_id, $status_id) {
         $statement = "UPDATE orders 
             SET status_id = :status_id 
@@ -129,9 +127,7 @@ class OrderModel
             ':status_id' => $status_id,
             ':order_id' => $order_id
         );
-        
         $row_count = $this->db->update($statement, $params);
-
     }
 
     public function updateOrderShippedDate($order_id) {
@@ -141,5 +137,16 @@ class OrderModel
         $params = array(':order_id' => $order_id);
         $row_count = $this->db->update($statement, $params);
     }
+
+    public function deleteOrder($order_id) {
+        
+        $statement = "DELETE FROM `orders` WHERE `orders`.`id` = :order_id;";
+        $params = array(':order_id' => $order_id);
+        $row_count = $this->db->update($statement, $params);
+        return $row_count;
+    }
+
+    //TODO: Update order content
+    //TODO: Update order
     
 }
