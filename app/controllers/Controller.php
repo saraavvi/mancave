@@ -28,19 +28,17 @@ class Controller
     {
         $customer_data = array();
         $errors = array();
-
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            $customer_data = $this->handleCustomerPost();
             try {
+                $customer_data = $this->handleCustomerPost();
                 $this->customer_model->createCustomer($customer_data);
-                header("Location: ");
+                header("Location: products");
                 exit();
             } catch (Exception $error) {
                 $error_message = json_decode($error->getMessage(), true);
-                $errors = $error_message;
+                if ($error_message) $errors = $error_message;
             }
         }
-
         $this->view->renderCustomerRegister($errors, $customer_data);
     }
 
@@ -62,14 +60,15 @@ class Controller
         if (empty($email) || empty($password) || empty($password_confirm)) {
             array_push($errors, 'Please fill in all required fields');
         }
+
         if (count($errors) === 0) {
-            $product_data = array();
-            $product_data['first_name'] = $first_name;
-            $product_data['last_name'] = $last_name;
-            $product_data['email'] = $email;
-            $product_data['password'] = $password;
-            $product_data['address'] = $address;
-            return $product_data;
+            $customer_data = array();
+            $customer_data['first_name'] = $first_name;
+            $customer_data['last_name'] = $last_name;
+            $customer_data['email'] = $email;
+            $customer_data['password'] = $password;
+            $customer_data['address'] = $address;
+            return $customer_data;
         } else {
             throw new Exception(json_encode($errors));
         }

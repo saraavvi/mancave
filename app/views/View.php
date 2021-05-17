@@ -6,7 +6,7 @@ class View
     //COMMON HELPER METHODS:
     //CUSTOMER MAIN METHODS:
 
-    public function renderCustomerRegister($errors, $customer_data = null)
+    public function renderCustomerRegister($errors = [], $customer_data = null)
     {
         $this->renderHeader("New Customer");
         $this->renderErrors($errors);
