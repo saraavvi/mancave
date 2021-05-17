@@ -28,6 +28,11 @@ class Controller
     //COMMON HELPER METHODS:
     //CUSTOMER MAIN METHODS:
 
+    private function index()
+    {
+        $this->view->renderCustomerIndexPage();
+    }
+
     private function customerRegister()
     {
         $customer_data = array();
@@ -35,16 +40,16 @@ class Controller
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             try {
                 $customer_data = $this->handleCustomerPost();
-                var_dump($customer_data);
                 $customer_id = $this->customer_model->createCustomer($customer_data);
-                //header("Location: ?page=products");
-                $alerts['success'][] = "Customer id $customer_id successfully created. Thank you come again:)))";
+                $alerts['success'][] = "Customer successfully created! New customer id: $customer_id. Please Log In.";
+                $this->view->renderCustomerIndexPage($alerts);
+                exit;
             } catch (Exception $error) {
                 $error_message = json_decode($error->getMessage(), true);
                 if ($error_message) $alerts = $error_message;
             }
         }
-        $this->view->renderCustomerRegister($alerts, $customer_data);
+        $this->view->renderCustomerRegisterPage($alerts, $customer_data);
     }
 
     //CUSTOMER HELPER METHODS:
@@ -93,13 +98,6 @@ class Controller
 
         $this->conditionForExit(!$function);
         echo call_user_func([$this, $function]);
-    }
-
-    private function index()
-    {
-        $this->view->renderHeader("mancave - home");
-        echo 'placeholder for landing page';
-        $this->view->renderFooter();
     }
 
     private function getProductsByCategory()

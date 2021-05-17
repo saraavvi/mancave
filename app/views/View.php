@@ -17,7 +17,15 @@ class View
 
     //CUSTOMER MAIN METHODS:
 
-    public function renderCustomerRegister($alerts = [], $customer_data = null)
+    public function renderCustomerIndexPage($alerts = [])
+    {
+        $this->renderHeader("ManCave - Home");
+        $this->renderAlerts($alerts);
+        echo 'placeholder for landing page';
+        $this->renderFooter();
+    }
+
+    public function renderCustomerRegisterPage($alerts = [], $customer_data = null)
     {
         $this->renderHeader("New Customer");
         $this->renderAlerts($alerts);
@@ -224,7 +232,7 @@ class View
     {
         foreach ($alerts as $category => $messages) {
             foreach ($messages as $message) {
-                echo "<div class='alert alert-$category' role='alert'>
+                echo "<div class='d-flex justify-content-center alert alert-$category' role='alert'>
                     $message
                 </div>";
             }

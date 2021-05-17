@@ -79,7 +79,6 @@ class CustomerModel
         );
 
         $last_insert_id = $this->db->insert($statement, $params);
-        var_dump($last_insert_id);
         return $last_insert_id;
     }
 }
