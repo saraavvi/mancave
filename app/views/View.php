@@ -1,6 +1,28 @@
 <?php
 class View
 {
+    //CONTENT:
+    //COMMON MAIN METHODS:
+    //COMMON HELPER METHODS:
+    //CUSTOMER MAIN METHODS:
+
+    public function renderCustomerRegister($errors, $customer_data = null)
+    {
+        $this->renderHeader("New Customer");
+        $this->renderErrors($errors);
+        $this->renderRegisterForm($customer_data);
+        include_once "app/views/partials/footer.php";
+    }
+
+    //CUSTOMER HELPER METHODS:
+
+    public function renderRegisterForm($customer_data = null)
+    {
+        include_once "app/views/partials/registerform.php";
+    }
+
+    //ADMIN MAIN METHODS:
+    //ADMIN HELPER METHODS:
     public function renderHeader($title)
     {
         include_once "app/views/partials/header.php";
@@ -65,10 +87,10 @@ class View
 
         //  Bara för att visa produkten just nu - byt ut detta mot vad vi vill visa på den här sidan.
         $html = <<<HTML
-                <div class="col-md-6 border">
+            <div class="col-md-6 border">
                 <img src="$product[image]" class="img-fluid" alt="...">
-                </div>
-                <div class="col-md-4 border">
+            </div>
+            <div class="col-md-4 border">
                 <h2>$product[name]</h2>
                 <p class="fs-1">$product[price] SEK</p>
                 <button class="btn btn-primary w-100">add to cart</button>
@@ -79,7 +101,7 @@ class View
                 <div class="mt-3">
                     <p>$product[specification]</p>
                 <div>
-                </div>
+            </div>
         HTML;
         echo $html;
     }

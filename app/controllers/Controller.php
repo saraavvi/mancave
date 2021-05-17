@@ -30,8 +30,8 @@ class Controller
         $errors = array();
 
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $customer_data = $this->handleCustomerPost();
             try {
-                $customer_data = $this->handleCustomerPost();
                 $this->customer_model->createCustomer($customer_data);
                 header("Location: ");
                 exit();
@@ -41,7 +41,7 @@ class Controller
             }
         }
 
-        $this->view->customerRegister($errors);
+        $this->view->renderCustomerRegister($errors, $customer_data);
     }
 
     //CUSTOMER HELPER METHODS:
