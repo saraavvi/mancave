@@ -110,17 +110,17 @@ class Controller
     private function handleProductPost() {
         $errors = array();
         
-        $name = $this->getPost('name');
-        $price = $this->getPost('price', true);
-        $description = $this->getPost('description');
-        $category_id = $this->getPost('category_id', true);
-        $stock = $this->getPost('stock', true);
-        $image = $this->getPost('image');
-        $specification = $this->getPost('specification');
+        $name = $this->getAndValidatePost('name');
+        $price = $this->getAndValidatePost('price', true);
+        $description = $this->getAndValidatePost('description');
+        $category_id = $this->getAndValidatePost('category_id', true);
+        $stock = $this->getAndValidatePost('stock', true);
+        $image = $this->getAndValidatePost('image');
+        $specification = $this->getAndValidatePost('specification');
 
-        $chosen_brand = $this->getPost('brand_id', true);
-        $new_brand_chosen = $this->getPost('brand_id') === 'NEW';
-        $new_brand = $this->getPost('new_brand');
+        $chosen_brand = $this->getAndValidatePost('brand_id', true);
+        $new_brand_chosen = $this->getAndValidatePost('brand_id') === 'NEW';
+        $new_brand = $this->getAndValidatePost('new_brand');
 
         if ((!$new_brand_chosen && $new_brand) || ($new_brand_chosen && !$new_brand) || (!$chosen_brand && !$new_brand)) {
             array_push($errors, "To add a new brand, please pick option 'Add New Brand' and enter a brand name below.");
@@ -154,7 +154,7 @@ class Controller
      * optional bool (true for int values, default false) 
      * returns value or false
     */
-    private function getPost($name, $int = false) {
+    private function getAndValidatePost($name, $int = false) {
         if (isset($_POST[$name])) {
             $value = $this->sanitize($_POST[$name]);
             if ($int) return (int)$value;
