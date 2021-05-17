@@ -50,7 +50,9 @@ class Controller
     {
         $id = $this->sanitize($_GET['id']);
         $product = $this->product_model->fetchProductById($id);
-        $this->view->renderDetailPage($product);
+
+        if (!$product) echo 'Product id does not exist.';
+        else $this->view->renderDetailPage($product);
     }
 
     private function adminIndex()
