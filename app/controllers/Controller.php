@@ -65,9 +65,9 @@ class Controller
                 $this->product_model->createProduct($product_data);
                 header("Location: ?page=admin/products");
                 exit();
-            } catch (Exception $e) {
-                $error = json_decode($e->getMessage(), true);
-                $errors = $error;
+            } catch (Exception $error) {
+                $error_message = json_decode($error->getMessage(), true);
+                $errors = $error_message;
             }
         }
 
@@ -93,9 +93,9 @@ class Controller
                 echo "<pre>";
                 var_dump($product_data);
                 echo "</pre>";
-            } catch (Exception $e) {
-                $error = json_decode($e->getMessage(), true);
-                $errors = $error;
+            } catch (Exception $error) {
+                $error_message = json_decode($error->getMessage(), true);
+                $errors = $error_message;
             }
         }
 
@@ -139,7 +139,7 @@ class Controller
             $product_data['image'] = $image;
             $product_data['specification'] = $specification;
         } else {
-            array_push($errors, 'Please fill in all required feilds');
+            array_push($errors, 'Please fill in all required fields');
         }
 
         if (count($errors) === 0) {
