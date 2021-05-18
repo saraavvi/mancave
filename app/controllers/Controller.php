@@ -3,22 +3,89 @@
 class Controller
 {
     private $product_model;
-    private $order_model; // ta senare in som parameter i constr
-    private $customer_model; // ta senare in som parameter i constr
+    private $order_model;
+    private $customer_model;
     private $view;
     private $routes;
 
     /**
      *
      */
-    public function __construct($order_model, $product_model, $view, $routes)
+    public function __construct($order_model, $product_model, $customer_model, $view, $routes)
     {
         $this->product_model = $product_model;
         $this->order_model = $order_model;
+        $this->customer_model = $customer_model;
         $this->view = $view;
         $this->routes = $routes;
         $this->resolveRoute();
     }
+
+    //CONTENT:
+    //ROUTER MAIN METHODS:
+    //ROUTER HELPER METHODS:
+    //COMMON MAIN METHODS:
+    //COMMON HELPER METHODS:
+    //CUSTOMER MAIN METHODS:
+
+    private function index()
+    {
+        $this->view->renderCustomerIndexPage();
+    }
+
+    private function customerRegister()
+    {
+        $customer_data = array();
+        $alerts = array();
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            try {
+                $customer_data = $this->handleCustomerPost();
+                $customer_id = $this->customer_model->createCustomer($customer_data);
+                $alerts['success'][] = "Customer successfully created! New customer id: $customer_id. Please Log In.";
+                $this->view->renderCustomerIndexPage($alerts);
+                exit;
+            } catch (Exception $error) {
+                $error_message = json_decode($error->getMessage(), true);
+                if ($error_message) $alerts = $error_message;
+            }
+        }
+        $this->view->renderCustomerRegisterPage($alerts, $customer_data);
+    }
+
+    //CUSTOMER HELPER METHODS:
+
+    private function handleCustomerPost()
+    {
+        $errors = array();
+
+        $first_name = $this->getAndValidatePost('first_name');
+        $last_name = $this->getAndValidatePost('last_name');
+        $email = $this->getAndValidatePost('email');
+        $password = $this->getAndValidatePost('password');
+        $password_confirm = $this->getAndValidatePost('password_confirm');
+        if ($password !== $password_confirm) {
+            array_push($errors, 'Passwords do not match.');
+        }
+        $address = $this->getAndValidatePost('address');
+        if (empty($email) || empty($password) || empty($password_confirm)) {
+            array_push($errors, 'Please fill in all required fields');
+        }
+
+        if (count($errors) === 0) {
+            $customer_data = array();
+            $customer_data['first_name'] = $first_name;
+            $customer_data['last_name'] = $last_name;
+            $customer_data['email'] = $email;
+            $customer_data['password'] = $password;
+            $customer_data['address'] = $address;
+            return $customer_data;
+        } else {
+            throw new Exception(json_encode($errors));
+        }
+    }
+
+    //ADMIN MAIN METHODS:
+    //ADMIN HELPER METHODS:
 
     /**
      *
@@ -33,20 +100,20 @@ class Controller
         echo call_user_func([$this, $function]);
     }
 
-    private function index()
-    {
-        $this->view->renderHeader("mancave - home");
-        echo 'placeholder for landing page';
-        $this->view->renderFooter();
-    }
-
     private function getProductsByCategory()
     {
         $category = $this->sanitize($_GET['category']);
-        $this->view->renderHeader("mancave - products");
         $products = $this->product_model->fetchProductsByCategory($category);
-        $this->view->renderCustomerProducts($products);
-        $this->view->renderFooter();
+        $this->view->renderProductPage($products);
+    }
+
+    private function getProductById()
+    {
+        $id = $this->sanitize($_GET['id']);
+        $product = $this->product_model->fetchProductById($id);
+
+        if (!$product) echo 'Product id does not exist.';
+        else $this->view->renderDetailPage($product);
     }
 
     private function adminIndex()
@@ -106,9 +173,10 @@ class Controller
         else $this->view->renderAdminProductUpdatePage($brands, $categories, $product_data, $alerts);
     }
 
-    private function handleProductPost() {
+    private function handleProductPost()
+    {
         $errors = array();
-        
+
         $name = $this->getAndValidatePost('name');
         $price = $this->getAndValidatePost('price', true);
         $description = $this->getAndValidatePost('description');
@@ -190,8 +258,9 @@ class Controller
      * Expects name of post key, 
      * optional bool (true for int values, default false) 
      * returns value or false
-    */
-    private function getAndValidatePost($name, $int = false) {
+     */
+    private function getAndValidatePost($name, $int = false)
+    {
         if (isset($_POST[$name])) {
             $value = $this->sanitize($_POST[$name]);
             if ($int) return (int)$value;
