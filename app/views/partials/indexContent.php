@@ -8,6 +8,6 @@
         We at Bob Franker Transatlantic Fellows aim to make our bro's find their best way of life and style. 
         <br>We want to help you make your Man Cave represent the bro that YOU are, a Man Cave that you love.<br>
         Please contact us for a private consultation, or take a look at our fine selection of products.</p>
-    <a href="#" class="btn btn-primary center">Go somewhere</a>
+    <a href="?page=admin" class="btn btn-primary center">Admin temp btn</a>
   </div>
 </div>
