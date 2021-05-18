@@ -232,9 +232,13 @@ class View
     {
         foreach ($alerts as $category => $messages) {
             foreach ($messages as $message) {
-                echo "<div class='d-flex justify-content-center alert alert-$category' role='alert'>
-                    $message
-                </div>";
+                echo "
+                    <div class='d-flex justify-content-center'>
+                        <div class='col-md-10 text-center alert alert-$category' role='alert'>
+                            $message
+                        </div>
+                    </div>
+                ";
             }
         }
     }
