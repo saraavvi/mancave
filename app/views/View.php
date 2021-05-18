@@ -187,22 +187,7 @@ class View
 
     public function renderListStart($column_name_array)
     {
-        $html = <<<HTML
-        <div class="row d-flex justify-content-center">
-            <div class="col-md-10">
-                <table class="table">
-                    <thead>
-                        <tr>
-    HTML;
-        foreach ($column_name_array as $column_name) {
-        $html .= "<th scope='col'>$column_name</th>";
-        }
-        $html .= <<<HTML
-                </tr>
-            </thead>
-        <tbody>
-    HTML;
-        echo $html;
+        include_once "app/views/partials/listStart.php";
     }
 
     public function renderListEnd()
