@@ -13,23 +13,23 @@ $address = $customer_data['address'] ?? "";
         <form action="#" method="POST">
             <div class="mb-3">
                 <label for="first_name" class="form-label">First Name:</label>
-                <input type="text" class="form-control" id="name" name="first_name" value="<?= $first_name ?>">
+                <input type="text" class="form-control" id="first_name" name="first_name" value="<?= $first_name ?>">
             </div>
             <div class="mb-3">
                 <label for="last_name" class="form-label">Last Name:</label>
-                <input type="text" class="form-control" id="name" name="last_name" value="<?= $last_name ?>">
+                <input type="text" class="form-control" id="last_name" name="last_name" value="<?= $last_name ?>">
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email:</label>
-                <input type="email" class="form-control" id="name" name="email" value="<?= $email ?>">
+                <input type="email" class="form-control" id="email" name="email" value="<?= $email ?>">
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password:</label>
-                <input type="password" class="form-control" id="name" name="password" value="<?= $password ?>">
+                <input type="password" class="form-control" id="password" name="password" value="<?= $password ?>">
             </div>
             <div class="mb-3">
                 <label for="password_confirm" class="form-label">Confirm Password:</label>
-                <input type="password" class="form-control" id="name" name="password_confirm">
+                <input type="password" class="form-control" id="password_confirm" name="password_confirm">
             </div>
             <div class="mb-3">
                 <label for="address" class="form-label">Address:</label>

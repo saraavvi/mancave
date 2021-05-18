@@ -2,6 +2,7 @@
 
 class Controller
 {
+    private $customer_login_controller;
     private $product_model;
     private $order_model;
     private $customer_model;
@@ -11,8 +12,9 @@ class Controller
     /**
      *
      */
-    public function __construct($order_model, $product_model, $customer_model, $view, $routes)
+    public function __construct($customer_login_controller, $order_model, $product_model, $customer_model, $view, $routes)
     {
+        $this->customer_login_controller = $customer_login_controller;
         $this->product_model = $product_model;
         $this->order_model = $order_model;
         $this->customer_model = $customer_model;
@@ -83,6 +85,16 @@ class Controller
         $this->view->renderCustomerIndexPage();
     }
 
+    private function login()
+    {
+        $this->customer_login_controller->handleLogin();
+    }
+
+    private function logout()
+    {
+        $this->customer_login_controller->handleLogout();
+    }
+
     private function getProductsByCategory()
     {
         $category = $this->sanitize($_GET['category']);
@@ -113,7 +125,7 @@ class Controller
                 exit;
             } catch (Exception $error) {
                 $error_message = json_decode($error->getMessage(), true);
-                if ($error_message) $alerts = $error_message;
+                if ($error_message) $alerts['danger'] = $error_message;
             }
         }
         $this->view->renderCustomerRegisterPage($alerts, $customer_data);
@@ -133,6 +145,9 @@ class Controller
         if ($password !== $password_confirm) {
             array_push($errors, 'Passwords do not match.');
         }
+        if (strlen($password) < 6) {
+            array_push($errors, 'Password must be at least six characters.');
+        }
         $address = $this->getAndValidatePost('address');
         if (empty($email) || empty($password) || empty($password_confirm)) {
             array_push($errors, 'Please fill in all required fields');
@@ -143,6 +158,8 @@ class Controller
             $customer_data['first_name'] = $first_name;
             $customer_data['last_name'] = $last_name;
             $customer_data['email'] = $email;
+            //Hash password before save to db TODO:
+            //$password = password_hash($password, PASSWORD_DEFAULT);
             $customer_data['password'] = $password;
             $customer_data['address'] = $address;
             return $customer_data;
