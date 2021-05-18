@@ -25,6 +25,9 @@
                         <a class="nav-link" href="#">Brands</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="?page=shoppingcart">Shopping cart</a>
+                    </li>
+                    <li class="nav-item">
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
                             Log In

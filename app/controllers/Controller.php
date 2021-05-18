@@ -116,6 +116,11 @@ class Controller
         else $this->view->renderDetailPage($product);
     }
 
+    private function getShoppingCart()
+    {
+        $this->view->renderShoppingCartPage();
+    }
+
     private function adminIndex()
     {
         $products = $this->product_model->fetchAllProducts();
@@ -242,7 +247,7 @@ class Controller
             ),
         );
         try {
-            $order_id = $this->order_model->createNewOrder($customer_id);//order_id (lastInsertId)
+            $order_id = $this->order_model->createNewOrder($customer_id); //order_id (lastInsertId)
             foreach ($shopping_cart as $order_row) {
                 $this->order_model->createNewOrderContent($order_id, $order_row);
             }
@@ -289,7 +294,8 @@ class Controller
         $this->view->renderAdminOrderListPage($orders, $alerts);
     }
 
-    public function handleOrderStatusUpdate() {
+    public function handleOrderStatusUpdate()
+    {
         $order_id = (int)$_GET['id'];
         $status_id = (int)$_GET['status_id'];
         if ($status_id === 2) {
@@ -299,13 +305,14 @@ class Controller
         $this->order_model->updateOrderStatus($order_id, $status_id);
     }
 
-    public function handleOrderDelete() {
+    public function handleOrderDelete()
+    {
         if ($_GET['action'] === "delete")
-        $order_id = (int)$_GET['id'];
+            $order_id = (int)$_GET['id'];
         $row_count = $this->order_model->deleteOrder($order_id);
         return $row_count;
     }
-    
+
     //Helper methods:
     private function sanitize($text)
     {

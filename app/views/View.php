@@ -9,9 +9,9 @@ class View
     {
         include_once "app/views/partials/head.php";
         if ($admin) {
-        include_once "app/views/partials/adminNav.php";
+            include_once "app/views/partials/adminNav.php";
         } else {
-        include_once "app/views/partials/customerNav.php";
+            include_once "app/views/partials/customerNav.php";
         }
     }
 
@@ -33,6 +33,13 @@ class View
         include_once "app/views/partials/footer.php";
     }
 
+    public function renderShoppingCartPage()
+    {
+        $this->renderHeader("ManCave - Shopping Cart");
+        var_dump($_SESSION['shopping_cart']);
+        $this->renderFooter();
+    }
+
     //CUSTOMER HELPER METHODS:
 
     public function renderRegisterForm($customer_data = null)
@@ -50,7 +57,7 @@ class View
 
     public function renderProductsListStart()
     {
-    $html = <<<HTML
+        $html = <<<HTML
             <div class="row d-flex justify-content-center">
                 <div class="col-md-10">
                     <table class="table">
@@ -65,7 +72,7 @@ class View
                         </thead>
                     <tbody>
         HTML;
-    echo $html;
+        echo $html;
     }
 
     /**
@@ -92,32 +99,13 @@ class View
 
     public function renderProductDetails($product)
     {
-
-        //  Bara för att visa produkten just nu - byt ut detta mot vad vi vill visa på den här sidan.
-        $html = <<<HTML
-            <div class="col-md-6 border">
-                <img src="$product[image]" class="img-fluid" alt="...">
-            </div>
-            <div class="col-md-4 border">
-                <h2>$product[name]</h2>
-                <p class="fs-1">$product[price] SEK</p>
-                <button class="btn btn-primary w-100">add to cart</button>
-                <div class="mt-3">
-                    <p class="fw-bold">product information</p>
-                    <p>$product[description]</p>
-                <div>
-                <div class="mt-3">
-                    <p>$product[specification]</p>
-                <div>
-            </div>
-        HTML;
-    echo $html;
+        include_once "app/views/partials/productDetails.php";
     }
 
     public function renderCustomerProducts($products)
     {
         foreach ($products as $product) {
-        $this->renderOneCustomerProduct($product);
+            $this->renderOneCustomerProduct($product);
         }
     }
 
@@ -137,7 +125,7 @@ class View
                 </div>
             </div>
         HTML;
-    echo $html;
+        echo $html;
     }
 
     public function renderButton($text, $href, $style = "primary")
@@ -253,7 +241,7 @@ class View
                         <tr>
     HTML;
         foreach ($column_name_array as $column_name) {
-        $html .= "<th scope='col'>$column_name</th>";
+            $html .= "<th scope='col'>$column_name</th>";
         }
         $html .= <<<HTML
                 </tr>
@@ -311,7 +299,7 @@ class View
     public function renderListItemsProducts($products)
     {
         foreach ($products as $product) {
-        $html = <<<HTML
+            $html = <<<HTML
                     <tr>
                         <th scope="row">$product[id]</th>
                         <td>$product[name]</td>
@@ -327,7 +315,7 @@ class View
                         </td>
                     </tr>
                 HTML;
-        echo $html;
+            echo $html;
         }
     }
 
