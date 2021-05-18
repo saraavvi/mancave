@@ -193,8 +193,14 @@ class Controller
 
     private function adminIndex()
     {
+        $alerts = array();
         $products = $this->product_model->fetchAllProducts();
-        $this->view->renderAdminIndexPage($products);
+
+        if (empty($products)) {
+            $alerts['warning'][] = "No products to show.";
+        }
+        
+        $this->view->renderAdminIndexPage($products, $alerts);
     }
 
     private function adminProductCreate()
@@ -273,6 +279,9 @@ class Controller
         //TODO: create order functionality
         //$statuses = $this->order_model->fetchAllStatuses(); //värt?
         $orders = $this->order_model->fetchAllOrders();
+        if (empty($orders)) {
+            $alerts['warning'][] = "No orders to show.";
+        }
         $this->view->renderAdminOrderListPage($orders, $alerts);
     }
 
