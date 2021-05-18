@@ -6,11 +6,13 @@ $view->renderAdminPage();
 */
 require_once "app/models/Database.php";
 require_once "app/models/ProductModel.php";
+require_once "app/models/OrderModel.php";
 require_once "app/views/View.php";
 require_once "app/controllers/Controller.php";
 
 $database = new Database("mancaveshop_db");
 $product_model = new ProductModel($database);
+$order_model = new OrderModel($database);
 $view = new View();
 
 $routes = array(
@@ -25,6 +27,7 @@ $routes = array(
     'admin/products/update' => 'adminProductUpdate',
     'admin/products/delete' => 'adminProductDelete',
     'admin/orders' => 'adminOrderList',
+    'admin/orders/' => 'adminOrderList',
 );
 
-$controller = new Controller($product_model, $view, $routes);
+$controller = new Controller($order_model, $product_model, $view, $routes);
