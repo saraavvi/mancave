@@ -39,9 +39,6 @@ class View
     {
         $this->renderHeader("ManCave - Shopping Cart");
         $this->renderShoppingCartList($products);
-        // echo "<pre>";
-        // print_r($products);
-        // echo "</pre>";
         $this->renderFooter();
     }
 
@@ -51,7 +48,8 @@ class View
     public function renderShoppingCartList($products)
     {
         $html = <<<HTML
-           <table class="table">
+        <div class="col-md-6 mt-5">
+           <table class="table table-borderless">
                 <thead>
                     <tr>
                         <th scope="col">name</th>
@@ -66,6 +64,7 @@ class View
         $html .= <<<HTML
                     </tbody>
                 </table>
+            </div>
             HTML;
         echo $html;
     }
@@ -149,8 +148,12 @@ class View
                     </a>
                     <div class="card-body">
                         <h5 class="card-title">$product[name]</h5>
-                        <p class="card-text">$product[price] sek</p>
-                        <a href="#" class="btn btn-primary">add to cart</a>
+                        <p class="card-text">$product[price] SEK</p>
+                        <!-- <a href="#" class="btn btn-primary">add to cart</a> -->
+                        <form action="#" method="POST">
+                        <input type="hidden" name="product_id" value="$product[id]">
+                            <button type="submit" name="add_to_cart" class="btn btn-primary">add to cart</button>
+                        </form>
                     </div>
                 </div>
             </div>

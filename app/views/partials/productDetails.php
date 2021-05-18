@@ -1,12 +1,3 @@
-<?php
-
-if (isset($_POST["add_to_cart"])) {
-    // echo $_GET['id'];
-    array_push($_SESSION['shopping_cart'], $_GET['id']);
-}
-
-?>
-
 <div class="col-md-6 border">
     <img src="<?= $product['image'] ?>" class="img-fluid" alt="...">
 </div>

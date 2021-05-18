@@ -102,13 +102,20 @@ class Controller
 
     private function getProductsByCategory()
     {
-        $category = $this->sanitize($_GET['category']);
+        if (isset($_POST["add_to_cart"])) {
+            array_push($_SESSION["shopping_cart"], $_POST["product_id"]);
+        }
+        $category = $this->sanitize($_GET["category"]);
         $products = $this->product_model->fetchProductsByCategory($category);
         $this->view->renderProductPage($products);
     }
 
     private function getProductById()
     {
+
+        if (isset($_POST["add_to_cart"])) {
+            array_push($_SESSION["shopping_cart"], $_GET["id"]);
+        }
         $id = $this->sanitize($_GET['id']);
         $product = $this->product_model->fetchProductById($id);
 
