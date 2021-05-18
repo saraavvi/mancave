@@ -63,7 +63,7 @@ class View
     public function renderProductPage($products)
     {
         $this->renderHeader("mancave - products");
-        $this->renderCustomerProducts($products);
+        $this->renderCustomerProductList($products);
         $this->renderFooter();
     }
 
@@ -81,34 +81,15 @@ class View
         include_once "app/views/partials/registerform.php";
     }
 
-    public function renderCustomerProducts($products)
+    public function renderCustomerProductList($products)
     {
-        foreach ($products as $product) {
-        $this->renderOneCustomerProduct($product);
-        }
+        include_once "app/views/partials/customerProductList.php";
     }
 
-    public function renderOneCustomerProduct($product)
-    {
-        $html = <<<HTML
-                <div class="col-md-3 mt-3">
-                    <div class="card" style="width: 18rem;">
-                    <a href="?page=products/details&id=$product[id]"> 
-                        <img src="$product[image]" class="card-img-top p-3" alt="...">
-                    </a>
-                    <div class="card-body">
-                        <h5 class="card-title">$product[name]</h5>
-                        <p class="card-text">$product[price] sek</p>
-                        <a href="#" class="btn btn-primary">add to cart</a>
-                    </div>
-                </div>
-            </div>
-        HTML;
-    echo $html;
-    }
 
     public function renderProductDetails($product)
     {
+
         //  Bara för att visa produkten just nu - byt ut detta mot vad vi vill visa på den här sidan.
         include_once "app/views/partials/productDetails.php";
     }
@@ -195,11 +176,6 @@ class View
         include_once "app/views/partials/list/listEnd.php";
     }
 
-    public function renderListedProducts($products)
-    {
-        include_once "app/views/partials/list/productList.php";
-    }
-
     /**
      * Receive null by default for create form, or data for update form
      */
@@ -226,24 +202,6 @@ class View
 
     public function renderListItemsProducts($products)
     {
-        foreach ($products as $product) {
-        $html = <<<HTML
-                    <tr>
-                        <th scope="row">$product[id]</th>
-                        <td>$product[name]</td>
-                        <td>$product[stock]</td>
-                        <td>
-                            <a href="?page=admin/products/update&id=$product[id]" class="btn btn-sm btn-outline-primary">Edit</a>
-                        </td>
-                        <td>
-                            <form method="post" action="?page=admin/products/delete" style="display: inline-block">
-                                <input  type="hidden" name="id" value="$product[id]"/>
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                HTML;
-        echo $html;
-        }
+        include_once "app/views/partials/list/productList.php";
     }
 }
