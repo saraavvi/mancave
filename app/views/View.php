@@ -32,12 +32,42 @@ class View
         $this->renderRegisterForm($customer_data);
         include_once "app/views/partials/footer.php";
     }
-
-    public function renderShoppingCartPage()
+    /**
+     * display the whole shopping cart page
+     */
+    public function renderShoppingCartPage($products)
     {
         $this->renderHeader("ManCave - Shopping Cart");
-        var_dump($_SESSION['shopping_cart']);
+        $this->renderShoppingCartList($products);
+        // echo "<pre>";
+        // print_r($products);
+        // echo "</pre>";
         $this->renderFooter();
+    }
+
+    /**
+     * help method for shopping cart page - lists all products in the cart. 
+     */
+    public function renderShoppingCartList($products)
+    {
+        $html = <<<HTML
+           <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">name</th>
+                        <th scope="col">price</th>                
+                    </tr>
+                </thead>
+            <tbody> 
+        HTML;
+        foreach ($products as $product) {
+            $html .= "<tr><td>$product[name]</td><td>$product[price]</td></tr>";
+        }
+        $html .= <<<HTML
+                    </tbody>
+                </table>
+            HTML;
+        echo $html;
     }
 
     //CUSTOMER HELPER METHODS:

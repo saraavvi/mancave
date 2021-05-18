@@ -116,9 +116,18 @@ class Controller
         else $this->view->renderDetailPage($product);
     }
 
+    /**
+     * get all products using the id:s inside shopping_cart array in session, then send them to the view.
+     */
     private function getShoppingCart()
     {
-        $this->view->renderShoppingCartPage();
+        $ids = $_SESSION['shopping_cart'];
+        $products = array();
+        foreach ($ids as $id) {
+            $product = $this->product_model->fetchProductById($id);
+            array_push($products, $product);
+        }
+        $this->view->renderShoppingCartPage($products);
     }
 
     private function adminIndex()
