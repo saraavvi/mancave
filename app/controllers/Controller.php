@@ -22,15 +22,82 @@ class Controller
     }
 
     //CONTENT:
-    //ROUTER MAIN METHODS:
-    //ROUTER HELPER METHODS:
+    //ROUTER METHODS:
     //COMMON MAIN METHODS:
     //COMMON HELPER METHODS:
+    //CUSTOMER MAIN METHODS:
+    //CUSTOMER HELPER METHODS:
+    //ADMIN MAIN METHODS:
+    //ADMIN HELPER METHODS:
+    
+    
+    //ROUTER METHODS:
+    private function resolveRoute()
+    {
+        $page = $_GET["page"] ?? "";
+
+        $function = $this->routes[$page] ?? null; // 'create'
+
+        $this->conditionForExit(!$function);
+        echo call_user_func([$this, $function]);
+    }
+    //COMMON MAIN METHODS:
+
+    //COMMON HELPER METHODS:
+
+    private function conditionForExit($condition)
+    {
+        if ($condition) {
+            echo "Page not found";
+            exit();
+        }
+    }
+
+    /**
+     * Expects name of post key, 
+     * optional bool (true for int values, default false) 
+     * returns value or false
+     */
+    private function getAndValidatePost($name, $int = false)
+    {
+        if (isset($_POST[$name])) {
+            $value = $this->sanitize($_POST[$name]);
+            if ($int) return (int)$value;
+            return $value;
+        }
+        return false;
+    }
+
+    private function sanitize($text)
+    {
+        $text = trim($text);
+        $text = stripslashes($text);
+        $text = htmlspecialchars($text);
+        return $text;
+    }
+
     //CUSTOMER MAIN METHODS:
 
     private function index()
     {
         $this->view->renderCustomerIndexPage();
+    }
+
+    private function getProductsByCategory()
+    {
+        $category = $this->sanitize($_GET['category']);
+        $products = $this->product_model->fetchProductsByCategory($category);
+        $this->view->renderProductPage($products);
+    }
+
+
+    private function getProductById()
+    {
+        $id = $this->sanitize($_GET['id']);
+        $product = $this->product_model->fetchProductById($id);
+
+        if (!$product) echo 'Product id does not exist.';
+        else $this->view->renderDetailPage($product);
     }
 
     private function customerRegister()
@@ -51,7 +118,7 @@ class Controller
         }
         $this->view->renderCustomerRegisterPage($alerts, $customer_data);
     }
-
+    
     //CUSTOMER HELPER METHODS:
 
     private function handleCustomerPost()
@@ -84,37 +151,45 @@ class Controller
         }
     }
 
-    //ADMIN MAIN METHODS:
-    //ADMIN HELPER METHODS:
-
-    /**
-     *
+    /***
+     * Handle new order placed by customer
+     * take info from session and send to order_model
+     * send success/error msg to view
      */
-    private function resolveRoute()
+    private function handleNewOrder()
     {
-        $page = $_GET["page"] ?? "";
+        $alerts = array();
+        // $shopping_cart = $_SESSION['shopping_cart']; eller hur man nu får den
+        // array_push($_SESSION['shopping_cart'], array(orderraden))
+        // $customer_id = $_SESSION['customer_id'];
+        $customer_id = 1;
+        // Vi tänker att shopping_cart ser ut såhär:
+        $shopping_cart = array(
+            array(
+                'product_id' => 1,
+                'quantity' => 2,
+                'price_each' => 30
+            ),
+            array(
+                'product_id' => 2,
+                'quantity' => 3,
+                'price_each' => 40
+            ),
+        );
+        try {
+            $order_id = $this->order_model->createNewOrder($customer_id);//order_id (lastInsertId)
+            foreach ($shopping_cart as $order_row) {
+                $this->order_model->createNewOrderContent($order_id, $order_row);
+            }
+            $alerts['success'][] = 'Order successfully placed. Thank you come again:)))';
+        } catch (Exception $e) {
+            $alerts['danger'][] = 'Failed to place order, please try again later or contact our customer service.';
+        }
 
-        $function = $this->routes[$page] ?? null; // 'create'
-
-        $this->conditionForExit(!$function);
-        echo call_user_func([$this, $function]);
+        // skicka vidare till view-> placed order view (customer) med $alerts
     }
 
-    private function getProductsByCategory()
-    {
-        $category = $this->sanitize($_GET['category']);
-        $products = $this->product_model->fetchProductsByCategory($category);
-        $this->view->renderProductPage($products);
-    }
-
-    private function getProductById()
-    {
-        $id = $this->sanitize($_GET['id']);
-        $product = $this->product_model->fetchProductById($id);
-
-        if (!$product) echo 'Product id does not exist.';
-        else $this->view->renderDetailPage($product);
-    }
+    //ADMIN MAIN METHODS:
 
     private function adminIndex()
     {
@@ -144,6 +219,7 @@ class Controller
         $this->view->renderAdminProductCreatePage($brands, $categories, $alerts);
     }
 
+
     private function adminProductUpdate()
     {
         $this->conditionForExit(empty($_GET['id']));
@@ -172,6 +248,35 @@ class Controller
         if (!$product_data) echo 'Product id does not exist.';
         else $this->view->renderAdminProductUpdatePage($brands, $categories, $product_data, $alerts);
     }
+
+    public function adminProductDelete() {
+        if ($_GET['action'] === "delete")
+        $product_id = (int)$_GET['id'];
+        $row_count = $this->product_model->deleteProductById($product_id);
+        return $row_count;
+    }
+
+    private function adminOrderList()
+    {
+        $alerts = array();
+        if (isset($_GET['status_id'])) {
+            $this->handleOrderStatusUpdate();
+        }
+        if (isset($_GET['action'])) {
+            try {
+                $row_count = $this->handleOrderDelete();
+                $alerts['success'][] = "Successfully deleted $row_count order(s).";
+            } catch (Exception $error) {
+                $alerts['danger'][] = "This order can not be deleted.";
+            }
+        }
+        //TODO: create order functionality
+        //$statuses = $this->order_model->fetchAllStatuses(); //värt?
+        $orders = $this->order_model->fetchAllOrders();
+        $this->view->renderAdminOrderListPage($orders, $alerts);
+    }
+
+    //ADMIN HELPER METHODS:
 
     private function handleProductPost()
     {
@@ -216,79 +321,6 @@ class Controller
         }
     }
 
-    /***
-     * Handle new order placed by customer
-     * take info from session and send to order_model
-     * send success/error msg to view
-     */
-    private function handleNewOrder()
-    {
-        $alerts = array();
-        // $shopping_cart = $_SESSION['shopping_cart']; eller hur man nu får den
-        // array_push($_SESSION['shopping_cart'], array(orderraden))
-        // $customer_id = $_SESSION['customer_id'];
-        $customer_id = 1;
-        // Vi tänker att shopping_cart ser ut såhär:
-        $shopping_cart = array(
-            array(
-                'product_id' => 1,
-                'quantity' => 2,
-                'price_each' => 30
-            ),
-            array(
-                'product_id' => 2,
-                'quantity' => 3,
-                'price_each' => 40
-            ),
-        );
-        try {
-            $order_id = $this->order_model->createNewOrder($customer_id);//order_id (lastInsertId)
-            foreach ($shopping_cart as $order_row) {
-                $this->order_model->createNewOrderContent($order_id, $order_row);
-            }
-            $alerts['success'][] = 'Order successfully placed. Thank you come again:)))';
-        } catch (Exception $e) {
-            $alerts['danger'][] = 'Failed to place order, please try again later or contact our customer service.';
-        }
-
-        // skicka vidare till view-> placed order view (customer) med $alerts
-    }
-
-    /**
-     * Expects name of post key, 
-     * optional bool (true for int values, default false) 
-     * returns value or false
-     */
-    private function getAndValidatePost($name, $int = false)
-    {
-        if (isset($_POST[$name])) {
-            $value = $this->sanitize($_POST[$name]);
-            if ($int) return (int)$value;
-            return $value;
-        }
-        return false;
-    }
-
-    private function adminOrderList()
-    {
-        $alerts = array();
-        if (isset($_GET['status_id'])) {
-            $this->handleOrderStatusUpdate();
-        }
-        if (isset($_GET['action'])) {
-            try {
-                $row_count = $this->handleOrderDelete();
-                $alerts['success'][] = "Successfully deleted $row_count order(s).";
-            } catch (Exception $error) {
-                $alerts['danger'][] = "This order can not be deleted.";
-            }
-        }
-        //TODO: create order functionality
-        //$statuses = $this->order_model->fetchAllStatuses(); //värt?
-        $orders = $this->order_model->fetchAllOrders();
-        $this->view->renderAdminOrderListPage($orders, $alerts);
-    }
-
     public function handleOrderStatusUpdate() {
         $order_id = (int)$_GET['id'];
         $status_id = (int)$_GET['status_id'];
@@ -304,22 +336,5 @@ class Controller
         $order_id = (int)$_GET['id'];
         $row_count = $this->order_model->deleteOrder($order_id);
         return $row_count;
-    }
-    
-    //Helper methods:
-    private function sanitize($text)
-    {
-        $text = trim($text);
-        $text = stripslashes($text);
-        $text = htmlspecialchars($text);
-        return $text;
-    }
-
-    private function conditionForExit($condition)
-    {
-        if ($condition) {
-            echo "Page not found";
-            exit();
-        }
     }
 }
