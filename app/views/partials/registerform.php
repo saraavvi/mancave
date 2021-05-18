@@ -20,16 +20,16 @@ $address = $customer_data['address'] ?? "";
                 <input type="text" class="form-control" id="name" name="last_name" value="<?= $last_name ?>">
             </div>
             <div class="mb-3">
-                <label for="email" class="form-label">Last Name:</label>
+                <label for="email" class="form-label">Email:</label>
                 <input type="email" class="form-control" id="name" name="email" value="<?= $email ?>">
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password:</label>
-                <input type="text" class="form-control" id="name" name="password" value="<?= $password ?>">
+                <input type="password" class="form-control" id="name" name="password" value="<?= $password ?>">
             </div>
             <div class="mb-3">
                 <label for="password_confirm" class="form-label">Confirm Password:</label>
-                <input type="text" class="form-control" id="name" name="password_confirm">
+                <input type="password" class="form-control" id="name" name="password_confirm">
             </div>
             <div class="mb-3">
                 <label for="address" class="form-label">Address:</label>
