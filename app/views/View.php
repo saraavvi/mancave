@@ -48,7 +48,7 @@ class View
     {
         $this->renderHeader("ManCave - Home");
         $this->renderAlerts($alerts);
-        echo 'placeholder for landing page';
+        include_once "app/views/partials/indexContent.php";
         $this->renderFooter();
     }
 
