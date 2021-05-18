@@ -100,8 +100,12 @@ class Controller
         echo call_user_func([$this, $function]);
     }
 
+    /**
+     * list all products from the chosen category.
+     */
     private function getProductsByCategory()
     {
+        // if any add button is klicked on category page: get id from $_POST and push it to shopping_cart in session.
         if (isset($_POST["add_to_cart"])) {
             array_push($_SESSION["shopping_cart"], $_POST["product_id"]);
         }
@@ -110,9 +114,12 @@ class Controller
         $this->view->renderProductPage($products);
     }
 
+    /**
+     * display details about a specific product.
+     */
     private function getProductById()
     {
-
+        // if add buton is clicked on detail page: get id from url and push it to shopping_cart in session.
         if (isset($_POST["add_to_cart"])) {
             array_push($_SESSION["shopping_cart"], $_GET["id"]);
         }
@@ -250,6 +257,7 @@ class Controller
         // $customer_id = $_SESSION['customer_id'];
         $customer_id = 1;
         // Vi tänker att shopping_cart ser ut såhär:
+        // ta bort price each och basera istället price each på nuvarande productpris i databas.
         $shopping_cart = array(
             array(
                 'product_id' => 1,

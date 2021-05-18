@@ -39,6 +39,8 @@ class View
     {
         $this->renderHeader("ManCave - Shopping Cart");
         $this->renderShoppingCartList($products);
+        //skickar med en tom sträng som href nu. Ändra sen
+        $this->renderButton("Continue to checkout", "");
         $this->renderFooter();
     }
 
@@ -49,17 +51,17 @@ class View
     {
         $html = <<<HTML
         <div class="col-md-6 mt-5">
-           <table class="table table-borderless">
-                <thead>
-                    <tr>
-                        <th scope="col">name</th>
-                        <th scope="col">price</th>                
-                    </tr>
-                </thead>
-            <tbody> 
+            <table class="table table-borderless">
+                <tbody> 
         HTML;
         foreach ($products as $product) {
-            $html .= "<tr><td>$product[name]</td><td>$product[price]</td></tr>";
+            $html .= <<<HTML
+                    <tr>
+                        <td>$product[name]</td>
+                        <td>$product[price] SEK</td>
+                        <td><button class='btn btn-danger'>x</button></td>
+                    </tr>
+            HTML;
         }
         $html .= <<<HTML
                     </tbody>
