@@ -39,7 +39,7 @@ class CustomerLoginController
     public function handleLogout()
     {
         session_start();
-        session_destroy();
+        session_unset();
         $this->returnToIndexWithAlert("Successfully Logged Out!", "success");
     }
 
