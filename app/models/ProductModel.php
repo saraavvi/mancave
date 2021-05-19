@@ -37,7 +37,10 @@ class ProductModel
         $products = $this->db->select($statement);
 
         // return to controller
-        return $products ?? false;
+        if (count($products) === 0)
+            return false;
+
+        return $products; // ?? false;
     }
 
     /***
