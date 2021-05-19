@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: May 16, 2021 at 01:34 PM
+-- Generation Time: May 19, 2021 at 01:26 PM
 -- Server version: 5.7.32
 -- PHP Version: 7.4.12
 
@@ -33,7 +33,13 @@ INSERT INTO `brands` (`id`, `name`) VALUES
 (1, 'LEGO'),
 (4, 'Zoffoli'),
 (5, 'Millwood Pines'),
-(6, 'Barewalls');
+(6, 'Barewalls'),
+(7, 'Real Bearded Men'),
+(8, 'Professor Fuzzworthy\'s'),
+(9, 'The Rugged Bros'),
+(10, 'Viking Revolution'),
+(11, 'Grow Alpha Beard'),
+(12, 'Novel');
 
 -- --------------------------------------------------------
 
@@ -67,7 +73,7 @@ CREATE TABLE `customers` (
   `first_name` varchar(50) COLLATE utf8_swedish_ci NOT NULL,
   `last_name` varchar(50) COLLATE utf8_swedish_ci NOT NULL,
   `email` varchar(50) COLLATE utf8_swedish_ci NOT NULL,
-  `password` varchar(50) COLLATE utf8_swedish_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8_swedish_ci NOT NULL,
   `address` varchar(150) COLLATE utf8_swedish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 
@@ -81,7 +87,7 @@ CREATE TABLE `orders` (
   `id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL,
   `order_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status_id` int(11) NOT NULL,
+  `status_id` int(11) NOT NULL DEFAULT '1',
   `shipped_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
 
@@ -145,7 +151,17 @@ INSERT INTO `products` (`id`, `name`, `price`, `description`, `category_id`, `br
 (21, 'Dom\'s Dodge Charger', 99, 'Give fans of Fast &amp; Furious the ultimate thrill with this LEGO® Technic™ Dom’s Dodge Charger (42111) building set for kids and adults. Based on the iconic 1970s Dodge Charger R/T, it’s packed with authentic details. The opening hood reveals a model version of the iconic V8 engine. Other cool features include moving pistons, wishbone suspension, steering system and air blower. There are even nitro bottles in the trunk to bring Dom’s daring high-speed chases to life. Just like the real thing!', 1, 1, 20, 'https://www.pricerunner.se/product/640x640/3000259155/Lego-Technic-Dom-s-Dodge-Charger-42111.jpg', 'Item: 42111,\r\n      Pieces: 1077,\r\n      Dimensions:\r\n      H: 4&quot; (11cm)\r\n      W: 6&quot; (16cm)\r\n      D: 15&quot; (39cm)'),
 (22, '4X4 X-treme Off-Roader', 249, 'Are you ready to take your LEGO® play experience to another level? The LEGO Technic™ 4x4 X-treme Off-Roader is powered by an advanced Smart Hub with 3 motors and controlled via the intuitive LEGO TECHNIC CONTROL+ app. The sophisticated app technology enables super-precise movement and functionality, while delivering endless authentic digital play combinations with authentic sound effects. Users can choose from different control screens to drive forward, reverse, steer, accelerate, brake and traverse obstacles.', 1, 1, 20, 'https://www.pricerunner.se/product/640x640/1903317861/Lego-Technic-4x4-X-Treme-Off-Roader-42099.jpg', 'Item: 42099,\r\n      Pieces: 958,\r\n      Dimensions:\r\n      H: 7&quot; (19cm)\r\n      W: 8&quot; (22cm)\r\n      D: 12&quot; (33cm)'),
 (23, 'Robot Inventor', 359, 'Enter the amazing physical and digital world of programmable, remote-control robots and intelligent creations. With LEGO® MINDSTORMS® Robot Inventor (51515), young robot fans build 5 unique, motorized robots and vehicles using the free LEGO MINDSTORMS Robot Inventor App. Then they bring them to life, one at a time, using the drag-and-drop coding environment based on Scratch and complete fun activities and challenging missions (visit LEGO.com/devicecheck for a list of compatible devices). And with almost 1,000 pieces, kids will love to come up with their own tech toy creations and share them with other robot fans on LEGO Life.', 1, 1, 20, 'https://www.pricerunner.se/product/640x640/3000646177/Lego-Mindstorms-Robot-Inventor-51515.jpg', 'Item: 51515,\r\n      Pieces: 949'),
-(24, 'LEGO® MINDSTORMS® EV3', 339, 'Combining the versatility of the LEGO® building system with the most advanced technology we\'ve ever developed, LEGO MINDSTORMS® EV3 lets you unleash a world of walking, talking and thinking robots that do anything you can imagine. Complete a series of challenging missions using the intuitive icon-based EV3 Programmer App for tablet devices to build and program TRACK3R, R3PTAR, SPIK3R, EV3RSTORM and GRIPP3R, and then create your own programs. Take your robotics skills to the next level with the companion EV3 Software for PC and Mac, with its more advanced yet familiar programming interface. For instant control, download the free Robot Commander app for smart devices or use the infrared remote control included with each set.', 1, 1, 20, 'https://www.pricerunner.se/product/640x640/1554156506/Lego-Mindstorms-EV3-31313.jpg', 'Item: 31313,\r\n      Pieces: 601');
+(24, 'LEGO® MINDSTORMS® EV3', 339, 'Combining the versatility of the LEGO® building system with the most advanced technology we\'ve ever developed, LEGO MINDSTORMS® EV3 lets you unleash a world of walking, talking and thinking robots that do anything you can imagine. Complete a series of challenging missions using the intuitive icon-based EV3 Programmer App for tablet devices to build and program TRACK3R, R3PTAR, SPIK3R, EV3RSTORM and GRIPP3R, and then create your own programs. Take your robotics skills to the next level with the companion EV3 Software for PC and Mac, with its more advanced yet familiar programming interface. For instant control, download the free Robot Commander app for smart devices or use the infrared remote control included with each set.', 1, 1, 20, 'https://www.pricerunner.se/product/640x640/1554156506/Lego-Mindstorms-EV3-31313.jpg', 'Item: 31313,\r\n      Pieces: 601'),
+(28, 'Bourbon Street Beard Oil', 199, 'Bourbon Street beard oil uses the finest, all-natural ingredients for noticeable results, keeping beards looking and feeling healthy, even through all the challenges your day throws at you. A soothing vanilla fragrance is mixed into this blend, leaving you feeling clean and refreshed.', 4, 7, 30, 'https://cdn.shopify.com/s/files/1/1124/3522/products/BottleOpen_Bourbon_1024x1024.jpg', '100% Natural Beard Oil'),
+(29, '\'Stache Wax', 179, 'Mustache wax is the answer to the problem of unruly mustache hairs becoming a nuisance as you grow out your facial hair. Many seem to think that mustache wax is reserved for those looking solely to style their mustaches, but while it’s very useful for that purpose, it also can provide a hold and a basis for training your mustache to grow in so that it does not take over the corner of your mouth but sits as a solid and tamed decoration on your face. ', 4, 7, 50, 'https://cdn.shopify.com/s/files/1/1124/3522/products/Stache_Open_300x.jpg', '1oz.\r\nIncludes a light pine resin and sage scent that lasts'),
+(30, 'Apple Tonic Beard Shampoo Bar', 149, 'BEST DEAL & HIGHEST VALUE | Small but powerful! This concentrated solid beard wash contains NO extra water, sulfates, parabans, or chemical fillers. Beard shampoo soap bar equal ~ two 27 fl oz liquid bottles! Long lasting - Eco friendly & Travel friendly! ', 4, 8, 80, 'https://images-na.ssl-images-amazon.com/images/I/71rJJpYaBYL._SL1000_.jpg', '100% Natural & Organic Premium Ingredients'),
+(31, 'Gentlemans Beer Shampoo Bar', 149, 'Beer shampoo soap bar equal ~ two 27 fl oz liquid bottles! Long lasting - Eco friendly, Zero waste & Travel friendly!', 4, 8, 80, 'https://m.media-amazon.com/images/I/715Erb5tCCL._SL1000_.jpg', '100% natural multi-purpose product, you can use the perfect shampoo bar on your head, body, and beard!'),
+(32, 'Beard Conditioner Shampoo', 219, 'Trust The Rugged Bros - For the Bearded Hero\r\n\r\nYou’re a real man. You don’t have time to spend 45 minutes in the shower every morning. If you are all about speed and accuracy, this 3 in 1 beard shampoo, conditioner, and face wash is for you.', 4, 9, 50, 'https://images-na.ssl-images-amazon.com/images/I/81qyKRlQZ4L._AC_SL1500_.jpg', 'Comes prepackaged in a classic gift box.'),
+(33, 'Facial Scrub Microdermabrasion', 119, 'There’s nothing unmanly about making sure your skin looks good. Our face wash has been specifically formulated for men’s facial skin, and is designed to helps reduce spots, ingrown hairs, and razor bumps. The face wash cleanses pores, and removes any oily build up, leaving your skin clean and fresh. ', 4, 10, 20, 'https://m.media-amazon.com/images/S/aplus-seller-content-images-us-east-1/ATVPDKIKX0DER/AHV33FFZWBPVV/7aff47d3-79c3-4a6d-9d5a-64e8c333db22._CR0,0,300,300_PT0_SX300__.jpg', '100% Natural & Organic'),
+(34, 'Tattoo Balm', 99, 'Don’t suffer for your art, use our tattoo ointment for the smoothest application process you’ve ever had. If you’re planning on getting another tattoo, use this tattoo cream that makes the skin more receptive. Your tattoo artist will thank you, your skin will thank you, and your inner artist will as well. With our tattoo lotion, the whole process is easier and more pleasant.', 4, 10, 20, 'https://images-na.ssl-images-amazon.com/images/I/811DkLDjf-L._SL1500_.jpg', 'Containing no harsh chemicals, just safe and gentle natural ingredients'),
+(35, 'Beard Brush for Men', 399, 'CURVED DESIGN - Your face isn\'t flat, is it? Your hand isn\'t either right? Why would you want a FLAT brush? This brush is ergonomically designed to hug your face, and fit naturally in your hand, making styling and shaping your facial hair easy. ', 4, 9, 0, 'https://images-na.ssl-images-amazon.com/images/I/812IgBlCMpL._AC_SL1500_.jpg', '100% WILD BOAR BRISTLES'),
+(36, 'Goatee Shaving Template', 89, 'Efficient goatee trim:Barbers,haircuts,beard trims can be expensive.This beard trimmer guide is designed to help you trim at the comfort of your home and give you the perfect goatee.', 4, 12, 80, 'https://images-na.ssl-images-amazon.com/images/I/61bZ-LA7IIL._SL1001_.jpg', 'Size: 10*8.3 cm 10*7.5 cm 9.1*7.5 cm 8*7 cm 8*6.3 cm '),
+(37, 'Beard Shaping Tool Kit for Men', 119, 'Feel And Look Your Best - Get ready for a shape you want, perfect shave lines in no time & expensive shaves from the barber! Designed For Beards: Lightweight & compact great for home and travel, made from long lasting and durable raw materials, created to last forever.', 4, 11, 0, 'https://images-na.ssl-images-amazon.com/images/I/81GfBwv8TBL._AC_SL1500_.jpg', '8 in 1 MULTI-LINER TOOL - The Proprietary and innovative design of this Beard Shaping Tool gives the ability to draw MULTIPLE BEARD STYLES such as Curve or Straight cheek lines, extra clean Neck lines, Curve or Straight Goatee lines and perfect Sideburns.');
 
 -- --------------------------------------------------------
 
@@ -157,6 +173,16 @@ CREATE TABLE `statuses` (
   `id` int(11) NOT NULL,
   `name` varchar(50) COLLATE utf8_swedish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+
+--
+-- Dumping data for table `statuses`
+--
+
+INSERT INTO `statuses` (`id`, `name`) VALUES
+(1, 'draft'),
+(2, 'shipped'),
+(3, 'pending'),
+(4, 'cancelled');
 
 --
 -- Indexes for dumped tables
@@ -218,7 +244,7 @@ ALTER TABLE `statuses`
 -- AUTO_INCREMENT for table `brands`
 --
 ALTER TABLE `brands`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -230,31 +256,31 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `order_contents`
 --
 ALTER TABLE `order_contents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `statuses`
 --
 ALTER TABLE `statuses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
