@@ -32,6 +32,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Brands</a>
                     </li>
+                    <li>
+                      <a class="nav-link" href="?page=shoppingcart">Shopping cart</a>
+                    </li>
                     <li class="nav-item">
                     <?php
                         if (empty($_SESSION["loggedinuser"])) {
@@ -68,4 +71,4 @@
     }
 ?>
 
-<div class="row">
+<div class="row d-flex justify-content-center">

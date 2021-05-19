@@ -1,4 +1,8 @@
 <?php
+session_start();
+if (empty($_SESSION['shopping_cart'])) {
+    $_SESSION['shopping_cart'] = array();
+}
 
 session_start();
 
@@ -23,6 +27,7 @@ $routes = array(
     'logout' => 'logout', // In case no /?page=...
     'products' => 'getProductsByCategory',
     'products/details' => 'getProductById',
+    'shoppingcart' => 'getShoppingCart',
     'register' => 'customerRegister',
     // Admin routes
     'admin' => 'adminIndex',
