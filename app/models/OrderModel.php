@@ -128,6 +128,7 @@ class OrderModel
             ':order_id' => $order_id
         );
         $row_count = $this->db->update($statement, $params);
+        return $row_count;
     }
 
     public function updateOrderShippedDate($order_id) {
@@ -135,7 +136,7 @@ class OrderModel
             SET shipped_date = CURRENT_TIMESTAMP()
             WHERE orders.id = :order_id;";
         $params = array(':order_id' => $order_id);
-        $row_count = $this->db->update($statement, $params);
+        $this->db->update($statement, $params);
     }
 
     public function deleteOrder($order_id) {

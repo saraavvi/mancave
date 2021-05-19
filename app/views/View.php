@@ -48,7 +48,7 @@ class View
     {
         $this->renderHeader("ManCave - Home");
         $this->renderAlerts($alerts);
-        echo 'placeholder for landing page';
+        include_once "app/views/partials/indexContent.php";
         $this->renderFooter();
     }
 
@@ -106,7 +106,7 @@ class View
     public function renderProductPage($products)
     {
         $this->renderHeader("mancave - products");
-        $this->renderCustomerProducts($products);
+        $this->renderCustomerProductList($products);
         $this->renderFooter();
     }
 
@@ -125,38 +125,17 @@ class View
         include_once "app/views/partials/registerform.php";
     }
 
-    public function renderCustomerProducts($products)
+    public function renderCustomerProductList($products)
     {
-        foreach ($products as $product) {
-            $this->renderOneCustomerProduct($product);
-        }
+        include_once "app/views/partials/customerProductList.php";
     }
 
-    public function renderOneCustomerProduct($product)
-    {
-        $html = <<<HTML
-                <div class="col-md-3 mt-3">
-                    <div class="card" style="width: 18rem;">
-                    <a href="?page=products/details&id=$product[id]"> 
-                        <img src="$product[image]" class="card-img-top p-3" alt="...">
-                    </a>
-                    <div class="card-body">
-                        <h5 class="card-title">$product[name]</h5>
-                        <p class="card-text">$product[price] SEK</p>
-                        <!-- <a href="#" class="btn btn-primary">add to cart</a> -->
-                        <form action="#" method="POST">
-                        <input type="hidden" name="product_id" value="$product[id]">
-                            <button type="submit" name="add_to_cart" class="btn btn-primary">add to cart</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        HTML;
-        echo $html;
-    }
 
     public function renderProductDetails($product)
     {
+
+        //  Bara för att visa produkten just nu - byt ut detta mot vad vi vill visa på den här sidan.
+
         include_once "app/views/partials/productDetails.php";
     }
 
@@ -245,56 +224,12 @@ class View
 
     public function renderListStart($column_name_array)
     {
-        $html = <<<HTML
-        <div class="row d-flex justify-content-center">
-            <div class="col-md-10">
-                <table class="table">
-                    <thead>
-                        <tr>
-    HTML;
-        foreach ($column_name_array as $column_name) {
-            $html .= "<th scope='col'>$column_name</th>";
-        }
-        $html .= <<<HTML
-                </tr>
-            </thead>
-        <tbody>
-    HTML;
-        echo $html;
+        include_once "app/views/partials/list/listStart.php";
     }
 
     public function renderListEnd()
     {
-        $html = <<<HTML
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    HTML;
-        echo $html;
-    }
-
-    public function renderProducts($products)
-    {
-        foreach ($products as $product) {
-            $html = <<<HTML
-                <tr>
-                    <th scope="row">$product[id]</th>
-                    <td>$product[name]</td>
-                    <td>$product[stock]</td>
-                    <td>
-                    <a href="?page=admin/products/update&id=$product[id]" class="btn btn-sm btn-outline-primary">Edit</a>
-                    </td>
-                    <td>
-                        <form method="post" action="?page=admin/products/delete" style="display: inline-block">
-                            <input  type="hidden" name="id" value="$product[id]"/>
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                HTML;
-            echo $html;
-        }
+        include_once "app/views/partials/list/listEnd.php";
     }
 
     /**
@@ -317,58 +252,12 @@ class View
 
     public function renderListItemsOrders($orders)
     {
-        foreach ($orders as $order) {
-            // current url path to append additional query params to (status)
-            $uri = $_SERVER['REQUEST_URI'];
-            $html = <<<HTML
-                <tr>
-                    <th scope="row">$order[id]</th>
-                    <td>$order[order_date]</td>
-                    <td>$order[customer_name]</td>
-                    <td>$order[status_name]</td>
-                    <td class="dropdown">
-                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            Change Status
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><a class="dropdown-item" href="{$uri}&id={$order['id']}&status_id=1">Draft</a></li>
-                            <li><a class="dropdown-item" href="{$uri}&id={$order['id']}&status_id=2">Shipped</a></li>
-                            <li><a class="dropdown-item" href="{$uri}&id={$order['id']}&status_id=3">Pending</a></li>
-                            <li><a class="dropdown-item" href="{$uri}&id={$order['id']}&status_id=4">Cancelled</a></li>
-                        </ul>
-                    </td>
-                    <td>
-                        <a href="#" class="btn btn-sm btn-outline-primary">View Order</a>
-                    </td>
-                    <td>
-                        <a href="{$uri}&id={$order['id']}&action=delete" class="btn btn-sm btn-outline-danger">Delete Order</a>
-                    </td>
-                </tr>
-            HTML;
-            echo $html;
-        }
+        //TODO: needs to be fixed = "/mancave/?page=admin/orders&id=1&status_id=1&id=3&status_id=2&id=1&status_id=2"
+        include_once "app/views/partials/list/orderList.php";
     }
 
     public function renderListItemsProducts($products)
     {
-        foreach ($products as $product) {
-            $html = <<<HTML
-                    <tr>
-                        <th scope="row">$product[id]</th>
-                        <td>$product[name]</td>
-                        <td>$product[stock]</td>
-                        <td>
-                            <a href="?page=admin/products/update&id=$product[id]" class="btn btn-sm btn-outline-primary">Edit</a>
-                        </td>
-                        <td>
-                            <form method="post" action="?page=admin/products/delete" style="display: inline-block">
-                                <input  type="hidden" name="id" value="$product[id]"/>
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                HTML;
-            echo $html;
-        }
+        include_once "app/views/partials/list/productList.php";
     }
 }
