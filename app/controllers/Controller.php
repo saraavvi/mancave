@@ -80,6 +80,12 @@ class Controller
 
     private function index()
     {
+        /* // Rendera random produkt på förstasidan:
+        $products = $this->product_model->fetchAllProducts();
+        shuffle($products);
+        $product = $products[0];
+        $this->view->renderCustomerIndexPage($product); */
+        
         $this->view->renderCustomerIndexPage();
     }
 
@@ -256,20 +262,22 @@ class Controller
         return $row_count;
     }
 
-    private function adminOrderList()
+    private function adminOrderList($alerts = array())
     {
-        $alerts = array();
+        $alerts = $alerts;
         if (isset($_GET['status_id'])) {
-            $this->handleOrderStatusUpdate();
-        }
-        if (isset($_GET['action'])) {
             try {
-                $row_count = $this->handleOrderDelete();
-                $alerts['success'][] = "Successfully deleted $row_count order(s).";
+                $row_count = $this->handleOrderStatusUpdate();
+                if ($row_count > 0) {
+                    $alerts['success'][] = "Status was updated for $row_count order(s).";
+                } else {
+                    $alerts['warning'][] = "Unable to update to this status for this order.";
+                }
             } catch (Exception $error) {
-                $alerts['danger'][] = "This order can not be deleted.";
+                $alerts['danger'][] = "Unable to update status.";
             }
         }
+        
         //TODO: create order functionality
         //$statuses = $this->order_model->fetchAllStatuses(); //värt?
         $orders = $this->order_model->fetchAllOrders();
@@ -322,19 +330,34 @@ class Controller
     }
 
     public function handleOrderStatusUpdate() {
-        $order_id = (int)$_GET['id'];
-        $status_id = (int)$_GET['status_id'];
-        if ($status_id === 2) {
-            $this->order_model->updateOrderShippedDate($order_id);
+        $order_id = (int)$this->sanitize($_GET['id']);
+        $status_id = (int)$this->sanitize($_GET['status_id']);
+        if ($order_id && $status_id) {
+            if ($status_id === 2) {
+                $this->order_model->updateOrderShippedDate($order_id);
+            }
+            $row_count = $this->order_model->updateOrderStatus($order_id, $status_id);
+            return $row_count;
         }
-
-        $this->order_model->updateOrderStatus($order_id, $status_id);
+        return false;
     }
 
-    public function handleOrderDelete() {
-        if ($_GET['action'] === "delete")
-        $order_id = (int)$_GET['id'];
-        $row_count = $this->order_model->deleteOrder($order_id);
-        return $row_count;
+    public function adminOrderDelete() {
+        $alerts = array();
+        try {
+            $order_id = (int)$_GET['id'];
+            if ($order_id) {
+                $row_count = $this->order_model->deleteOrder($order_id);
+                if ($row_count > 0) {
+                    $alerts['success'][] = "Successfully deleted $row_count order(s).";
+                } else {
+                    $alerts['warning'][] = " Order with id #$order_id could not be found.";
+                }
+            }
+            $this->adminOrderList($alerts);
+        } catch (Exception $error) {
+            $alerts['danger'][] = "This order can not be deleted.";
+            $this->adminOrderList($alerts);
+        }
     }
 }
