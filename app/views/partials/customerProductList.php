@@ -9,9 +9,13 @@ foreach ($products as $product) {
             <div class='card-body'>
                 <h5 class='card-title'>$product[name]</h5>
                 <p class='card-text'>$product[price] sek</p>
-                <a href='#' class='btn btn-primary'>add to cart</a>
+                <form action='#' method='POST'>
+                    <input type='hidden' name='product_id' value='$product[id]'>
+                        <button type='submit' name='add_to_cart' class='btn btn-primary'>add to cart</button>
+                    </form>
             </div>
         </div>
     </div>";
+
 }
 ?>
