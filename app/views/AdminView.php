@@ -17,16 +17,15 @@ class AdminView extends View
 
     public function renderIndexPage($products)
     {
-
         $this->renderHeader("admin - home", true);
         $this->renderButton("Add new product", "?page=admin/products/create");
 
-        // other possible errors than "No products to show"?
         $this->renderAlerts();
-        $this->renderListStart(["#", "Name", "Stock", "Edit", "Delete"]);
-        $this->renderListItemsProducts($products);
-        $this->renderListEnd();
-        
+        if (!empty($products)) {
+            $this->renderListStart(["#", "Name", "Stock", "Edit", "Delete"]);
+            $this->renderListItemsProducts($products);
+            $this->renderListEnd();
+        }
         include_once "app/views/partials/footer.php";
     }
 

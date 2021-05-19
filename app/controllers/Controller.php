@@ -32,4 +32,13 @@ class Controller
         $text = htmlspecialchars($text);
         return $text;
     }
+
+    /**
+     * Store new alerts in session.
+     * View method will clean up after rendering
+     */
+    protected function setAlert($category, $message)
+    {
+        $_SESSION['alerts'][$category][] = $message;
+    }
 }

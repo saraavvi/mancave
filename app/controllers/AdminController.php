@@ -27,11 +27,9 @@ class AdminController extends Controller
     public function index()
     {
         $this->ensureAuthenticated();
-
         $products = $this->product_model->fetchAllProducts();
-
         if (empty($products)) {
-            $_SESSION['alerts']['warning'][] = "No products to show.";
+            $this->setAlert("info", "No products to show.");
         }
         $this->admin_view->renderIndexPage($products);
     }
@@ -45,13 +43,13 @@ class AdminController extends Controller
             try {
                 $product_data = $this->handleProductPost();
                 $product_id = $this->product_model->createProduct($product_data);
-                $_SESSION['alerts']['success'][] = "Product successfully created with #id: $product_id";
+                $this->setAlert("success", "Product successfully created with #id: $product_id");
                 header("Location: ?page=admin/products");
                 exit();
             } catch (Exception $error) {
                 $errors_array = json_decode($error->getMessage(), true);
                 foreach ($errors_array as $message) {
-                    $_SESSION['alerts']['danger'][] = $message;
+                    $this->setAlert("danger", $message);
                 }                
             }
         }
@@ -75,13 +73,13 @@ class AdminController extends Controller
             try {
                 $product_data = $this->handleProductPost();
                 $this->product_model->updateProductById($id, $product_data);
-                $_SESSION['alerts']['success'][] = "Product successfully updated";
+                $this->setAlert("success", "Product successfully updated");
                 header('Location: ?page=admin/products');
                 exit;
             } catch (Exception $error) {
                 $errors_array = json_decode($error->getMessage(), true);
                 foreach ($errors_array as $message) {
-                    $_SESSION['alerts']['danger'][] = $message;
+                    $this->setAlert("danger", $message);
                 }
             }
         }
@@ -102,12 +100,12 @@ class AdminController extends Controller
                 $product_id = (int)$_POST['id'];
                 $row_count = $this->product_model->deleteProductById($product_id);
                 if($row_count > 0) {
-                    $_SESSION['alerts']['success'][] = "Product successfully deleted.";
+                    $this->setAlert("success", "Product successfully deleted.");
                 } else {
-                    $_SESSION['alerts']['warning'][] = "No product found with this ID.";
+                    $this->setAlert("warning", "No product found with this ID.");
                 }
             } catch (Exception $error) {
-                $_SESSION['alerts']['danger'][] = "Product could not be deleted.";
+                $this->setAlert("danger", "Product could not be deleted.");
             }
         }
         header('Location: ?page=admin/products');
@@ -121,13 +119,13 @@ class AdminController extends Controller
             if ($order_id) {
                 $row_count = $this->order_model->deleteOrder($order_id);
                 if ($row_count > 0) {
-                    $_SESSION['alerts']['success'][] = "Successfully deleted $row_count order(s).";
+                    $this->setAlert("success", "Successfully deleted $row_count order(s).");
                 } else {
-                    $_SESSION['alerts']['warning'][] = " Order with id #$order_id could not be found.";
+                    $this->setAlert("warning", "Order with id #$order_id could not be found.");
                 }
             }
         } catch (Exception $error) {
-            $_SESSION['alerts']['danger'][] = "This order can not be deleted.";
+            $this->setAlert("danger", "This order can not be deleted.");
         }
         $this->orderList();
     }
@@ -139,12 +137,12 @@ class AdminController extends Controller
             try {
                 $row_count = $this->handleOrderStatusUpdate();
                 if ($row_count > 0) {
-                    $_SESSION['alerts']['success'][] = "Status was updated for $row_count order(s).";
+                    $this->setAlert("success", "Status was updated for $row_count order(s).");
                 } else {
-                    $_SESSION['alerts']['warning'][] = "Unable to update to this status for this order.";
+                    $this->setAlert("warning", "Unable to update to this status for this order.");
                 }
             } catch (Exception $error) {
-                $_SESSION['alerts']['danger'][] = "Unable to update status.";
+                $this->setAlert("danger", "Unable to update status.");
             }
         }
         
@@ -152,7 +150,7 @@ class AdminController extends Controller
         //$statuses = $this->order_model->fetchAllStatuses(); //värt?
         $orders = $this->order_model->fetchAllOrders();
         if (empty($orders)) {
-            $_SESSION['alerts']['warning'][] = "No orders to show.";
+            $this->setAlert("info", "No orders to show.");
         }
         $this->admin_view->renderOrderListPage($orders);
     }

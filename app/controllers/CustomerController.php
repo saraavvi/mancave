@@ -124,7 +124,7 @@ class CustomerController extends Controller
                 $errors_array = json_decode($error->getMessage(), true);
                 if ($errors_array) {                    
                     foreach ($errors_array as $message) {
-                        $_SESSION['alerts']['danger'][] = $message;
+                        $this->setAlert("danger", $message);  
                     }
                 }
             }
@@ -225,11 +225,9 @@ class CustomerController extends Controller
                     $order_row
                 );
             }
-            $_SESSION['alerts']['success'][] =
-                "Order successfully placed. Thank you come again:)))";
+            $this->setAlert("success", "Order successfully placed. Thank you come again:)))");
         } catch (Exception $e) {
-            $_SESSION['alerts']['danger'][] =
-                "Failed to place order, please try again later or contact our customer service.";
+            $this->setAlert("danger", "Failed to place order, please try again later or contact our customer service.");
         }
     }
 
@@ -272,7 +270,7 @@ class CustomerController extends Controller
 
     private function returnToIndexWithAlert($message, $style = "danger")
     {
-        $_SESSION['alerts'][$style][] = $message;
+        $this->setAlert($style, $message);
         $this->customer_view->renderIndexPage();
         exit();
     }
