@@ -5,24 +5,22 @@ if (empty($_SESSION['shopping_cart'])) {
 }
 
 require_once "app/models/Database.php";
+require_once "app/models/OrderModel.php";
 require_once "app/models/ProductModel.php";
 require_once "app/models/CustomerModel.php";
-require_once "app/models/OrderModel.php";
-require_once "app/views/View.php";
-require_once "app/controllers/Controller.php";
-require_once "app/controllers/CustomerLoginController.php";
-
-require_once "app/controllers/Router.php";
+require_once "app/models/AdminModel.php";
+require_once "app/controllers/AdminController.php";
 require_once "app/controllers/CustomerController.php";
+require_once "app/controllers/Router.php";
 
 $database = new Database("mancaveshop_db");
+$order_model = new OrderModel($database);
 $product_model = new ProductModel($database);
 $customer_model = new CustomerModel($database);
-$order_model = new OrderModel($database);
-$view = new View();
+$admin_model = new AdminModel($database);
 
 $customer_controller = new CustomerController($order_model, $product_model, $customer_model, $customer_view);
-// $admin_controller = new AdminController($order_model, $product_model, $customer_model, $admin_view);
+$admin_controller = new AdminController($order_model, $product_model, $admin_model, $admin_view);
 
 $routes = array(
     // Customer routes
@@ -34,20 +32,20 @@ $routes = array(
     'products/details' => [$customer_controller, 'getProductById'],
     'shoppingcart' => [$customer_controller, 'getShoppingCart'],
     // Admin routes
-    'admin' => 'adminIndex',
-    'admin/products' => 'adminIndex',
-    'admin/products/index' => 'adminIndex',
-    'admin/products/create' => 'adminProductCreate',
-    'admin/products/update' => 'adminProductUpdate',
-    'admin/products/delete' => 'adminProductDelete',
-    'admin/orders/delete' => 'adminOrderDelete',
-    'admin/orders' => 'adminOrderList',
+    'admin' => [$admin_controller, 'index'],
+    'admin/products' => [$admin_controller, 'index'],
+    'admin/products/index' => [$admin_controller, 'index'],
+    'admin/products/create' => [$admin_controller, 'productCreate'],
+    'admin/products/update' => [$admin_controller, 'productUpdate'],
+    'admin/products/delete' => [$admin_controller, 'productDelete'],
+    'admin/orders/delete' => [$admin_controller, 'orderDelete'],
+    'admin/orders' => [$admin_controller, 'orderList'],
 );
 
 // $customer_login_controller = new CustomerLoginController($database, $view);
 // $controller = new Controller($order_model, $product_model, $customer_model);
 
-$router = new Router($customer_controller/* , $admin_controller */, $routes);
+$router = new Router($customer_controller, $admin_controller, $routes);
 /* Routern måste vara boss över två Controllers.
 new AdminController($controller_helper) och CustomerController.
 

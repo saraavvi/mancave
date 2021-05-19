@@ -3,17 +3,17 @@
 class Router
 {
     private $customer_controller;
-    // private $admin_controller;
+    private $admin_controller;
     private $routes;
 
 
     /**
      *
      */
-    public function __construct($customer_controller/* , $admin_controller */, $routes)
+    public function __construct($customer_controller, $admin_controller, $routes)
     {
         $this->customer_controller = $customer_controller;
-        // $this->admin_controller = $admin_controller;
+        $this->admin_controller = $admin_controller;
         $this->routes = $routes;
         $this->resolveRoute();
     }
