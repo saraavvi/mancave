@@ -51,6 +51,7 @@ class View
     {
         // print_r($_SESSION['shopping_cart']);
 
+
         $html = <<<HTML
         <div class="col-md-6 mt-5">
             <table class="table table-borderless">
@@ -63,7 +64,7 @@ class View
                         <td>$product[name]</td>
                         <td>$product[price] SEK</td>
                         <td>$qty</td>
-                        <td><button class='btn btn-danger'>x</button></td>
+                        <td><a href="?page=shoppingcart&id=$product[id]&action=delete" class='btn btn-danger'>x</a></td>
                     </tr>
             HTML;
         }

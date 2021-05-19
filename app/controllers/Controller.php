@@ -108,7 +108,7 @@ class Controller
         // if any add button is klicked on category page: get id from $_POST and edit shopping_cart in session.
         if (isset($_POST["add_to_cart"])) {
             $id = $_POST["product_id"];
-            $this->handleShoppingCart($id);
+            $this->handleShoppingCartAdd($id);
         }
         $category = $this->sanitize($_GET["category"]);
         $products = $this->product_model->fetchProductsByCategory($category);
@@ -121,9 +121,9 @@ class Controller
     private function getProductById()
     {
         $id = $this->sanitize($_GET['id']);
-        // if add button is clicked on detail page: get id from url and edit shopping_cart in session.
+        // if add button is clicked on detail page edit shopping_cart in session.
         if (isset($_POST["add_to_cart"])) {
-            $this->handleShoppingCart($id);
+            $this->handleShoppingCartAdd($id);
         }
 
         $product = $this->product_model->fetchProductById($id);
@@ -132,10 +132,10 @@ class Controller
         else $this->view->renderDetailPage($product);
     }
     /**
-     * edit shopping cart. 
+     * method that edits the shopping cart in the session.
      * look if product id already exists. if it does - increase qty by 1, if not - add the item.
      */
-    private function handleShoppingCart($id)
+    private function handleShoppingCartAdd($id)
     {
         if (!array_key_exists($id, $_SESSION["shopping_cart"])) {
             // om produkten ej finns i session - lägg till den
@@ -146,11 +146,22 @@ class Controller
         }
     }
 
+    private function handleShoppingCartDelete($id)
+    {
+        unset($_SESSION["shopping_cart"][$id]);
+    }
+
     /**
      * get all products using the id:s inside shopping_cart array in session, then send them to the view.
      */
     private function getShoppingCart()
     {
+        // print_r($_SESSION["shopping_cart"]);
+        if (isset($_GET['action']) && $_GET['action'] === "delete") {
+            $id = $_GET['id'];
+            $this->handleShoppingCartDelete($id);
+        }
+
         $ids = $_SESSION['shopping_cart'];
         $products = array();
         foreach ($ids as $key => $value) {
