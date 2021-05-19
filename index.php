@@ -12,21 +12,27 @@ require_once "app/views/View.php";
 require_once "app/controllers/Controller.php";
 require_once "app/controllers/CustomerLoginController.php";
 
+require_once "app/controllers/Router.php";
+require_once "app/controllers/CustomerController.php";
+
 $database = new Database("mancaveshop_db");
 $product_model = new ProductModel($database);
 $customer_model = new CustomerModel($database);
 $order_model = new OrderModel($database);
 $view = new View();
 
+$customer_controller = new CustomerController($order_model, $product_model, $customer_model, $customer_view);
+// $admin_controller = new AdminController($order_model, $product_model, $customer_model, $admin_view);
+
 $routes = array(
     // Customer routes
-    '' => 'index',
-    'login' => 'login', // In case no /?page=...
-    'logout' => 'logout', // In case no /?page=...
-    'products' => 'getProductsByCategory',
-    'products/details' => 'getProductById',
-    'shoppingcart' => 'getShoppingCart',
-    'register' => 'customerRegister',
+    '' => [$customer_controller, 'index'],
+    'login' => [$customer_controller, 'login'], // In case no /?page=...
+    'logout' => [$customer_controller, 'logout'], // In case no /?page=...
+    'products' => [$customer_controller, 'getProductsByCategory'],
+    'products/details' => [$customer_controller, 'getProductById'],
+    'shoppingcart' => [$customer_controller, 'getShoppingCart'],
+    'register' => [$customer_controller, 'customerRegister'],
     // Admin routes
     'admin' => 'adminIndex',
     'admin/products' => 'adminIndex',
@@ -38,9 +44,10 @@ $routes = array(
     'admin/orders' => 'adminOrderList',
 );
 
-$customer_login_controller = new CustomerLoginController($database, $view);
-$controller = new Controller($customer_login_controller, $order_model, $product_model, $customer_model, $view, $routes);
+// $customer_login_controller = new CustomerLoginController($database, $view);
+// $controller = new Controller($order_model, $product_model, $customer_model);
 
+$router = new Router($customer_controller/* , $admin_controller */, $routes);
 /* Routern måste vara boss över två Controllers.
 new AdminController($controller_helper) och CustomerController.
 

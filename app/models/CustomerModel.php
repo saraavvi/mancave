@@ -16,6 +16,14 @@ class CustomerModel
         return $customer[0] ?? false;
     }
 
+    public function fetchCustomerByEmail($email)
+    {
+        $statement = "SELECT * FROM customers WHERE email = :email";
+        $params = array(":email" => $email);
+        $customer = $this->db->select($statement, $params);
+        return $customer[0] ?? false;
+    }
+
     public function fetchAllCustomers()
     {
         $statement = "SELECT * FROM customers";
