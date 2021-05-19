@@ -5,9 +5,9 @@ require_once 'View.php';
 class AdminView extends View
 {
 
-    //ADMIN MAIN METHODS:
+    // MAIN METHODS:
 
-    public function renderAdminIndexPage($products, $alerts = [])
+    public function renderIndexPage($products, $alerts = [])
     {
 
         $this->renderHeader("admin - home", true);
@@ -24,7 +24,7 @@ class AdminView extends View
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderAdminProductCreatePage($brands, $categories, $alerts)
+    public function renderProductCreatePage($brands, $categories, $alerts)
     {
         $this->renderHeader("Admin Page - Create", true);
         $this->renderButton(
@@ -42,7 +42,7 @@ class AdminView extends View
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderAdminProductUpdatePage(
+    public function renderProductUpdatePage(
         $brands,
         $categories,
         $product_data,
@@ -59,7 +59,7 @@ class AdminView extends View
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderAdminOrderListPage($orders, $alerts)
+    public function renderOrderListPage($orders, $alerts)
     {
         $this->renderHeader("Admin - Order List", true);
         $this->renderButton(
@@ -86,7 +86,7 @@ class AdminView extends View
         include_once "app/views/partials/footer.php";
     }
 
-    //ADMIN HELPER METHODS:
+    // HELPER METHODS:
 
     public function renderListStart($column_name_array)
     {

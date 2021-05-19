@@ -21,8 +21,7 @@ class AdminController extends Controller
         $this->admin_view = $admin_view;
     }
 
-    //ADMIN MAIN METHODS:
-
+    // MAIN METHODS:
 
     public function index()
     {
@@ -33,7 +32,7 @@ class AdminController extends Controller
             $alerts['warning'][] = "No products to show.";
         }
         
-        $this->admin_view->renderAdminIndexPage($products, $alerts);
+        $this->admin_view->renderIndexPage($products, $alerts);
     }
 
     public function productCreate()
@@ -55,7 +54,7 @@ class AdminController extends Controller
 
         $brands = $this->product_model->fetchAllBrands();
         $categories = $this->product_model->fetchAllCategories();
-        $this->admin_view->renderAdminProductCreatePage($brands, $categories, $alerts);
+        $this->admin_view->renderProductCreatePage($brands, $categories, $alerts);
     }
 
 
@@ -85,7 +84,7 @@ class AdminController extends Controller
         $product_data = $this->product_model->fetchProductById($id);
         //TODO: Better error handling
         if (!$product_data) echo 'Product id does not exist.';
-        else $this->admin_view->renderAdminProductUpdatePage($brands, $categories, $product_data, $alerts);
+        else $this->admin_view->renderProductUpdatePage($brands, $categories, $product_data, $alerts);
     }
 
     public function productDelete() {
@@ -137,10 +136,10 @@ class AdminController extends Controller
         if (empty($orders)) {
             $alerts['warning'][] = "No orders to show.";
         }
-        $this->admin_view->renderAdminOrderListPage($orders, $alerts);
+        $this->admin_view->renderOrderListPage($orders, $alerts);
     }
 
-    //ADMIN HELPER METHODS:
+    // HELPER METHODS:
 
     private function handleProductPost()
     {

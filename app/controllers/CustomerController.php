@@ -98,7 +98,7 @@ class CustomerController extends Controller
         $this->customer_view->renderShoppingCartPage($products);
     }
     
-    //CUSTOMER HELPER METHODS:
+    // HELPER METHODS:
 
     private function handleRegister()
     {
@@ -245,5 +245,4 @@ class CustomerController extends Controller
         $this->customer_view->renderCustomerIndexPage($alert);
         exit;
     }
-
 }
