@@ -4,6 +4,13 @@ class View
     //CONTENT:
     //COMMON MAIN METHODS:
     //COMMON HELPER METHODS:
+    //CUSTOMER MAIN METHODS:
+    //CUSTOMER HELPER METHODS:
+    //ADMIN MAIN METHODS:
+    //ADMIN HELPER METHODS:
+
+    //COMMON MAIN METHODS:
+    //COMMON HELPER METHODS:
 
     public function renderHeader($title, $admin = false)
     {
@@ -12,6 +19,26 @@ class View
             include_once "app/views/partials/adminNav.php";
         } else {
             include_once "app/views/partials/customerNav.php";
+        }
+    }
+
+    public function renderFooter()
+    {
+        include_once "app/views/partials/footer.php";
+    }
+
+    public function renderAlerts($alerts)
+    {
+        foreach ($alerts as $category => $messages) {
+            foreach ($messages as $message) {
+                echo "
+                    <div class='d-flex justify-content-center'>
+                        <div class='col-md-10 text-center alert alert-$category' role='alert'>
+                            $message
+                        </div>
+                    </div>
+                ";
+            }
         }
     }
 
@@ -76,49 +103,6 @@ class View
         echo $html;
     }
 
-    //CUSTOMER HELPER METHODS:
-
-    public function renderRegisterForm($customer_data = null)
-    {
-        include_once "app/views/partials/registerform.php";
-    }
-
-    //ADMIN MAIN METHODS:
-    //ADMIN HELPER METHODS:
-
-    public function renderFooter()
-    {
-        include_once "app/views/partials/footer.php";
-    }
-
-    public function renderProductsListStart()
-    {
-        $html = <<<HTML
-            <div class="row d-flex justify-content-center">
-                <div class="col-md-10">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Stock</th>
-                            <th scope="col">Edit</th>
-                            <th scope="col">Delete</th>
-                            </tr>
-                        </thead>
-                    <tbody>
-        HTML;
-        echo $html;
-    }
-
-    /**
-     * Receive null by default for create form, or data for update form
-     */
-    public function renderForm($brands, $categories, $data = null)
-    {
-        include_once "app/views/partials/form.php";
-    }
-
     public function renderProductPage($products)
     {
         $this->renderHeader("mancave - products");
@@ -133,9 +117,12 @@ class View
         $this->renderFooter();
     }
 
-    public function renderProductDetails($product)
+
+    //CUSTOMER HELPER METHODS:
+
+    public function renderRegisterForm($customer_data = null)
     {
-        include_once "app/views/partials/productDetails.php";
+        include_once "app/views/partials/registerform.php";
     }
 
     public function renderCustomerProducts($products)
@@ -168,23 +155,27 @@ class View
         echo $html;
     }
 
-    public function renderButton($text, $href, $style = "primary")
+    public function renderProductDetails($product)
     {
-        $html = <<<HTML
-                <div class="d-flex justify-content-center p-1">
-                    <a class="btn btn-$style" href="$href">$text</a>
-                </div>
-            HTML;
-        echo $html;
+        include_once "app/views/partials/productDetails.php";
     }
 
-    public function renderAdminIndexPage($products)
+    //ADMIN MAIN METHODS:
+
+    public function renderAdminIndexPage($products, $alerts = [])
     {
+
         $this->renderHeader("admin - home", true);
         $this->renderButton("Add new product", "?page=admin/products/create");
-        $this->renderListStart(["#", "Name", "Stock", "Edit", "Delete"]);
-        $this->renderListItemsProducts($products);
-        $this->renderListEnd();
+
+        // other possible errors than "No products to show"?
+        if ($alerts) {
+            $this->renderAlerts($alerts);
+        } else {
+            $this->renderListStart(["#", "Name", "Stock", "Edit", "Delete"]);
+            $this->renderListItemsProducts($products);
+            $this->renderListEnd();
+        }
         include_once "app/views/partials/footer.php";
     }
 
@@ -231,45 +222,26 @@ class View
             "?page=admin",
             "secondary"
         );
+
         $this->renderAlerts($alerts);
-        $this->renderListStart([
-            "#",
-            "Date Placed",
-            "Customer Name",
-            "Status",
-            "Change Status",
-            "View Order",
-            "Delete Order"
-        ]);
-        $this->renderListItemsOrders($orders);
-        $this->renderListEnd();
-        include_once "app/views/partials/footer.php";
-    }
-
-    public function renderAdminPage($products)
-    {
-        $this->renderHeader("Admin Page - Products", true);
-        echo '<a class="btn btn-primary d-flex justify-content-center" href="?page=admin/products/create">Add new product</a></br>';
-        $this->renderProductsListStart();
-        $this->renderProducts($products);
-        $this->renderProductsListEnd();
-        include_once "app/views/partials/footer.php";
-    }
-
-    public function renderAlerts($alerts)
-    {
-        foreach ($alerts as $category => $messages) {
-            foreach ($messages as $message) {
-                echo "
-                    <div class='d-flex justify-content-center'>
-                        <div class='col-md-10 text-center alert alert-$category' role='alert'>
-                            $message
-                        </div>
-                    </div>
-                ";
-            }
+        // avoid rendering list if orders is empty (CODE READABILITY?)
+        if (!empty($orders)) {
+            $this->renderListStart([
+                "#",
+                "Date Placed",
+                "Customer Name",
+                "Status",
+                "Change Status",
+                "View Order",
+                "Delete Order"
+            ]);
+            $this->renderListItemsOrders($orders);
+            $this->renderListEnd();
         }
+        include_once "app/views/partials/footer.php";
     }
+
+    //ADMIN HELPER METHODS:
 
     public function renderListStart($column_name_array)
     {
@@ -299,6 +271,47 @@ class View
             </div>
         </div>
     HTML;
+        echo $html;
+    }
+
+    public function renderProducts($products)
+    {
+        foreach ($products as $product) {
+            $html = <<<HTML
+                <tr>
+                    <th scope="row">$product[id]</th>
+                    <td>$product[name]</td>
+                    <td>$product[stock]</td>
+                    <td>
+                    <a href="?page=admin/products/update&id=$product[id]" class="btn btn-sm btn-outline-primary">Edit</a>
+                    </td>
+                    <td>
+                        <form method="post" action="?page=admin/products/delete" style="display: inline-block">
+                            <input  type="hidden" name="id" value="$product[id]"/>
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                HTML;
+            echo $html;
+        }
+    }
+
+    /**
+     * Receive null by default for create form, or data for update form
+     */
+    public function renderForm($brands, $categories, $data = null)
+    {
+        include_once "app/views/partials/form.php";
+    }
+
+    public function renderButton($text, $href, $style = "primary")
+    {
+        $html = <<<HTML
+                <div class="d-flex justify-content-center p-1">
+                    <a class="btn btn-$style" href="$href">$text</a>
+                </div>
+            HTML;
         echo $html;
     }
 
@@ -354,43 +367,6 @@ class View
                             </form>
                         </td>
                     </tr>
-                HTML;
-            echo $html;
-        }
-    }
-
-    public function renderProductsListEnd()
-    {
-        $html = <<<HTML
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    HTML;
-
-        echo $html;
-    }
-
-    public function renderProducts($products)
-    {
-        foreach ($products as $product) {
-            $html = <<<HTML
-                <tr>
-                    <th scope="row">$product[id]</th>
-                    <td>$product[name]</td>
-                    <td>$product[stock]</td>
-                    <td>
-                    <a href="?page=admin/products/update&id=$product[id]" class="btn btn-sm btn-outline-primary">Edit</a>
-                    </td>
-                    <td>
-                        <form method="post" action="?page=admin/products/delete" style="display: inline-block">
-                            <input  type="hidden" name="id" value="$product[id]"/>
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
                 HTML;
             echo $html;
         }

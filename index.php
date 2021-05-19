@@ -36,7 +36,6 @@ $routes = array(
     'admin/products/update' => 'adminProductUpdate',
     'admin/products/delete' => 'adminProductDelete',
     'admin/orders' => 'adminOrderList',
-    'admin/orders/' => 'adminOrderList',
 );
 
 $controller = new Controller($order_model, $product_model, $customer_model, $view, $routes);
