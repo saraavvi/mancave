@@ -7,9 +7,6 @@
             </div>
             <div class="modal-body p-4">
                 <h3 class="modal-title text-center" id="loginModalLabel">Log in to your account:</h3>
-                <div class="d-flex justify-content-center">
-                    <p class="text-muted">Placehoder for messages</p>
-                </div>
                 <form action="?page=login" method="POST">
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Email address</label>
@@ -27,7 +24,7 @@
             </div>
             <div class="modal-footer bg-light d-flex justify-content-center">
                 <a class="" href="?page=register">
-                    <span class="">New to Mancave? </span>
+                    <span class="">New to Mancave?</span>
                     <span class="">Sign Up</span>
                 </a>
             </div>
