@@ -9,7 +9,7 @@ class AdminView extends View
 
     public function renderLoginPage()
     {
-        $this->renderAdminHead("Admin - Log in");
+        $this->renderHead("Admin - Log in");
 
         include_once "partials/adminLogin.php";
 
@@ -18,8 +18,8 @@ class AdminView extends View
 
     public function renderIndexPage($products, $alerts = [])
     {
-
-        $this->renderHeader("admin - home", true);
+        $this->renderHead("Admin - Home");
+        $this->renderNav(true);
         $this->renderButton("Add new product", "?page=admin/products/create");
 
         // other possible errors than "No products to show"?
@@ -35,7 +35,8 @@ class AdminView extends View
 
     public function renderProductCreatePage($brands, $categories, $alerts)
     {
-        $this->renderHeader("Admin Page - Create", true);
+        $this->renderHead("Admin - Create Product");
+        $this->renderNav(true);
         $this->renderButton(
             "Go back to product list",
             "?page=admin",
@@ -57,7 +58,8 @@ class AdminView extends View
         $product_data,
         $errors = []
     ) {
-        $this->renderHeader("Admin Page - Update", true);
+        $this->renderHead("Admin - Update Product");
+        $this->renderNav(true);
         $this->renderButton(
             "Go back to product list",
             "?page=admin",
@@ -70,7 +72,8 @@ class AdminView extends View
 
     public function renderOrderListPage($orders, $alerts)
     {
-        $this->renderHeader("Admin - Order List", true);
+        $this->renderHead("Admin - Order List");
+        $this->renderNav(true);
         $this->renderButton(
             "Go back to product list",
             "?page=admin",
@@ -96,11 +99,6 @@ class AdminView extends View
     }
 
     // HELPER METHODS:
-
-    private function renderAdminHead($title)
-    {
-        include_once "partials/head.php";
-    }
 
     public function renderListStart($column_name_array)
     {
