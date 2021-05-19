@@ -1,4 +1,8 @@
 <?php
+session_start();
+if (empty($_SESSION['shopping_cart'])) {
+    $_SESSION['shopping_cart'] = array();
+}
 
 /* require_once ‘./views/View.php’;
 $view = new View();
@@ -22,6 +26,7 @@ $routes = array(
     '' => 'index', // In case no /?page=...
     'products' => 'getProductsByCategory',
     'products/details' => 'getProductById',
+    'shoppingcart' => 'getShoppingCart',
     'register' => 'customerRegister',
     // Admin routes
     'admin' => 'adminIndex',

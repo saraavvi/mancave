@@ -59,6 +59,49 @@ class View
         $this->renderRegisterForm($customer_data);
         include_once "app/views/partials/footer.php";
     }
+    /**
+     * display the whole shopping cart page
+     */
+    public function renderShoppingCartPage($products)
+    {
+        $this->renderHeader("ManCave - Shopping Cart");
+        $this->renderShoppingCartList($products);
+        //skickar med en tom sträng som href nu. Ändra sen
+        $this->renderButton("Continue to checkout", "");
+        $this->renderFooter();
+    }
+
+    /**
+     * help method for shopping cart page - lists all products in the cart. 
+     */
+    public function renderShoppingCartList($products)
+    {
+        // print_r($_SESSION['shopping_cart']);
+
+
+        $html = <<<HTML
+        <div class="col-md-6 mt-5">
+            <table class="table table-borderless">
+                <tbody> 
+        HTML;
+        foreach ($products as $product) {
+            $qty = $_SESSION['shopping_cart'][$product['id']];
+            $html .= <<<HTML
+                    <tr>
+                        <td>$product[name]</td>
+                        <td>$product[price] SEK</td>
+                        <td>$qty</td>
+                        <td><a href="?page=shoppingcart&id=$product[id]&action=delete" class='btn btn-danger'>x</a></td>
+                    </tr>
+            HTML;
+        }
+        $html .= <<<HTML
+                    </tbody>
+                </table>
+            </div>
+            HTML;
+        echo $html;
+    }
 
     public function renderProductPage($products)
     {
@@ -73,6 +116,7 @@ class View
         $this->renderProductDetails($product);
         $this->renderFooter();
     }
+
 
     //CUSTOMER HELPER METHODS:
 
@@ -98,8 +142,12 @@ class View
                     </a>
                     <div class="card-body">
                         <h5 class="card-title">$product[name]</h5>
-                        <p class="card-text">$product[price] sek</p>
-                        <a href="#" class="btn btn-primary">add to cart</a>
+                        <p class="card-text">$product[price] SEK</p>
+                        <!-- <a href="#" class="btn btn-primary">add to cart</a> -->
+                        <form action="#" method="POST">
+                        <input type="hidden" name="product_id" value="$product[id]">
+                            <button type="submit" name="add_to_cart" class="btn btn-primary">add to cart</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -109,26 +157,7 @@ class View
 
     public function renderProductDetails($product)
     {
-
-        //  Bara för att visa produkten just nu - byt ut detta mot vad vi vill visa på den här sidan.
-        $html = <<<HTML
-            <div class="col-md-6 border">
-                <img src="$product[image]" class="img-fluid" alt="...">
-            </div>
-            <div class="col-md-4 border">
-                <h2>$product[name]</h2>
-                <p class="fs-1">$product[price] SEK</p>
-                <button class="btn btn-primary w-100">add to cart</button>
-                <div class="mt-3">
-                    <p class="fw-bold">product information</p>
-                    <p>$product[description]</p>
-                <div>
-                <div class="mt-3">
-                    <p>$product[specification]</p>
-                <div>
-            </div>
-        HTML;
-        echo $html;
+        include_once "app/views/partials/productDetails.php";
     }
 
     //ADMIN MAIN METHODS:
