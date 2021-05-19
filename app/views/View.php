@@ -8,7 +8,7 @@ class View
     //CUSTOMER HELPER METHODS:
     //ADMIN MAIN METHODS:
     //ADMIN HELPER METHODS:
-    
+
     //COMMON MAIN METHODS:
     //COMMON HELPER METHODS:
 
@@ -16,9 +16,9 @@ class View
     {
         include_once "app/views/partials/head.php";
         if ($admin) {
-        include_once "app/views/partials/adminNav.php";
+            include_once "app/views/partials/adminNav.php";
         } else {
-        include_once "app/views/partials/customerNav.php";
+            include_once "app/views/partials/customerNav.php";
         }
     }
 
@@ -84,7 +84,7 @@ class View
     public function renderCustomerProducts($products)
     {
         foreach ($products as $product) {
-        $this->renderOneCustomerProduct($product);
+            $this->renderOneCustomerProduct($product);
         }
     }
 
@@ -104,7 +104,7 @@ class View
                 </div>
             </div>
         HTML;
-    echo $html;
+        echo $html;
     }
 
     public function renderProductDetails($product)
@@ -128,18 +128,25 @@ class View
                 <div>
             </div>
         HTML;
-    echo $html;
+        echo $html;
     }
 
     //ADMIN MAIN METHODS:
 
-    public function renderAdminIndexPage($products)
+    public function renderAdminIndexPage($products, $alerts = [])
     {
+
         $this->renderHeader("admin - home", true);
         $this->renderButton("Add new product", "?page=admin/products/create");
-        $this->renderListStart(["#", "Name", "Stock", "Edit", "Delete"]);
-        $this->renderListItemsProducts($products);
-        $this->renderListEnd();
+
+        // other possible errors than "No products to show"?
+        if ($alerts) {
+            $this->renderAlerts($alerts);
+        } else {
+            $this->renderListStart(["#", "Name", "Stock", "Edit", "Delete"]);
+            $this->renderListItemsProducts($products);
+            $this->renderListEnd();
+        }
         include_once "app/views/partials/footer.php";
     }
 
@@ -186,18 +193,22 @@ class View
             "?page=admin",
             "secondary"
         );
+
         $this->renderAlerts($alerts);
-        $this->renderListStart([
-            "#",
-            "Date Placed",
-            "Customer Name",
-            "Status",
-            "Change Status",
-            "View Order",
-            "Delete Order"
-        ]);
-        $this->renderListItemsOrders($orders);
-        $this->renderListEnd();
+        // avoid rendering list if orders is empty (CODE READABILITY?)
+        if (!empty($orders)) {
+            $this->renderListStart([
+                "#",
+                "Date Placed",
+                "Customer Name",
+                "Status",
+                "Change Status",
+                "View Order",
+                "Delete Order"
+            ]);
+            $this->renderListItemsOrders($orders);
+            $this->renderListEnd();
+        }
         include_once "app/views/partials/footer.php";
     }
 
@@ -213,7 +224,7 @@ class View
                         <tr>
     HTML;
         foreach ($column_name_array as $column_name) {
-        $html .= "<th scope='col'>$column_name</th>";
+            $html .= "<th scope='col'>$column_name</th>";
         }
         $html .= <<<HTML
                 </tr>
@@ -312,7 +323,7 @@ class View
     public function renderListItemsProducts($products)
     {
         foreach ($products as $product) {
-        $html = <<<HTML
+            $html = <<<HTML
                     <tr>
                         <th scope="row">$product[id]</th>
                         <td>$product[name]</td>
@@ -328,7 +339,7 @@ class View
                         </td>
                     </tr>
                 HTML;
-        echo $html;
+            echo $html;
         }
     }
 }
