@@ -26,7 +26,6 @@ class CustomerLoginController
                 $errors[] = "Incorrect password.";
             }
             if ($_POST["password"] === $customer["password"]) {
-                session_start();
                 $_SESSION["loggedinuser"] = $customer;
                 $this->returnToIndexWithAlert("Successfully Logged In!", "success");
             }
@@ -38,8 +37,7 @@ class CustomerLoginController
 
     public function handleLogout()
     {
-        session_start();
-        session_unset();
+        $_SESSION["loggedinuser"] = null;
         $this->returnToIndexWithAlert("Successfully Logged Out!", "success");
     }
 
