@@ -7,6 +7,15 @@ class AdminView extends View
 
     // MAIN METHODS:
 
+    public function renderLoginPage()
+    {
+        include_once "partials/head.php";
+
+        include_once "partials/adminLogin.php";
+
+        $this->renderFooter();
+    }
+
     public function renderIndexPage($products, $alerts = [])
     {
 
