@@ -30,6 +30,7 @@ $routes = array(
     'admin/products/create' => 'adminProductCreate',
     'admin/products/update' => 'adminProductUpdate',
     'admin/products/delete' => 'adminProductDelete',
+    'admin/orders/delete' => 'adminOrderDelete',
     'admin/orders' => 'adminOrderList',
 );
 
