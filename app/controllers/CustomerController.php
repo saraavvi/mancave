@@ -27,13 +27,13 @@ class CustomerController extends Controller
         $product = $products[0];
         $this->view->renderCustomerIndexPage($product); */
         
-        $this->customer_view->renderCustomerIndexPage();
+        $this->customer_view->renderIndexPage();
     }
 
     public function register()
     {
         [$customer_data, $alerts] = $this->handleRegister();
-        $this->customer_view->renderCustomerRegisterPage($alerts, $customer_data);
+        $this->customer_view->renderRegisterPage($alerts, $customer_data);
     }
 
     public function login()
