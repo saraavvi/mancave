@@ -30,18 +30,18 @@ class CustomerController extends Controller
         $this->customer_view->renderCustomerIndexPage();
     }
 
-    private function register()
+    public function register()
     {
         [$customer_data, $alerts] = $this->handleRegister();
         $this->customer_view->renderCustomerRegisterPage($alerts, $customer_data);
     }
 
-    private function login()
+    public function login()
     {
         $this->handleLogin();
     }
 
-    private function logout()
+    public function logout()
     {
         $this->handleLogout();
     }
@@ -49,7 +49,7 @@ class CustomerController extends Controller
     /**
      * list all products from the chosen category.
      */
-    private function getProductsByCategory()
+    public function getProductsByCategory()
     {
         // if any add button is klicked on category page: get id from $_POST and edit shopping_cart in session.
         if (isset($_POST["add_to_cart"])) {
@@ -64,7 +64,7 @@ class CustomerController extends Controller
     /**
      * display details about a specific product.
      */
-    private function getProductById()
+    public function getProductById()
     {
         $id = $this->sanitize($_GET['id']);
         // if add button is clicked on detail page edit shopping_cart in session.
@@ -81,7 +81,7 @@ class CustomerController extends Controller
     /**
      * get all products using the id:s inside shopping_cart array in session, then send them to the customer_view.
      */
-    private function getShoppingCart()
+    public function getShoppingCart()
     {
         // print_r($_SESSION["shopping_cart"]);
         if (isset($_GET['action']) && $_GET['action'] === "delete") {
@@ -242,7 +242,7 @@ class CustomerController extends Controller
     private function returnToIndexWithAlert($message, $style = 'danger')
     {
         $alert[$style][] = $message;
-        $this->view->renderCustomerIndexPage($alert);
+        $this->customer_view->renderCustomerIndexPage($alert);
         exit;
     }
 

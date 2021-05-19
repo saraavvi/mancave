@@ -24,7 +24,7 @@ class AdminController extends Controller
     //ADMIN MAIN METHODS:
 
 
-    private function index()
+    public function index()
     {
         $alerts = array();
         $products = $this->product_model->fetchAllProducts();
@@ -33,10 +33,10 @@ class AdminController extends Controller
             $alerts['warning'][] = "No products to show.";
         }
         
-        $this->view->renderAdminIndexPage($products, $alerts);
+        $this->admin_view->renderAdminIndexPage($products, $alerts);
     }
 
-    private function productCreate()
+    public function productCreate()
     {
         $product_data = array();
         $alerts = array();
@@ -55,11 +55,11 @@ class AdminController extends Controller
 
         $brands = $this->product_model->fetchAllBrands();
         $categories = $this->product_model->fetchAllCategories();
-        $this->view->renderAdminProductCreatePage($brands, $categories, $alerts);
+        $this->admin_view->renderAdminProductCreatePage($brands, $categories, $alerts);
     }
 
 
-    private function productUpdate()
+    public function productUpdate()
     {
         $this->conditionForExit(empty($_GET['id']));
 
@@ -85,7 +85,7 @@ class AdminController extends Controller
         $product_data = $this->product_model->fetchProductById($id);
         //TODO: Better error handling
         if (!$product_data) echo 'Product id does not exist.';
-        else $this->view->renderAdminProductUpdatePage($brands, $categories, $product_data, $alerts);
+        else $this->admin_view->renderAdminProductUpdatePage($brands, $categories, $product_data, $alerts);
     }
 
     public function productDelete() {
@@ -115,7 +115,7 @@ class AdminController extends Controller
         }
     }
 
-    private function orderList($alerts = array())
+    public function orderList($alerts = array())
     {
         $alerts = $alerts;
         if (isset($_GET['status_id'])) {
@@ -137,7 +137,7 @@ class AdminController extends Controller
         if (empty($orders)) {
             $alerts['warning'][] = "No orders to show.";
         }
-        $this->view->renderAdminOrderListPage($orders, $alerts);
+        $this->admin_view->renderAdminOrderListPage($orders, $alerts);
     }
 
     //ADMIN HELPER METHODS:

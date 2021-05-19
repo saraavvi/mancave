@@ -4,21 +4,30 @@ if (empty($_SESSION['shopping_cart'])) {
     $_SESSION['shopping_cart'] = array();
 }
 
+//Model
 require_once "app/models/Database.php";
 require_once "app/models/OrderModel.php";
 require_once "app/models/ProductModel.php";
 require_once "app/models/CustomerModel.php";
 require_once "app/models/AdminModel.php";
+//View
+require_once "app/views/CustomerView.php";
+require_once "app/views/AdminView.php";
+//Controller
 require_once "app/controllers/AdminController.php";
 require_once "app/controllers/CustomerController.php";
 require_once "app/controllers/Router.php";
 
+//Model
 $database = new Database("mancaveshop_db");
 $order_model = new OrderModel($database);
 $product_model = new ProductModel($database);
 $customer_model = new CustomerModel($database);
 $admin_model = new AdminModel($database);
-
+//View
+$customer_view = new CustomerView();
+$admin_view = new AdminView();
+//Controller
 $customer_controller = new CustomerController($order_model, $product_model, $customer_model, $customer_view);
 $admin_controller = new AdminController($order_model, $product_model, $admin_model, $admin_view);
 
@@ -42,21 +51,4 @@ $routes = array(
     'admin/orders' => [$admin_controller, 'orderList'],
 );
 
-// $customer_login_controller = new CustomerLoginController($database, $view);
-// $controller = new Controller($order_model, $product_model, $customer_model);
-
 $router = new Router($customer_controller, $admin_controller, $routes);
-/* Routern måste vara boss över två Controllers.
-new AdminController($controller_helper) och CustomerController.
-
-
-Dom två controllers har relevanta models injicerade.
-ControllerHelper klass där gemensamma resurser deklareras.
-
-
-new Router($admin_controller, $customer_controller) 
-
-1. initiera objekt av alla resurser som används
-2. initiera objekt av helperController som har gemensamma resurser
-3. initiera objekt av de två controllerna som är injecerade med helperController.
-4. initiera objekt av router som har de två åvan injicerade*/
