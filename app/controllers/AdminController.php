@@ -9,6 +9,7 @@ class AdminController extends Controller
     private $admin_model;
     private $admin_view;
 
+
     public function __construct(
         $order_model,
         $product_model,
@@ -26,37 +27,38 @@ class AdminController extends Controller
     public function index()
     {
         $this->ensureAuthenticated();
-        $alerts = array();
+
         $products = $this->product_model->fetchAllProducts();
 
         if (empty($products)) {
-            $alerts['warning'][] = "No products to show.";
+            $_SESSION['alerts']['warning'][] = "No products to show.";
         }
-        
-        $this->admin_view->renderIndexPage($products, $alerts);
+        $this->admin_view->renderIndexPage($products);
     }
 
     public function productCreate()
     {
         $this->ensureAuthenticated();
         $product_data = array();
-        $alerts = array();
 
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             try {
                 $product_data = $this->handleProductPost();
-                $this->product_model->createProduct($product_data);
+                $product_id = $this->product_model->createProduct($product_data);
+                $_SESSION['alerts']['success'][] = "Product successfully created with #id: $product_id";
                 header("Location: ?page=admin/products");
                 exit();
             } catch (Exception $error) {
-                $error_message = json_decode($error->getMessage(), true);
-                $alerts['danger'] = $error_message;
+                $errors_array = json_decode($error->getMessage(), true);
+                foreach ($errors_array as $message) {
+                    $_SESSION['alerts']['danger'][] = $message;
+                }                
             }
         }
 
         $brands = $this->product_model->fetchAllBrands();
         $categories = $this->product_model->fetchAllCategories();
-        $this->admin_view->renderProductCreatePage($brands, $categories, $alerts);
+        $this->admin_view->renderProductCreatePage($brands, $categories);
     }
 
 
@@ -67,18 +69,20 @@ class AdminController extends Controller
 
         $id = (int)$this->sanitize($_GET['id']);
         $product_data = array();
-        $alerts = array();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             try {
                 $product_data = $this->handleProductPost();
                 $this->product_model->updateProductById($id, $product_data);
+                $_SESSION['alerts']['success'][] = "Product successfully updated";
                 header('Location: ?page=admin/products');
                 exit;
             } catch (Exception $error) {
-                $error_message = json_decode($error->getMessage(), true);
-                $alerts['danger'] = $error_message;
+                $errors_array = json_decode($error->getMessage(), true);
+                foreach ($errors_array as $message) {
+                    $_SESSION['alerts']['danger'][] = $message;
+                }
             }
         }
 
@@ -87,53 +91,60 @@ class AdminController extends Controller
         $product_data = $this->product_model->fetchProductById($id);
         //TODO: Better error handling
         if (!$product_data) echo 'Product id does not exist.';
-        else $this->admin_view->renderProductUpdatePage($brands, $categories, $product_data, $alerts);
+        else $this->admin_view->renderProductUpdatePage($brands, $categories, $product_data);
     }
 
     public function productDelete()
     {
         $this->ensureAuthenticated();
-        if ($_GET['action'] === "delete")
-        $product_id = (int)$_GET['id'];
-        $row_count = $this->product_model->deleteProductById($product_id);
-        return $row_count;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $product_id = (int)$_POST['id'];
+                $row_count = $this->product_model->deleteProductById($product_id);
+                if($row_count > 0) {
+                    $_SESSION['alerts']['success'][] = "Product successfully deleted.";
+                } else {
+                    $_SESSION['alerts']['warning'][] = "No product found with this ID.";
+                }
+            } catch (Exception $error) {
+                $_SESSION['alerts']['danger'][] = "Product could not be deleted.";
+            }
+        }
+        header('Location: ?page=admin/products');
     }
 
     public function orderDelete() 
     {
         $this->ensureAuthenticated();
-        $alerts = array();
         try {
             $order_id = (int)$_GET['id'];
             if ($order_id) {
                 $row_count = $this->order_model->deleteOrder($order_id);
                 if ($row_count > 0) {
-                    $alerts['success'][] = "Successfully deleted $row_count order(s).";
+                    $_SESSION['alerts']['success'][] = "Successfully deleted $row_count order(s).";
                 } else {
-                    $alerts['warning'][] = " Order with id #$order_id could not be found.";
+                    $_SESSION['alerts']['warning'][] = " Order with id #$order_id could not be found.";
                 }
             }
-            $this->orderList($alerts);
         } catch (Exception $error) {
-            $alerts['danger'][] = "This order can not be deleted.";
-            $this->orderList($alerts);
+            $_SESSION['alerts']['danger'][] = "This order can not be deleted.";
         }
+        $this->orderList();
     }
 
-    public function orderList($alerts = array())
+    public function orderList()
     {
         $this->ensureAuthenticated();
-        $alerts = $alerts;
         if (isset($_GET['status_id'])) {
             try {
                 $row_count = $this->handleOrderStatusUpdate();
                 if ($row_count > 0) {
-                    $alerts['success'][] = "Status was updated for $row_count order(s).";
+                    $_SESSION['alerts']['success'][] = "Status was updated for $row_count order(s).";
                 } else {
-                    $alerts['warning'][] = "Unable to update to this status for this order.";
+                    $_SESSION['alerts']['warning'][] = "Unable to update to this status for this order.";
                 }
             } catch (Exception $error) {
-                $alerts['danger'][] = "Unable to update status.";
+                $_SESSION['alerts']['danger'][] = "Unable to update status.";
             }
         }
         
@@ -141,9 +152,9 @@ class AdminController extends Controller
         //$statuses = $this->order_model->fetchAllStatuses(); //värt?
         $orders = $this->order_model->fetchAllOrders();
         if (empty($orders)) {
-            $alerts['warning'][] = "No orders to show.";
+            $_SESSION['alerts']['warning'][] = "No orders to show.";
         }
-        $this->admin_view->renderOrderListPage($orders, $alerts);
+        $this->admin_view->renderOrderListPage($orders);
     }
 
     // HELPER METHODS:

@@ -4,7 +4,6 @@ require_once 'View.php';
 
 class AdminView extends View
 {
-
     // MAIN METHODS:
 
     public function renderLoginPage()
@@ -16,24 +15,22 @@ class AdminView extends View
         $this->renderFooter();
     }
 
-    public function renderIndexPage($products, $alerts = [])
+    public function renderIndexPage($products)
     {
 
         $this->renderHeader("admin - home", true);
         $this->renderButton("Add new product", "?page=admin/products/create");
 
         // other possible errors than "No products to show"?
-        if ($alerts) {
-            $this->renderAlerts($alerts);
-        } else {
-            $this->renderListStart(["#", "Name", "Stock", "Edit", "Delete"]);
-            $this->renderListItemsProducts($products);
-            $this->renderListEnd();
-        }
+        $this->renderAlerts();
+        $this->renderListStart(["#", "Name", "Stock", "Edit", "Delete"]);
+        $this->renderListItemsProducts($products);
+        $this->renderListEnd();
+        
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderProductCreatePage($brands, $categories, $alerts)
+    public function renderProductCreatePage($brands, $categories)
     {
         $this->renderHeader("Admin Page - Create", true);
         $this->renderButton(
@@ -46,7 +43,7 @@ class AdminView extends View
             "?page=admin/orders",
             "secondary"
         );
-        $this->renderAlerts($alerts);
+        $this->renderAlerts();
         $this->renderForm($brands, $categories);
         include_once "app/views/partials/footer.php";
     }
@@ -68,7 +65,7 @@ class AdminView extends View
         include_once "app/views/partials/footer.php";
     }
 
-    public function renderOrderListPage($orders, $alerts)
+    public function renderOrderListPage($orders)
     {
         $this->renderHeader("Admin - Order List", true);
         $this->renderButton(
@@ -77,7 +74,7 @@ class AdminView extends View
             "secondary"
         );
 
-        $this->renderAlerts($alerts);
+        $this->renderAlerts();
         // avoid rendering list if orders is empty (CODE READABILITY?)
         if (!empty($orders)) {
             $this->renderListStart([

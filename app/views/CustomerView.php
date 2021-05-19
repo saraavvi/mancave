@@ -7,18 +7,18 @@ class CustomerView extends View
 
     //CUSTOMER MAIN METHODS:
 
-    public function renderIndexPage($alerts = [])
+    public function renderIndexPage()
     {
         $this->renderHeader("ManCave - Home");
-        $this->renderAlerts($alerts);
+        $this->renderAlerts();
         include_once "app/views/partials/indexContent.php";
         $this->renderFooter();
     }
 
-    public function renderRegisterPage($alerts = [], $customer_data = null)
+    public function renderRegisterPage($customer_data = null)
     {
         $this->renderHeader("New Customer");
-        $this->renderAlerts($alerts);
+        $this->renderAlerts();
         $this->renderRegisterForm($customer_data);
         include_once "app/views/partials/footer.php";
     }

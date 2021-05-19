@@ -18,19 +18,16 @@ class View
         include_once "app/views/partials/footer.php";
     }
 
-    protected function renderAlerts($alerts)
+    protected function renderAlerts()
     {
+        $alerts = $_SESSION['alerts'] ?? array();
+
         foreach ($alerts as $category => $messages) {
             foreach ($messages as $message) {
-                echo "
-                    <div class='d-flex justify-content-center'>
-                        <div class='col-md-10 text-center alert alert-$category' role='alert'>
-                            $message
-                        </div>
-                    </div>
-                ";
+                include "partials/alert.php";
             }
         }
+        $this->cleanAlerts();
     }
 
     protected function renderButton($text, $href, $style = "primary")
@@ -41,5 +38,9 @@ class View
                 </div>
             HTML;
         echo $html;
+    }
+
+    private function cleanAlerts() {
+        $_SESSION['alerts'] = array();
     }
 }
