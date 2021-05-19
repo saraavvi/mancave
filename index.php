@@ -27,12 +27,12 @@ $customer_controller = new CustomerController($order_model, $product_model, $cus
 $routes = array(
     // Customer routes
     '' => [$customer_controller, 'index'],
+    'register' => [$customer_controller, 'register'],
     'login' => [$customer_controller, 'login'], // In case no /?page=...
     'logout' => [$customer_controller, 'logout'], // In case no /?page=...
     'products' => [$customer_controller, 'getProductsByCategory'],
     'products/details' => [$customer_controller, 'getProductById'],
     'shoppingcart' => [$customer_controller, 'getShoppingCart'],
-    'register' => [$customer_controller, 'customerRegister'],
     // Admin routes
     'admin' => 'adminIndex',
     'admin/products' => 'adminIndex',

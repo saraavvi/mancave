@@ -30,14 +30,20 @@ class CustomerController extends Controller
         $this->customer_view->renderCustomerIndexPage();
     }
 
+    private function register()
+    {
+        [$customer_data, $alerts] = $this->handleRegister();
+        $this->customer_view->renderCustomerRegisterPage($alerts, $customer_data);
+    }
+
     private function login()
     {
-        $this->customer_login_controller->handleLogin();
+        $this->handleLogin();
     }
 
     private function logout()
     {
-        $this->customer_login_controller->handleLogout();
+        $this->handleLogout();
     }
 
     /**
@@ -71,7 +77,7 @@ class CustomerController extends Controller
         if (!$product) echo 'Product id does not exist.';
         else $this->customer_view->renderDetailPage($product);
     }
-  
+
     /**
      * get all products using the id:s inside shopping_cart array in session, then send them to the customer_view.
      */
@@ -91,8 +97,10 @@ class CustomerController extends Controller
         }
         $this->customer_view->renderShoppingCartPage($products);
     }
+    
+    //CUSTOMER HELPER METHODS:
 
-    private function customerRegister()
+    private function handleRegister()
     {
         $customer_data = array();
         $alerts = array();
@@ -108,10 +116,8 @@ class CustomerController extends Controller
                 if ($error_message) $alerts['danger'] = $error_message;
             }
         }
-        $this->customer_view->renderCustomerRegisterPage($alerts, $customer_data);
+        return [$customer_data, $alerts];
     }
-    
-    //CUSTOMER HELPER METHODS:
 
     private function handleCustomerPost()
     {
@@ -210,7 +216,7 @@ class CustomerController extends Controller
             if (empty($_POST["email"]) || empty($_POST["password"])) {
                 $this->returnToIndexWithAlert("Please enter username and password.");
             }
-            $customer = $this->fetchCustomerByEmail($_POST["email"]);
+            $customer = $this->customer_model->fetchCustomerByEmail($_POST["email"]);
             if (!$customer) {
                 $this->returnToIndexWithAlert("Incorrect username/email.");
             }
