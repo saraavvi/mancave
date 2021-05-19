@@ -9,7 +9,7 @@ class AdminView extends View
 
     public function renderLoginPage()
     {
-        include_once "partials/head.php";
+        $this->renderAdminHead("Admin - Log in");
 
         include_once "partials/adminLogin.php";
 
@@ -30,7 +30,7 @@ class AdminView extends View
             $this->renderListItemsProducts($products);
             $this->renderListEnd();
         }
-        include_once "app/views/partials/footer.php";
+        $this->renderFooter();
     }
 
     public function renderProductCreatePage($brands, $categories, $alerts)
@@ -48,7 +48,7 @@ class AdminView extends View
         );
         $this->renderAlerts($alerts);
         $this->renderForm($brands, $categories);
-        include_once "app/views/partials/footer.php";
+        $this->renderFooter();
     }
 
     public function renderProductUpdatePage(
@@ -65,7 +65,7 @@ class AdminView extends View
         );
         $this->renderAlerts($errors);
         $this->renderForm($brands, $categories, $product_data);
-        include_once "app/views/partials/footer.php";
+        $this->renderFooter();
     }
 
     public function renderOrderListPage($orders, $alerts)
@@ -92,10 +92,15 @@ class AdminView extends View
             $this->renderListItemsOrders($orders);
             $this->renderListEnd();
         }
-        include_once "app/views/partials/footer.php";
+        $this->renderFooter();
     }
 
     // HELPER METHODS:
+
+    private function renderAdminHead($title)
+    {
+        include_once "partials/head.php";
+    }
 
     public function renderListStart($column_name_array)
     {
