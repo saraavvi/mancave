@@ -105,9 +105,10 @@ class Controller
      */
     private function getProductsByCategory()
     {
-        // if any add button is klicked on category page: get id from $_POST and push it to shopping_cart in session.
+        // if any add button is klicked on category page: get id from $_POST and edit shopping_cart in session.
         if (isset($_POST["add_to_cart"])) {
-            array_push($_SESSION["shopping_cart"], $_POST["product_id"]);
+            $id = $_POST["product_id"];
+            $this->handleShoppingCart($id);
         }
         $category = $this->sanitize($_GET["category"]);
         $products = $this->product_model->fetchProductsByCategory($category);
@@ -119,15 +120,30 @@ class Controller
      */
     private function getProductById()
     {
-        // if add buton is clicked on detail page: get id from url and push it to shopping_cart in session.
-        if (isset($_POST["add_to_cart"])) {
-            array_push($_SESSION["shopping_cart"], $_GET["id"]);
-        }
         $id = $this->sanitize($_GET['id']);
+        // if add button is clicked on detail page: get id from url and edit shopping_cart in session.
+        if (isset($_POST["add_to_cart"])) {
+            $this->handleShoppingCart($id);
+        }
+
         $product = $this->product_model->fetchProductById($id);
 
         if (!$product) echo 'Product id does not exist.';
         else $this->view->renderDetailPage($product);
+    }
+    /**
+     * edit shopping cart. 
+     * look if product id already exists. if it does - increase qty by 1, if not - add the item.
+     */
+    private function handleShoppingCart($id)
+    {
+        if (!array_key_exists($id, $_SESSION["shopping_cart"])) {
+            // om produkten ej finns i session - lägg till den
+            $_SESSION["shopping_cart"][$id] = 1;
+        } else {
+            //annars öka qty med 1
+            $_SESSION["shopping_cart"][$id]++;
+        }
     }
 
     /**
@@ -137,12 +153,13 @@ class Controller
     {
         $ids = $_SESSION['shopping_cart'];
         $products = array();
-        foreach ($ids as $id) {
-            $product = $this->product_model->fetchProductById($id);
+        foreach ($ids as $key => $value) {
+            $product = $this->product_model->fetchProductById($key);
             array_push($products, $product);
         }
         $this->view->renderShoppingCartPage($products);
     }
+
 
     private function adminIndex()
     {

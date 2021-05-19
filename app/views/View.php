@@ -49,16 +49,20 @@ class View
      */
     public function renderShoppingCartList($products)
     {
+        // print_r($_SESSION['shopping_cart']);
+
         $html = <<<HTML
         <div class="col-md-6 mt-5">
             <table class="table table-borderless">
                 <tbody> 
         HTML;
         foreach ($products as $product) {
+            $qty = $_SESSION['shopping_cart'][$product['id']];
             $html .= <<<HTML
                     <tr>
                         <td>$product[name]</td>
                         <td>$product[price] SEK</td>
+                        <td>$qty</td>
                         <td><button class='btn btn-danger'>x</button></td>
                     </tr>
             HTML;
