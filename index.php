@@ -4,8 +4,6 @@ if (empty($_SESSION['shopping_cart'])) {
     $_SESSION['shopping_cart'] = array();
 }
 
-session_start();
-
 require_once "app/models/Database.php";
 require_once "app/models/ProductModel.php";
 require_once "app/models/CustomerModel.php";

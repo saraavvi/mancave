@@ -256,7 +256,7 @@ class Controller
         } catch (Exception $e) {
             $alerts['danger'][] = 'Failed to place order, please try again later or contact our customer service.';
         }
-
+    }
 
     //ADMIN MAIN METHODS:
 
