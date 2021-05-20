@@ -108,15 +108,16 @@ class CustomerController extends Controller
     public function getCheckout()
     {
         print_r($_SESSION["shopping_cart"]);
-        $ids = $_SESSION["shopping_cart"];
+        $customer = $_SESSION["loggedinuser"];
+        $shopping_cart = $_SESSION["shopping_cart"];
         $total = 0;
         $products = [];
-        foreach ($ids as $key => $qty) {
-            $product = $this->product_model->fetchProductById($key);
+        foreach ($shopping_cart as $product_id => $qty) {
+            $product = $this->product_model->fetchProductById($product_id);
             array_push($products, $product);
             $total += $product["price"] * $qty;
         }
-        $this->customer_view->renderCheckoutPage($products, $total);
+        $this->customer_view->renderCheckoutPage($products, $total, $customer);
     }
 
     /***
@@ -126,11 +127,11 @@ class CustomerController extends Controller
      */
     public function handleNewOrder()
     {
-        $customer_id = $_SESSION["loggedinuser"]["id"];
+        $customer = $_SESSION["loggedinuser"];
         $shopping_cart = $_SESSION["shopping_cart"];
 
         try {
-            $order_id = $this->order_model->createNewOrder($customer_id); //order_id (lastInsertId)
+            $order_id = $this->order_model->createNewOrder($customer['id']); //order_id (lastInsertId)
             foreach ($shopping_cart as $product_id => $qty) {
                 $product = $this->product_model->fetchProductById($product_id);
                 $current_price = $product['price'];
@@ -142,10 +143,11 @@ class CustomerController extends Controller
                 );
             }
             $this->setAlert("success", "Order successfully placed. Thank you come again:)))");
+            // Skicka vidare till Anton.io's confirm order sida
         } catch (Exception $e) {
             $this->setAlert("danger", "Failed to place order, please try again later or contact our customer service.");
+            header('Location: ?page=checkout');
         }
-        // Skicka vidare till Anton.io's confirm order sida
     }
 
     // HELPER METHODS:

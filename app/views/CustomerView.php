@@ -59,7 +59,7 @@ class CustomerView extends View
     }
 
 
-    public function renderCheckoutPage($products, $total)
+    public function renderCheckoutPage($products, $total, $customer)
     {
 
         $column_name_array = array("Product name", "Amount", "Price each");
@@ -72,6 +72,7 @@ class CustomerView extends View
         }
         include_once "partials/list/productCheckoutTotal.php";
         include_once "partials/list/listEnd.php";
+        include_once "partials/customerCheckoutInfo.php";
         $this->renderButton("Confirm Order", "?page=checkout/process-order");
         $this->renderFooter();
     }
