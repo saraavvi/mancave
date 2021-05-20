@@ -24,6 +24,16 @@ class AdminController extends Controller
 
     // MAIN METHODS:
 
+    public function login()
+    {
+        $this->handleLogin();
+    }
+
+    public function logout()
+    {
+        $this->handleLogout();
+    }
+
     public function index()
     {
         $this->ensureAuthenticated();
@@ -216,10 +226,53 @@ class AdminController extends Controller
 
     private function ensureAuthenticated()
     {
-        // remove exclamation mark when admin login is fixed.
-        if (!empty($_SESSION["loggedinadmin"])) {
+        if (empty($_SESSION["loggedinadmin"])) {
             $this->admin_view->renderLoginPage();
             exit;
         }
+    }
+
+    public function handleLogin()
+    {
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            if (empty($_POST["email"]) || empty($_POST["password"])) {
+                $this->returnToLoginWithAlert(
+                    "Please enter username and password."
+                );
+            }
+            $admin = $this->admin_model->fetchAdminByEmail(
+                $_POST["email"]
+            );
+            if (!$admin) {
+                $this->returnToLoginWithAlert("Incorrect username/email.");
+            }
+            $hashed_password = $admin["password"];
+            $entered_password = $_POST["password"];
+            if (!password_verify($entered_password, $hashed_password)) {
+                $this->returnToLoginWithAlert("Incorrect password.");
+            } else {
+                //To prevent storing the password in session storage
+                $admin["password"] = null;
+                $_SESSION["loggedinadmin"] = $admin;
+                $this->setAlert("success", "Successfully Logged In!");
+                $this->index();
+            }
+            $this->returnToLoginWithAlert("Unexpected error!");
+        }
+        $this->admin_view->renderLoginPage();
+        exit();
+    }
+
+    public function handleLogout()
+    {
+        $_SESSION["loggedinadmin"] = null;
+        $this->returnToLoginWithAlert("Successfully Logged Out!", "success");
+    }
+
+    private function returnToLoginWithAlert($message, $style = "danger")
+    {
+        $this->setAlert($style, $message);
+        $this->admin_view->renderLoginPage();
+        exit();
     }
 }

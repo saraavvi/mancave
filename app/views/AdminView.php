@@ -9,9 +9,8 @@ class AdminView extends View
     public function renderLoginPage()
     {
         $this->renderHead("Admin - Log in");
-
+        $this->renderAlerts();
         include_once "partials/adminLogin.php";
-
         $this->renderFooter();
     }
 

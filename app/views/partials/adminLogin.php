@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
     <div class="col-md-6 col-sm-8 col-xs-12 p-4">
         <h3 class="modal-title text-center" id="loginModalLabel">Log in to your account:</h3>
-        <form action="?page=login" method="POST">
+        <form action="?page=admin/login" method="POST">
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Email address</label>
                 <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">

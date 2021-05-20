@@ -1,7 +1,7 @@
 <?php
 session_start();
-if (empty($_SESSION['shopping_cart'])) {
-    $_SESSION['shopping_cart'] = array();
+if (empty($_SESSION["shopping_cart"])) {
+    $_SESSION["shopping_cart"] = [];
 }
 
 //Model
@@ -28,30 +28,42 @@ $admin_model = new AdminModel($database);
 $customer_view = new CustomerView();
 $admin_view = new AdminView();
 //Controller
-$customer_controller = new CustomerController($order_model, $product_model, $customer_model, $customer_view);
-$admin_controller = new AdminController($order_model, $product_model, $admin_model, $admin_view);
+$customer_controller = new CustomerController(
+    $order_model,
+    $product_model,
+    $customer_model,
+    $customer_view
+);
+$admin_controller = new AdminController(
+    $order_model,
+    $product_model,
+    $admin_model,
+    $admin_view
+);
 
-$routes = array(
+$routes = [
     // Customer routes
-    '' => [$customer_controller, 'index'],
-    'register' => [$customer_controller, 'register'],
-    'login' => [$customer_controller, 'login'], // In case no /?page=...
-    'logout' => [$customer_controller, 'logout'], // In case no /?page=...
-    'products' => [$customer_controller, 'getProductsByCategory'],
-    'products/details' => [$customer_controller, 'getProductById'],
-    'shoppingcart' => [$customer_controller, 'getShoppingCart'],
-    'checkout/process-order' => [$customer_controller, 'orderConfirmation'],
-    'checkout' => [$customer_controller, 'getCheckout'],
+    "" => [$customer_controller, "index"], // In case no /?page=...
+    "register" => [$customer_controller, "register"],
+    "login" => [$customer_controller, "login"],
+    "logout" => [$customer_controller, "logout"],
+    "products" => [$customer_controller, "getProductsByCategory"],
+    "products/details" => [$customer_controller, "getProductById"],
+    "shoppingcart" => [$customer_controller, "getShoppingCart"],
+    "checkout/process-order" => [$customer_controller, "orderConfirmation"],
+    "checkout" => [$customer_controller, "getCheckout"],
 
     // Admin routes
-    'admin' => [$admin_controller, 'index'],
-    'admin/products' => [$admin_controller, 'index'],
-    'admin/products/index' => [$admin_controller, 'index'],
-    'admin/products/create' => [$admin_controller, 'productCreate'],
-    'admin/products/update' => [$admin_controller, 'productUpdate'],
-    'admin/products/delete' => [$admin_controller, 'productDelete'],
-    'admin/orders/delete' => [$admin_controller, 'orderDelete'],
-    'admin/orders' => [$admin_controller, 'orderList'],
-);
+    "admin/login" => [$admin_controller, "login"],
+    "admin/logout" => [$admin_controller, "logout"],
+    "admin" => [$admin_controller, "index"],
+    "admin/products" => [$admin_controller, "index"],
+    "admin/products/index" => [$admin_controller, "index"],
+    "admin/products/create" => [$admin_controller, "productCreate"],
+    "admin/products/update" => [$admin_controller, "productUpdate"],
+    "admin/products/delete" => [$admin_controller, "productDelete"],
+    "admin/orders/delete" => [$admin_controller, "orderDelete"],
+    "admin/orders" => [$admin_controller, "orderList"],
+];
 
 $router = new Router($customer_controller, $admin_controller, $routes);
