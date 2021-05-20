@@ -52,30 +52,38 @@ class CustomerView extends View
     public function renderShoppingCartList($products)
     {
         // print_r($_SESSION['shopping_cart']);
+        // använda list start och list end sen istället
 
-
-        $html = <<<HTML
-        <div class="col-md-6 mt-5">
-            <table class="table table-borderless">
-                <tbody> 
-        HTML;
+        echo "
+        <div class='col-md-6 mt-5'>
+            <table class='table table-borderless'>
+                <tbody> ";
         foreach ($products as $product) {
             $qty = $_SESSION['shopping_cart'][$product['id']];
-            $html .= <<<HTML
-                    <tr>
-                        <td>$product[name]</td>
-                        <td>$product[price] SEK</td>
-                        <td>$qty</td>
-                        <td><a href="?page=shoppingcart&id=$product[id]&action=delete" class='btn btn-danger'>x</a></td>
-                    </tr>
-            HTML;
+            include "partials/shoppingCartItem.php";
         }
-        $html .= <<<HTML
-                    </tbody>
+        echo "  </tbody>
                 </table>
-            </div>
-            HTML;
-        echo $html;
+            </div>";
+    }
+
+
+    public function renderCheckoutPage($products, $total, $customer)
+    {
+
+        $column_name_array = array("Product name", "Amount", "Price each");
+        $this->renderHead("Mancave - Checkout");
+        $this->renderNav();
+        include_once "partials/list/listStart.php";
+        foreach ($products as $product) {
+            $qty = $_SESSION['shopping_cart'][$product['id']];
+            include "partials/list/productListCheckout.php";
+        }
+        include_once "partials/list/productCheckoutTotal.php";
+        include_once "partials/list/listEnd.php";
+        include_once "partials/customerCheckoutInfo.php";
+        $this->renderButton("Confirm Order", "?page=checkout/process-order");
+        $this->renderFooter();
     }
 
     public function renderProductPage($products)

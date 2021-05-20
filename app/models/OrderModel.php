@@ -93,7 +93,7 @@ class OrderModel
     /***
      * Create new order content, return last insert index
      */
-    public function createNewOrderContent($order_id, $order_row)
+    public function createNewOrderContent($order_id, $product_id, $qty, $current_price)
     {
         $statement = "INSERT INTO order_contents (
                 order_id,
@@ -111,9 +111,9 @@ class OrderModel
 
         $params = array(
             ':order_id' => $order_id,
-            ':product_id' => $order_row['product_id'],
-            ':quantity' => $order_row['quantity'],
-            ':price_each' => $order_row['price_each']
+            ':product_id' => $product_id,
+            ':quantity' => $qty,
+            ':price_each' => $current_price
         );
 
         $this->db->insert($statement, $params);

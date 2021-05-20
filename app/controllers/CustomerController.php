@@ -104,7 +104,7 @@ class CustomerController extends Controller
      */
     public function getShoppingCart()
     {
-        // print_r($_SESSION["shopping_cart"]);
+        print_r($_SESSION["shopping_cart"]);
         if (isset($_GET["action"]) && $_GET["action"] === "delete") {
             $id = $_GET["id"];
             $this->handleShoppingCartDelete($id);
@@ -117,6 +117,51 @@ class CustomerController extends Controller
             array_push($products, $product);
         }
         $this->customer_view->renderShoppingCartPage($products);
+    }
+
+    public function getCheckout()
+    {
+        print_r($_SESSION["shopping_cart"]);
+        $customer = $_SESSION["loggedinuser"];
+        $shopping_cart = $_SESSION["shopping_cart"];
+        $total = 0;
+        $products = [];
+        foreach ($shopping_cart as $product_id => $qty) {
+            $product = $this->product_model->fetchProductById($product_id);
+            array_push($products, $product);
+            $total += $product["price"] * $qty;
+        }
+        $this->customer_view->renderCheckoutPage($products, $total, $customer);
+    }
+
+    /***
+     * Handle new order placed by customer
+     * take info from session and send to order_model
+     * send success/error msg to customer_view
+     */
+    public function handleNewOrder()
+    {
+        $customer = $_SESSION["loggedinuser"];
+        $shopping_cart = $_SESSION["shopping_cart"];
+
+        try {
+            $order_id = $this->order_model->createNewOrder($customer['id']); //order_id (lastInsertId)
+            foreach ($shopping_cart as $product_id => $qty) {
+                $product = $this->product_model->fetchProductById($product_id);
+                $current_price = $product['price'];
+                $this->order_model->createNewOrderContent(
+                    $order_id,
+                    $product_id,
+                    $qty,
+                    $current_price
+                );
+            }
+            $this->setAlert("success", "Order successfully placed. Thank you come again:)))");
+            // Skicka vidare till Anton.io's confirm order sida
+        } catch (Exception $e) {
+            $this->setAlert("danger", "Failed to place order, please try again later or contact our customer service.");
+            header('Location: ?page=checkout');
+        }
     }
 
     // HELPER METHODS:
@@ -136,9 +181,9 @@ class CustomerController extends Controller
                 );
             } catch (Exception $error) {
                 $errors_array = json_decode($error->getMessage(), true);
-                if ($errors_array) {                    
+                if ($errors_array) {
                     foreach ($errors_array as $message) {
-                        $this->setAlert("danger", $message);  
+                        $this->setAlert("danger", $message);
                     }
                 }
             }
@@ -205,44 +250,6 @@ class CustomerController extends Controller
     private function handleShoppingCartDelete($id)
     {
         unset($_SESSION["shopping_cart"][$id]);
-    }
-
-    /***
-     * Handle new order placed by customer
-     * take info from session and send to order_model
-     * send success/error msg to customer_view
-     */
-    private function handleNewOrder()
-    {
-        // $shopping_cart = $_SESSION['shopping_cart']; eller hur man nu får den
-        // array_push($_SESSION['shopping_cart'], array(orderraden))
-        // $customer_id = $_SESSION['customer_id'];
-        $customer_id = 1;
-        // Vi tänker att shopping_cart ser ut såhär:
-        $shopping_cart = [
-            [
-                "product_id" => 1,
-                "quantity" => 2,
-                "price_each" => 30,
-            ],
-            [
-                "product_id" => 2,
-                "quantity" => 3,
-                "price_each" => 40,
-            ],
-        ];
-        try {
-            $order_id = $this->order_model->createNewOrder($customer_id); //order_id (lastInsertId)
-            foreach ($shopping_cart as $order_row) {
-                $this->order_model->createNewOrderContent(
-                    $order_id,
-                    $order_row
-                );
-            }
-            $this->setAlert("success", "Order successfully placed. Thank you come again:)))");
-        } catch (Exception $e) {
-            $this->setAlert("danger", "Failed to place order, please try again later or contact our customer service.");
-        }
     }
 
     public function handleLogin()
