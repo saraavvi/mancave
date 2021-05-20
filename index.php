@@ -49,7 +49,7 @@ $routes = [
     "logout" => [$customer_controller, "handleLogout"],
     "products" => [$customer_controller, "handleProducts"],
     "products/details" => [$customer_controller, "handleProductDetails"],
-    "shoppingcart" => [$customer_controller, "getShoppingCart"],
+    "shoppingcart" => [$customer_controller, "handleShoppingCart"],
     "checkout/process-order" => [$customer_controller, "orderConfirmation"],
     "checkout" => [$customer_controller, "getCheckout"],
 

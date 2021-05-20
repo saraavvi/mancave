@@ -77,20 +77,11 @@ class CustomerController extends Controller
     /**
      * get all products using the id:s inside shopping_cart array in session, then send them to the customer_view.
      */
-    public function getShoppingCart()
+    public function handleShoppingCart()
     {
         $logged_in = isset($_SESSION["loggedinuser"]);
-        if (isset($_GET["action"]) && $_GET["action"] === "delete") {
-            $id = $_GET["id"];
-            $this->handleShoppingCartDelete($id);
-        }
-
-        $ids = $_SESSION["shopping_cart"];
-        $products = [];
-        foreach ($ids as $key => $value) {
-            $product = $this->product_model->fetchProductById($key);
-            array_push($products, $product);
-        }
+        $this->initializeShoppingCartDeleteButton();
+        $products = $this->getShoppingCartItems();
         $this->customer_view->renderShoppingCartPage($products, $logged_in);
     }
 
@@ -244,9 +235,23 @@ class CustomerController extends Controller
         }
     }
 
-    private function handleShoppingCartDelete($id)
+    private function initializeShoppingCartDeleteButton()
     {
-        unset($_SESSION["shopping_cart"][$id]);
+        if (isset($_GET["action"]) && $_GET["action"] === "delete") {
+            $id = $_GET["id"];
+            unset($_SESSION["shopping_cart"][$id]);
+        }
+    }
+
+    private function getShoppingCartItems()
+    {
+        $ids = $_SESSION["shopping_cart"];
+        $products = [];
+        foreach ($ids as $key => $value) {
+            $product = $this->product_model->fetchProductById($key);
+            array_push($products, $product);
+        }
+        return $products;
     }
 
     /***
