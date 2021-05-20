@@ -16,7 +16,7 @@ if (!empty($_SESSION["loggedinuser"])) {
             if (empty($_SESSION["loggedinuser"])) {
                 echo '<div class="d-flex">
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <button type="button" class="btn fw-bold" data-bs-toggle="modal" data-bs-target="#loginModal">
                                 Log In
                             </button>
                         </div>';
@@ -24,8 +24,8 @@ if (!empty($_SESSION["loggedinuser"])) {
                 echo '<div class="d-flex">
                             <span class="align-self-center px-3"> Logged in as ';
                 echo $username;
-                echo '</span><a type="button" class="btn btn-outline-primary"  href="?page=logout">
-                            Log Out
+                echo '</span><a type="button" class="btn py-3 fw-bold" href="?page=logout">
+                            Log out
                         </a></div>';
             }
             ?>
@@ -34,7 +34,7 @@ if (!empty($_SESSION["loggedinuser"])) {
     <div class="container bg-white">
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid">
-                <a class="navbar-brand fs-1 text" href="/mancave">ManCave</a>
+                <a class="navbar-brand fs-1 mx-5" href="/mancave"><span class="brand">ManCave.</span></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
