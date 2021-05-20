@@ -85,7 +85,13 @@ class CustomerController extends Controller
         $this->customer_view->renderShoppingCartPage($products, $logged_in);
     }
 
-    public function orderConfirmation()
+    public function handleCheckout()
+    {
+        [$products, $total_price, $customer] = $this->getShoppingCartDetailsAndCustomer();
+        $this->customer_view->renderCheckoutPage($products, $total_price, $customer);
+    }
+
+    public function handlePlaceOrder()
     {
         [$customer, $order_id] = $this->handleNewOrder();
         if ($order_id) {
@@ -96,20 +102,6 @@ class CustomerController extends Controller
         } else {
             header("Location: ?page=checkout");
         }
-    }
-
-    public function getCheckout()
-    {
-        $customer = $_SESSION["loggedinuser"];
-        $shopping_cart = $_SESSION["shopping_cart"];
-        $total = 0;
-        $products = [];
-        foreach ($shopping_cart as $product_id => $qty) {
-            $product = $this->product_model->fetchProductById($product_id);
-            array_push($products, $product);
-            $total += $product["price"] * $qty;
-        }
-        $this->customer_view->renderCheckoutPage($products, $total, $customer);
     }
 
     // HELPER METHODS:
@@ -245,13 +237,27 @@ class CustomerController extends Controller
 
     private function getShoppingCartItems()
     {
-        $ids = $_SESSION["shopping_cart"];
+        $items = $_SESSION["shopping_cart"];
         $products = [];
-        foreach ($ids as $key => $value) {
+        foreach (array_keys($items) as $key) {
             $product = $this->product_model->fetchProductById($key);
             array_push($products, $product);
         }
         return $products;
+    }
+
+    private function getShoppingCartDetailsAndCustomer()
+    {
+        $customer = $_SESSION["loggedinuser"];
+        $shopping_cart = $_SESSION["shopping_cart"];
+        $total_price = 0;
+        $products = [];
+        foreach ($shopping_cart as $product_id => $qty) {
+            $product = $this->product_model->fetchProductById($product_id);
+            array_push($products, $product);
+            $total_price += $product["price"] * $qty;
+        }
+        return [$products, $total_price, $customer];
     }
 
     /***

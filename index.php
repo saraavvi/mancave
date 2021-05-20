@@ -50,8 +50,8 @@ $routes = [
     "products" => [$customer_controller, "handleProducts"],
     "products/details" => [$customer_controller, "handleProductDetails"],
     "shoppingcart" => [$customer_controller, "handleShoppingCart"],
-    "checkout/process-order" => [$customer_controller, "orderConfirmation"],
-    "checkout" => [$customer_controller, "getCheckout"],
+    "checkout" => [$customer_controller, "handleCheckout"],
+    "checkout/process-order" => [$customer_controller, "handlePlaceOrder"],
 
     // Admin routes
     "admin/login" => [$admin_controller, "login"],
