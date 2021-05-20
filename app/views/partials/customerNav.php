@@ -69,4 +69,4 @@
     }
 ?>
 
-<div class="row d-flex justify-content-center">
+<div class="row d-flex justify-content-center mt-3">
