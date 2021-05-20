@@ -4,29 +4,35 @@ require_once 'View.php';
 
 class AdminView extends View
 {
-
     // MAIN METHODS:
 
-    public function renderIndexPage($products, $alerts = [])
+    public function renderLoginPage()
     {
+        $this->renderHead("Admin - Log in");
+        $this->renderAlerts();
+        include_once "partials/adminLogin.php";
+        $this->renderFooter();
+    }
 
-        $this->renderHeader("admin - home", true);
+    public function renderIndexPage($products)
+    {
+        $this->renderHead("Admin - Home");
+        $this->renderNav(true);
         $this->renderButton("Add new product", "?page=admin/products/create");
 
-        // other possible errors than "No products to show"?
-        if ($alerts) {
-            $this->renderAlerts($alerts);
-        } else {
+        $this->renderAlerts();
+        if (!empty($products)) {
             $this->renderListStart(["#", "Name", "Stock", "Edit", "Delete"]);
             $this->renderListItemsProducts($products);
             $this->renderListEnd();
         }
-        include_once "app/views/partials/footer.php";
+        $this->renderFooter();
     }
 
-    public function renderProductCreatePage($brands, $categories, $alerts)
+    public function renderProductCreatePage($brands, $categories)
     {
-        $this->renderHeader("Admin Page - Create", true);
+        $this->renderHead("Admin - Create Product");
+        $this->renderNav(true);
         $this->renderButton(
             "Go back to product list",
             "?page=admin",
@@ -37,9 +43,9 @@ class AdminView extends View
             "?page=admin/orders",
             "secondary"
         );
-        $this->renderAlerts($alerts);
+        $this->renderAlerts();
         $this->renderForm($brands, $categories);
-        include_once "app/views/partials/footer.php";
+        $this->renderFooter();
     }
 
     public function renderProductUpdatePage(
@@ -48,7 +54,8 @@ class AdminView extends View
         $product_data,
         $errors = []
     ) {
-        $this->renderHeader("Admin Page - Update", true);
+        $this->renderHead("Admin - Update Product");
+        $this->renderNav(true);
         $this->renderButton(
             "Go back to product list",
             "?page=admin",
@@ -56,19 +63,20 @@ class AdminView extends View
         );
         $this->renderAlerts($errors);
         $this->renderForm($brands, $categories, $product_data);
-        include_once "app/views/partials/footer.php";
+        $this->renderFooter();
     }
 
-    public function renderOrderListPage($orders, $alerts)
+    public function renderOrderListPage($orders)
     {
-        $this->renderHeader("Admin - Order List", true);
+        $this->renderHead("Admin - Order List");
+        $this->renderNav(true);
         $this->renderButton(
             "Go back to product list",
             "?page=admin",
             "secondary"
         );
 
-        $this->renderAlerts($alerts);
+        $this->renderAlerts();
         // avoid rendering list if orders is empty (CODE READABILITY?)
         if (!empty($orders)) {
             $this->renderListStart([
@@ -83,7 +91,7 @@ class AdminView extends View
             $this->renderListItemsOrders($orders);
             $this->renderListEnd();
         }
-        include_once "app/views/partials/footer.php";
+        $this->renderFooter();
     }
 
     // HELPER METHODS:

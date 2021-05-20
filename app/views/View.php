@@ -3,9 +3,17 @@ class View
 {
     //HELPER METHODS:
 
-    protected function renderHeader($title, $admin = false)
+    protected function renderHead($title)
     {
-        include_once "app/views/partials/head.php";
+        include_once "partials/head.php";
+    }
+
+    /**
+     * Render customerNav as default. 
+     * Pass true as argument to render adminNav.
+     */
+    protected function renderNav($admin = false)
+    {
         if ($admin) {
             include_once "app/views/partials/adminNav.php";
         } else {
@@ -18,19 +26,16 @@ class View
         include_once "app/views/partials/footer.php";
     }
 
-    protected function renderAlerts($alerts)
+    protected function renderAlerts()
     {
+        $alerts = $_SESSION['alerts'] ?? array();
+
         foreach ($alerts as $category => $messages) {
             foreach ($messages as $message) {
-                echo "
-                    <div class='d-flex justify-content-center'>
-                        <div class='col-md-10 text-center alert alert-$category' role='alert'>
-                            $message
-                        </div>
-                    </div>
-                ";
+                include "partials/alert.php";
             }
         }
+        $this->cleanAlerts();
     }
 
     protected function renderButton($text, $href, $style = "primary")
@@ -41,5 +46,9 @@ class View
                 </div>
             HTML;
         echo $html;
+    }
+
+    private function cleanAlerts() {
+        $_SESSION['alerts'] = array();
     }
 }

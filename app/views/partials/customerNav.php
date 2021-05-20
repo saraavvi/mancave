@@ -8,26 +8,25 @@ if (!empty($_SESSION["loggedinuser"])) {
 
 <header class="sticky-top">
 
-
     <div class="border-bottom d-flex justify-content-end bg-light">
         <div class="d-flex px-3">
             <a class="nav-link" href="?page=shoppingcart"><i class="fa fa-shopping-cart fa-2x"></i>
             </a>
             <?php
             if (empty($_SESSION["loggedinuser"])) {
-                echo '<!-- Button trigger modal -->
-                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#loginModal">
-                            Log In
-                        </button>';
+                echo '<div class="d-flex">
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                Log In
+                            </button>
+                        </div>';
             } else {
-                echo '<a type="button" class="btn" href="?page=logout">
-                            Log Out
-                            </a>
-                            </li>
-                            <li class="nav-item d-flex align-items-center px-3">
-                            <span> Logged in as ';
+                echo '<div class="d-flex">
+                            <span class="align-self-center px-3"> Logged in as ';
                 echo $username;
-                echo "</span>";
+                echo '</span><a type="button" class="btn btn-outline-primary"  href="?page=logout">
+                            Log Out
+                        </a></div>';
             }
             ?>
         </div>

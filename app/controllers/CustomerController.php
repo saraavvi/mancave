@@ -34,10 +34,20 @@ class CustomerController extends Controller
         $this->customer_view->renderIndexPage();
     }
 
+    public function orderConfirmation()
+    {
+        [$customer, $order_id] = $this->handleNewOrder();
+        if($order_id) {
+            $this->customer_view->renderOrderConfirmationPage($customer, $order_id);
+        } else {
+            header("Location: ?page=checkout");
+        }
+    }
+
     public function register()
     {
-        [$customer_data, $alerts] = $this->handleRegister();
-        $this->customer_view->renderRegisterPage($alerts, $customer_data);
+        $customer_data = $this->handleRegister();
+        $this->customer_view->renderRegisterPage($customer_data);
     }
 
     public function login()
@@ -90,7 +100,7 @@ class CustomerController extends Controller
      */
     public function getShoppingCart()
     {
-        // print_r($_SESSION["shopping_cart"]);
+        $logged_in = isset($_SESSION["loggedinuser"]);
         if (isset($_GET["action"]) && $_GET["action"] === "delete") {
             $id = $_GET["id"];
             $this->handleShoppingCartDelete($id);
@@ -102,7 +112,21 @@ class CustomerController extends Controller
             $product = $this->product_model->fetchProductById($key);
             array_push($products, $product);
         }
-        $this->customer_view->renderShoppingCartPage($products);
+        $this->customer_view->renderShoppingCartPage($products, $logged_in);
+    }
+
+    public function getCheckout()
+    {
+        $customer = $_SESSION["loggedinuser"];
+        $shopping_cart = $_SESSION["shopping_cart"];
+        $total = 0;
+        $products = [];
+        foreach ($shopping_cart as $product_id => $qty) {
+            $product = $this->product_model->fetchProductById($product_id);
+            array_push($products, $product);
+            $total += $product["price"] * $qty;
+        }
+        $this->customer_view->renderCheckoutPage($products, $total, $customer);
     }
 
     // HELPER METHODS:
@@ -110,7 +134,6 @@ class CustomerController extends Controller
     private function handleRegister()
     {
         $customer_data = [];
-        $alerts = [];
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             try {
                 $customer_data = $this->handleRegisterPost();
@@ -122,13 +145,15 @@ class CustomerController extends Controller
                     "success"
                 );
             } catch (Exception $error) {
-                $error_message = json_decode($error->getMessage(), true);
-                if ($error_message) {
-                    $alerts["danger"] = $error_message;
+                $errors_array = json_decode($error->getMessage(), true);
+                if ($errors_array) {
+                    foreach ($errors_array as $message) {
+                        $this->setAlert("danger", $message);
+                    }
                 }
             }
         }
-        return [$customer_data, $alerts];
+        return $customer_data;
     }
 
     private function handleRegisterPost()
@@ -197,39 +222,28 @@ class CustomerController extends Controller
      * take info from session and send to order_model
      * send success/error msg to customer_view
      */
-    private function handleNewOrder()
+    public function handleNewOrder()
     {
-        $alerts = [];
-        // $shopping_cart = $_SESSION['shopping_cart']; eller hur man nu får den
-        // array_push($_SESSION['shopping_cart'], array(orderraden))
-        // $customer_id = $_SESSION['customer_id'];
-        $customer_id = 1;
-        // Vi tänker att shopping_cart ser ut såhär:
-        $shopping_cart = [
-            [
-                "product_id" => 1,
-                "quantity" => 2,
-                "price_each" => 30,
-            ],
-            [
-                "product_id" => 2,
-                "quantity" => 3,
-                "price_each" => 40,
-            ],
-        ];
+        $customer = $_SESSION["loggedinuser"];
+        $shopping_cart = $_SESSION["shopping_cart"];
+
         try {
-            $order_id = $this->order_model->createNewOrder($customer_id); //order_id (lastInsertId)
-            foreach ($shopping_cart as $order_row) {
+            $order_id = $this->order_model->createNewOrder($customer['id']); //order_id (lastInsertId)
+            foreach ($shopping_cart as $product_id => $qty) {
+                $product = $this->product_model->fetchProductById($product_id);
+                $current_price = $product['price'];
                 $this->order_model->createNewOrderContent(
                     $order_id,
-                    $order_row
+                    $product_id,
+                    $qty,
+                    $current_price
                 );
             }
-            $alerts["success"][] =
-                "Order successfully placed. Thank you come again:)))";
+            unset($_SESSION["shopping_cart"]);
+            return [$customer, $order_id];
         } catch (Exception $e) {
-            $alerts["danger"][] =
-                "Failed to place order, please try again later or contact our customer service.";
+            $this->setAlert("danger", "Failed to place order, please try again later or contact our customer service.");
+            return false;
         }
     }
 
@@ -237,7 +251,7 @@ class CustomerController extends Controller
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if (empty($_POST["email"]) || empty($_POST["password"])) {
-                $this->returnToIndexWithAlert(
+                $this->rerenderPageWithAlert(
                     "Please enter username and password."
                 );
             }
@@ -245,23 +259,22 @@ class CustomerController extends Controller
                 $_POST["email"]
             );
             if (!$customer) {
-                $this->returnToIndexWithAlert("Incorrect username/email.");
+                $this->rerenderPageWithAlert("Incorrect username/email.");
             }
             $hashed_password = $customer["password"];
             $entered_password = $_POST["password"];
             if (!password_verify($entered_password, $hashed_password)) {
-                $this->returnToIndexWithAlert("Incorrect password.");
+                $this->rerenderPageWithAlert("Incorrect password.");
             } else {
+                //To prevent storing the password in session storage
+                $customer["password"] = null;
                 $_SESSION["loggedinuser"] = $customer;
-                $this->returnToIndexWithAlert(
-                    "Successfully Logged In!",
-                    "success"
-                );
+                $this->rerenderPageWithAlert("Successfully Logged In!", "success");
             }
-            $this->returnToIndexWithAlert("Unexpected error!");
+            $this->rerenderPageWithAlert("Unexpected error!");
         }
         echo "Page not found";
-        exit();
+        exit();       
     }
 
     public function handleLogout()
@@ -270,10 +283,17 @@ class CustomerController extends Controller
         $this->returnToIndexWithAlert("Successfully Logged Out!", "success");
     }
 
+    private function rerenderPageWithAlert($message, $style = "danger")
+    {
+        $this->setAlert($style, $message);
+        $current_page = $_POST['current_page'] ?? "";
+        header("Location: ?$current_page");
+        exit;
+    }
     private function returnToIndexWithAlert($message, $style = "danger")
     {
-        $alert[$style][] = $message;
-        $this->customer_view->renderIndexPage($alert);
+        $this->setAlert($style, $message);
+        $this->customer_view->renderIndexPage();
         exit();
     }
 }

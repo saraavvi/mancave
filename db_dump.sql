@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: May 19, 2021 at 01:26 PM
+-- Generation Time: May 20, 2021 at 01:27 PM
 -- Server version: 5.7.32
 -- PHP Version: 7.4.12
 
@@ -13,6 +13,30 @@ SET time_zone = "+00:00";
 --
 -- Database: `mancaveshop_db`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admins`
+--
+
+CREATE TABLE `admins` (
+  `id` int(11) NOT NULL,
+  `first_name` varchar(50) COLLATE utf8_swedish_ci NOT NULL,
+  `last_name` varchar(50) COLLATE utf8_swedish_ci NOT NULL,
+  `email` varchar(50) COLLATE utf8_swedish_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8_swedish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+
+--
+-- Dumping data for table `admins`
+--
+
+INSERT INTO `admins` (`id`, `first_name`, `last_name`, `email`, `password`) VALUES
+(1, 'Björn', 'Tirsén', 'bjorn@tirsen.com', '$2y$10$lPbBahotuWIOSmzM5UdvtuTXRFSDCcVfMWCXa30slaRo3ie/KwnG2'),
+(2, 'Maja', 'Thunberg', 'maja@mancave.com', '$2y$10$lPbBahotuWIOSmzM5UdvtuTXRFSDCcVfMWCXa30slaRo3ie/KwnG2'),
+(3, 'Sara', 'Viktorsson', 'sara@catmail.com', '$2y$10$lPbBahotuWIOSmzM5UdvtuTXRFSDCcVfMWCXa30slaRo3ie/KwnG2'),
+(4, 'Antonio', 'Axelsson', 'antonio@mancave.com', '$2y$10$lPbBahotuWIOSmzM5UdvtuTXRFSDCcVfMWCXa30slaRo3ie/KwnG2');
 
 -- --------------------------------------------------------
 
@@ -189,6 +213,12 @@ INSERT INTO `statuses` (`id`, `name`) VALUES
 --
 
 --
+-- Indexes for table `admins`
+--
+ALTER TABLE `admins`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `brands`
 --
 ALTER TABLE `brands`
@@ -241,6 +271,12 @@ ALTER TABLE `statuses`
 --
 
 --
+-- AUTO_INCREMENT for table `admins`
+--
+ALTER TABLE `admins`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `brands`
 --
 ALTER TABLE `brands`
@@ -256,7 +292,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `orders`

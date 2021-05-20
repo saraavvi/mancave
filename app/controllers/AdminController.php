@@ -9,6 +9,7 @@ class AdminController extends Controller
     private $admin_model;
     private $admin_view;
 
+
     public function __construct(
         $order_model,
         $product_model,
@@ -23,59 +24,73 @@ class AdminController extends Controller
 
     // MAIN METHODS:
 
+    public function login()
+    {
+        $this->handleLogin();
+    }
+
+    public function logout()
+    {
+        $this->handleLogout();
+    }
+
     public function index()
     {
-        $alerts = array();
+        $this->ensureAuthenticated();
         $products = $this->product_model->fetchAllProducts();
-
         if (empty($products)) {
-            $alerts['warning'][] = "No products to show.";
+            $this->setAlert("info", "No products to show.");
         }
-        
-        $this->admin_view->renderIndexPage($products, $alerts);
+        $this->admin_view->renderIndexPage($products);
     }
 
     public function productCreate()
     {
+        $this->ensureAuthenticated();
         $product_data = array();
-        $alerts = array();
 
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             try {
                 $product_data = $this->handleProductPost();
-                $this->product_model->createProduct($product_data);
+                $product_id = $this->product_model->createProduct($product_data);
+                $this->setAlert("success", "Product successfully created with #id: $product_id");
                 header("Location: ?page=admin/products");
                 exit();
             } catch (Exception $error) {
-                $error_message = json_decode($error->getMessage(), true);
-                $alerts['danger'] = $error_message;
+                $errors_array = json_decode($error->getMessage(), true);
+                foreach ($errors_array as $message) {
+                    $this->setAlert("danger", $message);
+                }
             }
         }
 
         $brands = $this->product_model->fetchAllBrands();
         $categories = $this->product_model->fetchAllCategories();
-        $this->admin_view->renderProductCreatePage($brands, $categories, $alerts);
+        $this->admin_view->renderProductCreatePage($brands, $categories);
     }
 
 
     public function productUpdate()
     {
+        $this->ensureAuthenticated();
         $this->conditionForExit(empty($_GET['id']));
 
         $id = (int)$this->sanitize($_GET['id']);
         $product_data = array();
-        $alerts = array();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             try {
                 $product_data = $this->handleProductPost();
                 $this->product_model->updateProductById($id, $product_data);
+                $this->setAlert("success", "Product successfully updated");
                 header('Location: ?page=admin/products');
                 exit;
             } catch (Exception $error) {
-                $error_message = json_decode($error->getMessage(), true);
-                $alerts['danger'] = $error_message;
+                $errors_array = json_decode($error->getMessage(), true);
+                foreach ($errors_array as $message) {
+                    $this->setAlert("danger", $message);
+                }
             }
         }
 
@@ -84,59 +99,70 @@ class AdminController extends Controller
         $product_data = $this->product_model->fetchProductById($id);
         //TODO: Better error handling
         if (!$product_data) echo 'Product id does not exist.';
-        else $this->admin_view->renderProductUpdatePage($brands, $categories, $product_data, $alerts);
+        else $this->admin_view->renderProductUpdatePage($brands, $categories, $product_data);
     }
 
-    public function productDelete() {
-        if ($_GET['action'] === "delete")
-        $product_id = (int)$_GET['id'];
-        $row_count = $this->product_model->deleteProductById($product_id);
-        return $row_count;
-    }
-
-    public function orderDelete() 
+    public function productDelete()
     {
-        $alerts = array();
+        $this->ensureAuthenticated();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $product_id = (int)$_POST['id'];
+                $row_count = $this->product_model->deleteProductById($product_id);
+                if ($row_count > 0) {
+                    $this->setAlert("success", "Product successfully deleted.");
+                } else {
+                    $this->setAlert("warning", "No product found with this ID.");
+                }
+            } catch (Exception $error) {
+                $this->setAlert("danger", "Product could not be deleted.");
+            }
+        }
+        header('Location: ?page=admin/products');
+    }
+
+    public function orderDelete()
+    {
+        $this->ensureAuthenticated();
         try {
             $order_id = (int)$_GET['id'];
             if ($order_id) {
                 $row_count = $this->order_model->deleteOrder($order_id);
                 if ($row_count > 0) {
-                    $alerts['success'][] = "Successfully deleted $row_count order(s).";
+                    $this->setAlert("success", "Successfully deleted $row_count order(s).");
                 } else {
-                    $alerts['warning'][] = " Order with id #$order_id could not be found.";
+                    $this->setAlert("warning", "Order with id #$order_id could not be found.");
                 }
             }
-            $this->orderList($alerts);
         } catch (Exception $error) {
-            $alerts['danger'][] = "This order can not be deleted.";
-            $this->orderList($alerts);
+            $this->setAlert("danger", "This order can not be deleted.");
         }
+        $this->orderList();
     }
 
-    public function orderList($alerts = array())
+    public function orderList()
     {
-        $alerts = $alerts;
+        $this->ensureAuthenticated();
         if (isset($_GET['status_id'])) {
             try {
                 $row_count = $this->handleOrderStatusUpdate();
                 if ($row_count > 0) {
-                    $alerts['success'][] = "Status was updated for $row_count order(s).";
+                    $this->setAlert("success", "Status was updated for $row_count order(s).");
                 } else {
-                    $alerts['warning'][] = "Unable to update to this status for this order.";
+                    $this->setAlert("warning", "Unable to update to this status for this order.");
                 }
             } catch (Exception $error) {
-                $alerts['danger'][] = "Unable to update status.";
+                $this->setAlert("danger", "Unable to update status.");
             }
         }
-        
+
         //TODO: create order functionality
         //$statuses = $this->order_model->fetchAllStatuses(); //värt?
         $orders = $this->order_model->fetchAllOrders();
         if (empty($orders)) {
-            $alerts['warning'][] = "No orders to show.";
+            $this->setAlert("info", "No orders to show.");
         }
-        $this->admin_view->renderOrderListPage($orders, $alerts);
+        $this->admin_view->renderOrderListPage($orders);
     }
 
     // HELPER METHODS:
@@ -184,7 +210,7 @@ class AdminController extends Controller
         }
     }
 
-    public function handleOrderStatusUpdate() 
+    private function handleOrderStatusUpdate()
     {
         $order_id = (int)$this->sanitize($_GET['id']);
         $status_id = (int)$this->sanitize($_GET['status_id']);
@@ -196,5 +222,58 @@ class AdminController extends Controller
             return $row_count;
         }
         return false;
+    }
+
+    private function ensureAuthenticated()
+    {
+        if (empty($_SESSION["loggedinadmin"])) {
+            $this->admin_view->renderLoginPage();
+            exit;
+        }
+    }
+
+    public function handleLogin()
+    {
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            if (empty($_POST["email"]) || empty($_POST["password"])) {
+                $this->returnToLoginWithAlert(
+                    "Please enter username and password."
+                );
+            }
+            $admin = $this->admin_model->fetchAdminByEmail(
+                $_POST["email"]
+            );
+            if (!$admin) {
+                $this->returnToLoginWithAlert("Incorrect username/email.");
+            }
+            $hashed_password = $admin["password"];
+            $entered_password = $_POST["password"];
+            if (!password_verify($entered_password, $hashed_password)) {
+                $this->returnToLoginWithAlert("Incorrect password.");
+            } else {
+                //To prevent storing the password in session storage
+                $admin["password"] = null;
+                $_SESSION["loggedinadmin"] = $admin;
+                $this->setAlert("success", "Successfully Logged In!");
+                $this->index();
+                exit;
+            }
+            $this->returnToLoginWithAlert("Unexpected error!");
+        }
+        $this->admin_view->renderLoginPage();
+        exit();
+    }
+
+    public function handleLogout()
+    {
+        $_SESSION["loggedinadmin"] = null;
+        $this->returnToLoginWithAlert("Successfully Logged Out!", "success");
+    }
+
+    private function returnToLoginWithAlert($message, $style = "danger")
+    {
+        $this->setAlert($style, $message);
+        $this->admin_view->renderLoginPage();
+        exit();
     }
 }
