@@ -251,6 +251,8 @@ class AdminController extends Controller
             if (!password_verify($entered_password, $hashed_password)) {
                 $this->returnToLoginWithAlert("Incorrect password.");
             } else {
+                //To prevent storing the password in session storage
+                $admin["password"] = null;
                 $_SESSION["loggedinadmin"] = $admin;
                 $this->setAlert("success", "Successfully Logged In!");
                 $this->index();

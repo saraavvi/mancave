@@ -250,6 +250,8 @@ class CustomerController extends Controller
             if (!password_verify($entered_password, $hashed_password)) {
                 $this->returnToIndexWithAlert("Incorrect password.");
             } else {
+                //To prevent storing the password in session storage
+                $customer["password"] = null;
                 $_SESSION["loggedinuser"] = $customer;
                 $this->returnToIndexWithAlert(
                     "Successfully Logged In!",
