@@ -56,20 +56,14 @@ class CustomerView extends View
      */
     public function renderShoppingCartList($products)
     {
-        // print_r($_SESSION['shopping_cart']);
-        // använda list start och list end sen istället
+        $column_name_array = array("Product name", "Price each", "Amount", "Delete");
 
-        echo "
-        <div class='col-md-6 mt-5'>
-            <table class='table table-borderless'>
-                <tbody> ";
+        include_once "partials/list/listStart.php";
         foreach ($products as $product) {
             $qty = $_SESSION['shopping_cart'][$product['id']];
             include "partials/shoppingCartItem.php";
         }
-        echo "  </tbody>
-                </table>
-            </div>";
+        include_once "partials/list/listStart.php";
     }
 
 
