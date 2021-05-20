@@ -90,7 +90,7 @@ class CustomerController extends Controller
      */
     public function getShoppingCart()
     {
-        // print_r($_SESSION["shopping_cart"]);
+        print_r($_SESSION["shopping_cart"]);
         if (isset($_GET["action"]) && $_GET["action"] === "delete") {
             $id = $_GET["id"];
             $this->handleShoppingCartDelete($id);
@@ -103,6 +103,20 @@ class CustomerController extends Controller
             array_push($products, $product);
         }
         $this->customer_view->renderShoppingCartPage($products);
+    }
+
+    public function getCheckout()
+    {
+        print_r($_SESSION["shopping_cart"]);
+        $ids = $_SESSION["shopping_cart"];
+        $total = 0;
+        $products = [];
+        foreach ($ids as $key => $qty) {
+            $product = $this->product_model->fetchProductById($key);
+            array_push($products, $product);
+            $total += $product["price"] * $qty;
+        }
+        $this->customer_view->renderCheckoutPage($products, $total);
     }
 
     // HELPER METHODS:
@@ -122,9 +136,9 @@ class CustomerController extends Controller
                 );
             } catch (Exception $error) {
                 $errors_array = json_decode($error->getMessage(), true);
-                if ($errors_array) {                    
+                if ($errors_array) {
                     foreach ($errors_array as $message) {
-                        $this->setAlert("danger", $message);  
+                        $this->setAlert("danger", $message);
                     }
                 }
             }

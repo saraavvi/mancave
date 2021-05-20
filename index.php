@@ -40,6 +40,8 @@ $routes = array(
     'products' => [$customer_controller, 'getProductsByCategory'],
     'products/details' => [$customer_controller, 'getProductById'],
     'shoppingcart' => [$customer_controller, 'getShoppingCart'],
+    'checkout/process-order' => [$customer_controller, 'handleNewOrder'],
+    'checkout' => [$customer_controller, 'getCheckout'],
     // Admin routes
     'admin' => [$admin_controller, 'index'],
     'admin/products' => [$admin_controller, 'index'],
