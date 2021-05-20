@@ -18,6 +18,7 @@
                         <input type="password" class="form-control" id="password" name="password">
                     </div>
                     <div class="d-grid gap-2 col-6 mx-auto">
+                        <input type="hidden" name="current_page" value="<?= $_SERVER["QUERY_STRING"] ?>">
                         <button type="submit" class="btn btn-primary" type="button">Log In</button>
                     </div>
                 </form>

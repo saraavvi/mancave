@@ -36,16 +36,12 @@ class CustomerController extends Controller
 
     public function orderConfirmation()
     {
-        // $order = $this->getOrderById()
-            // $this->order_model->fetchOrderById($id);
-        
-        // placeholder data needed from order_model
-        $order = [
-            'customer_name' => 'Glennifer',
-            'orders.id' => 122233,
-            'customers.email' => 'b@b.y'
-        ];
-        $this->customer_view->renderOrderConfirmationPage($order);
+        [$customer, $order_id] = $this->handleNewOrder();
+        if($order_id) {
+            $this->customer_view->renderOrderConfirmationPage($customer, $order_id);
+        } else {
+            header("Location: ?page=checkout");
+        }
     }
 
     public function register()
@@ -104,7 +100,7 @@ class CustomerController extends Controller
      */
     public function getShoppingCart()
     {
-        print_r($_SESSION["shopping_cart"]);
+        $logged_in = isset($_SESSION["loggedinuser"]);
         if (isset($_GET["action"]) && $_GET["action"] === "delete") {
             $id = $_GET["id"];
             $this->handleShoppingCartDelete($id);
@@ -116,12 +112,11 @@ class CustomerController extends Controller
             $product = $this->product_model->fetchProductById($key);
             array_push($products, $product);
         }
-        $this->customer_view->renderShoppingCartPage($products);
+        $this->customer_view->renderShoppingCartPage($products, $logged_in);
     }
 
     public function getCheckout()
     {
-        print_r($_SESSION["shopping_cart"]);
         $customer = $_SESSION["loggedinuser"];
         $shopping_cart = $_SESSION["shopping_cart"];
         $total = 0;
@@ -132,36 +127,6 @@ class CustomerController extends Controller
             $total += $product["price"] * $qty;
         }
         $this->customer_view->renderCheckoutPage($products, $total, $customer);
-    }
-
-    /***
-     * Handle new order placed by customer
-     * take info from session and send to order_model
-     * send success/error msg to customer_view
-     */
-    public function handleNewOrder()
-    {
-        $customer = $_SESSION["loggedinuser"];
-        $shopping_cart = $_SESSION["shopping_cart"];
-
-        try {
-            $order_id = $this->order_model->createNewOrder($customer['id']); //order_id (lastInsertId)
-            foreach ($shopping_cart as $product_id => $qty) {
-                $product = $this->product_model->fetchProductById($product_id);
-                $current_price = $product['price'];
-                $this->order_model->createNewOrderContent(
-                    $order_id,
-                    $product_id,
-                    $qty,
-                    $current_price
-                );
-            }
-            $this->setAlert("success", "Order successfully placed. Thank you come again:)))");
-            // Skicka vidare till Anton.io's confirm order sida
-        } catch (Exception $e) {
-            $this->setAlert("danger", "Failed to place order, please try again later or contact our customer service.");
-            header('Location: ?page=checkout');
-        }
     }
 
     // HELPER METHODS:
@@ -252,11 +217,41 @@ class CustomerController extends Controller
         unset($_SESSION["shopping_cart"][$id]);
     }
 
+    /***
+     * Handle new order placed by customer
+     * take info from session and send to order_model
+     * send success/error msg to customer_view
+     */
+    public function handleNewOrder()
+    {
+        $customer = $_SESSION["loggedinuser"];
+        $shopping_cart = $_SESSION["shopping_cart"];
+
+        try {
+            $order_id = $this->order_model->createNewOrder($customer['id']); //order_id (lastInsertId)
+            foreach ($shopping_cart as $product_id => $qty) {
+                $product = $this->product_model->fetchProductById($product_id);
+                $current_price = $product['price'];
+                $this->order_model->createNewOrderContent(
+                    $order_id,
+                    $product_id,
+                    $qty,
+                    $current_price
+                );
+            }
+            unset($_SESSION["shopping_cart"]);
+            return [$customer, $order_id];
+        } catch (Exception $e) {
+            $this->setAlert("danger", "Failed to place order, please try again later or contact our customer service.");
+            return false;
+        }
+    }
+
     public function handleLogin()
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if (empty($_POST["email"]) || empty($_POST["password"])) {
-                $this->returnToIndexWithAlert(
+                $this->rerenderPageWithAlert(
                     "Please enter username and password."
                 );
             }
@@ -264,23 +259,21 @@ class CustomerController extends Controller
                 $_POST["email"]
             );
             if (!$customer) {
-                $this->returnToIndexWithAlert("Incorrect username/email.");
+                $this->rerenderPageWithAlert("Incorrect username/email.");
             }
             $hashed_password = $customer["password"];
             $entered_password = $_POST["password"];
             if (!password_verify($entered_password, $hashed_password)) {
-                $this->returnToIndexWithAlert("Incorrect password.");
+                $this->rerenderPageWithAlert("Incorrect password.");
             } else {
+                $customer["password"] = null;
                 $_SESSION["loggedinuser"] = $customer;
-                $this->returnToIndexWithAlert(
-                    "Successfully Logged In!",
-                    "success"
-                );
+                $this->rerenderPageWithAlert("Successfully Logged In!", "success");
             }
-            $this->returnToIndexWithAlert("Unexpected error!");
+            $this->rerenderPageWithAlert("Unexpected error!");
         }
         echo "Page not found";
-        exit();
+        exit();       
     }
 
     public function handleLogout()
@@ -289,6 +282,13 @@ class CustomerController extends Controller
         $this->returnToIndexWithAlert("Successfully Logged Out!", "success");
     }
 
+    private function rerenderPageWithAlert($message, $style = "danger")
+    {
+        $this->setAlert($style, $message);
+        $current_page = $_POST['current_page'] ?? "";
+        header("Location: ?$current_page");
+        exit;
+    }
     private function returnToIndexWithAlert($message, $style = "danger")
     {
         $this->setAlert($style, $message);

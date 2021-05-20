@@ -4,12 +4,12 @@
         <div class="card-body">
             <h3 class="card-title text-center">Order Successfully Placed!</h3>
             <p class="card-tex text-center">
-                Thanks <?= $order['customer_name'] ?>!<br>
+                Thanks <?= $customer['first_name'] ?> <?= $customer['last_name'] ?>!<br>
                 We're happy to let you know that we've received your order.
             </p>
             <p class="card-tex text-center">
-                Your order number is <?= $order['orders.id'] ?>.<br>
-                Order details has been sent to <?= $order['customers.email'] ?>.
+                Your order number is <?= $order_id ?>.<br>
+                Order details has been sent to <?= $customer['email'] ?>.
             </p>
             <p class="card-tex text-center">
                 Once your package ships, we will send you an email with a tracking number and link so you can see the movement of your package.

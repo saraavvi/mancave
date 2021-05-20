@@ -27,19 +27,24 @@ class CustomerView extends View
     /**
      * display the whole shopping cart page
      */
-    public function renderShoppingCartPage($products)
+    public function renderShoppingCartPage($products, $logged_in = false)
     {
         $this->renderHead("ManCave - Shopping Cart");
         $this->renderNav();
+        $this->renderAlerts();
         $this->renderShoppingCartList($products);
         //skickar med en tom sträng som href nu. Ändra sen
-        $this->renderButton("Continue to checkout", "");
+        if ($logged_in) {
+            $this->renderButton("Continue to checkout", "?page=checkout/process-order");
+        } else {
+            $this->renderModalButton();
+            $_SESSION['next_page'] = "?page=order/confirmation";
+        }
         $this->renderFooter();
     }
 
-    public function renderOrderConfirmationPage($order)
+    public function renderOrderConfirmationPage($customer, $order_id)
     {
-        
         $this->renderHead("Mancave - Order Successful");
         $this->renderNav();
         include_once "app/views/partials/orderConfirmation.php";
@@ -105,22 +110,32 @@ class CustomerView extends View
 
     //CUSTOMER HELPER METHODS:
 
-    public function renderRegisterForm($customer_data = null)
+    private function renderRegisterForm($customer_data = null)
     {
         include_once "app/views/partials/registerform.php";
     }
 
-    public function renderCustomerProductList($products)
+    private function renderCustomerProductList($products)
     {
         include_once "app/views/partials/customerProductList.php";
     }
 
 
-    public function renderProductDetails($product)
+    private function renderProductDetails($product)
     {
 
         //  Bara för att visa produkten just nu - byt ut detta mot vad vi vill visa på den här sidan.
 
         include_once "app/views/partials/productDetails.php";
+    }
+
+    private function renderModalButton()
+    {
+        $html = <<<HTML
+                <div class="d-flex justify-content-center p-1">
+                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Log in to continue to checkout</a>
+                </div>
+            HTML;
+        echo $html;
     }
 }
