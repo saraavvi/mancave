@@ -101,6 +101,12 @@ class CustomerController extends Controller
     public function getShoppingCart()
     {
         $logged_in = isset($_SESSION["loggedinuser"]);
+
+        // update quantity:
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $this->handleShoppingCartQtyUpdate();
+        }
+
         if (isset($_GET["action"]) && $_GET["action"] === "delete") {
             $id = $_GET["id"];
             $this->handleShoppingCartDelete($id);
@@ -209,6 +215,15 @@ class CustomerController extends Controller
         } else {
             //annars öka qty med 1
             $_SESSION["shopping_cart"][$id]++;
+        }
+    }
+
+    private function handleShoppingCartQtyUpdate()
+    {
+        $id = $this->getAndValidatePost('id', true);
+        $qty = $this->getAndValidatePost('qty', true);
+        if ($id && $qty) {
+            $_SESSION["shopping_cart"][$id] = $qty;
         }
     }
 
