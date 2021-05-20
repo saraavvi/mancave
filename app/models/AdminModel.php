@@ -10,7 +10,7 @@ class AdminModel
 
     public function fetchAdminByEmail($email)
     {
-        $statement = "SELECT * FROM customers WHERE email = :email";
+        $statement = "SELECT * FROM employees WHERE email = :email";
         $params = array(":email" => $email);
         $customer = $this->db->select($statement, $params);
         return $customer[0] ?? false;
