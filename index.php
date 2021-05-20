@@ -33,14 +33,16 @@ $admin_controller = new AdminController($order_model, $product_model, $admin_mod
 
 $routes = array(
     // Customer routes
-    '' => [$customer_controller, 'index'],
+    '' => [$customer_controller, 'index'], // In case no /?page=...
     'register' => [$customer_controller, 'register'],
-    'login' => [$customer_controller, 'login'], // In case no /?page=...
-    'logout' => [$customer_controller, 'logout'], // In case no /?page=...
+    'login' => [$customer_controller, 'login'],
+    'logout' => [$customer_controller, 'logout'],
     'products' => [$customer_controller, 'getProductsByCategory'],
     'products/details' => [$customer_controller, 'getProductById'],
     'shoppingcart' => [$customer_controller, 'getShoppingCart'],
     // Admin routes
+    'admin/login' => [$admin_controller, 'login'],
+    'admin/logout' => [$admin_controller, 'logout'],
     'admin' => [$admin_controller, 'index'],
     'admin/products' => [$admin_controller, 'index'],
     'admin/products/index' => [$admin_controller, 'index'],
