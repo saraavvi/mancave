@@ -60,7 +60,7 @@ class AdminController extends Controller
                 $errors_array = json_decode($error->getMessage(), true);
                 foreach ($errors_array as $message) {
                     $this->setAlert("danger", $message);
-                }                
+                }
             }
         }
 
@@ -109,7 +109,7 @@ class AdminController extends Controller
             try {
                 $product_id = (int)$_POST['id'];
                 $row_count = $this->product_model->deleteProductById($product_id);
-                if($row_count > 0) {
+                if ($row_count > 0) {
                     $this->setAlert("success", "Product successfully deleted.");
                 } else {
                     $this->setAlert("warning", "No product found with this ID.");
@@ -121,7 +121,7 @@ class AdminController extends Controller
         header('Location: ?page=admin/products');
     }
 
-    public function orderDelete() 
+    public function orderDelete()
     {
         $this->ensureAuthenticated();
         try {
@@ -155,7 +155,7 @@ class AdminController extends Controller
                 $this->setAlert("danger", "Unable to update status.");
             }
         }
-        
+
         //TODO: create order functionality
         //$statuses = $this->order_model->fetchAllStatuses(); //värt?
         $orders = $this->order_model->fetchAllOrders();
@@ -210,7 +210,7 @@ class AdminController extends Controller
         }
     }
 
-    private function handleOrderStatusUpdate() 
+    private function handleOrderStatusUpdate()
     {
         $order_id = (int)$this->sanitize($_GET['id']);
         $status_id = (int)$this->sanitize($_GET['status_id']);
@@ -256,6 +256,7 @@ class AdminController extends Controller
                 $_SESSION["loggedinadmin"] = $admin;
                 $this->setAlert("success", "Successfully Logged In!");
                 $this->index();
+                exit;
             }
             $this->returnToLoginWithAlert("Unexpected error!");
         }
