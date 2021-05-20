@@ -119,6 +119,35 @@ class CustomerController extends Controller
         $this->customer_view->renderCheckoutPage($products, $total);
     }
 
+    /***
+     * Handle new order placed by customer
+     * take info from session and send to order_model
+     * send success/error msg to customer_view
+     */
+    public function handleNewOrder()
+    {
+        $customer_id = $_SESSION["loggedinuser"]["id"];
+        $shopping_cart = $_SESSION["shopping_cart"];
+
+        try {
+            $order_id = $this->order_model->createNewOrder($customer_id); //order_id (lastInsertId)
+            foreach ($shopping_cart as $product_id => $qty) {
+                $product = $this->product_model->fetchProductById($product_id);
+                $current_price = $product['price'];
+                $this->order_model->createNewOrderContent(
+                    $order_id,
+                    $product_id,
+                    $qty,
+                    $current_price
+                );
+            }
+            $this->setAlert("success", "Order successfully placed. Thank you come again:)))");
+        } catch (Exception $e) {
+            $this->setAlert("danger", "Failed to place order, please try again later or contact our customer service.");
+        }
+        // Skicka vidare till Anton.io's confirm order sida
+    }
+
     // HELPER METHODS:
 
     private function handleRegister()
@@ -205,34 +234,6 @@ class CustomerController extends Controller
     private function handleShoppingCartDelete($id)
     {
         unset($_SESSION["shopping_cart"][$id]);
-    }
-
-    /***
-     * Handle new order placed by customer
-     * take info from session and send to order_model
-     * send success/error msg to customer_view
-     */
-    private function handleNewOrder()
-    {
-        // $shopping_cart = $_SESSION['shopping_cart']; eller hur man nu får den
-        // array_push($_SESSION['shopping_cart'], array(orderraden))
-        // $customer_id = $_SESSION['customer_id'];
-        $customer_id = 1;
-        // Vi tänker att shopping_cart ser ut såhär:
-        // [1] => 2 [11] => 1 [9] => 1
-        $shopping_cart = [];
-        try {
-            $order_id = $this->order_model->createNewOrder($customer_id); //order_id (lastInsertId)
-            foreach ($shopping_cart as $order_row) {
-                $this->order_model->createNewOrderContent(
-                    $order_id,
-                    $order_row
-                );
-            }
-            $this->setAlert("success", "Order successfully placed. Thank you come again:)))");
-        } catch (Exception $e) {
-            $this->setAlert("danger", "Failed to place order, please try again later or contact our customer service.");
-        }
     }
 
     public function handleLogin()
