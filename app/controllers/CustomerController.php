@@ -34,6 +34,20 @@ class CustomerController extends Controller
         $this->customer_view->renderIndexPage();
     }
 
+    public function orderConfirmation()
+    {
+        // $order = $this->getOrderById()
+            // $this->order_model->fetchOrderById($id);
+        
+        // placeholder data needed from order_model
+        $order = [
+            'customer_name' => 'Glennifer',
+            'orders.id' => 122233,
+            'customers.email' => 'b@b.y'
+        ];
+        $this->customer_view->renderOrderConfirmationPage($order);
+    }
+
     public function register()
     {
         $customer_data = $this->handleRegister();
