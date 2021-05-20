@@ -3,9 +3,17 @@ class View
 {
     //HELPER METHODS:
 
-    protected function renderHeader($title, $admin = false)
+    protected function renderHead($title)
     {
-        include_once "app/views/partials/head.php";
+        include_once "partials/head.php";
+    }
+
+    /**
+     * Render customerNav as default. 
+     * Pass true as argument to render adminNav.
+     */
+    protected function renderNav($admin = false)
+    {
         if ($admin) {
             include_once "app/views/partials/adminNav.php";
         } else {

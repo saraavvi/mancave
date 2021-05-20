@@ -25,6 +25,7 @@ class AdminController extends Controller
 
     public function index()
     {
+        $this->ensureAuthenticated();
         $alerts = array();
         $products = $this->product_model->fetchAllProducts();
 
@@ -37,6 +38,7 @@ class AdminController extends Controller
 
     public function productCreate()
     {
+        $this->ensureAuthenticated();
         $product_data = array();
         $alerts = array();
 
@@ -60,6 +62,7 @@ class AdminController extends Controller
 
     public function productUpdate()
     {
+        $this->ensureAuthenticated();
         $this->conditionForExit(empty($_GET['id']));
 
         $id = (int)$this->sanitize($_GET['id']);
@@ -87,7 +90,9 @@ class AdminController extends Controller
         else $this->admin_view->renderProductUpdatePage($brands, $categories, $product_data, $alerts);
     }
 
-    public function productDelete() {
+    public function productDelete()
+    {
+        $this->ensureAuthenticated();
         if ($_GET['action'] === "delete")
         $product_id = (int)$_GET['id'];
         $row_count = $this->product_model->deleteProductById($product_id);
@@ -96,6 +101,7 @@ class AdminController extends Controller
 
     public function orderDelete() 
     {
+        $this->ensureAuthenticated();
         $alerts = array();
         try {
             $order_id = (int)$_GET['id'];
@@ -116,6 +122,7 @@ class AdminController extends Controller
 
     public function orderList($alerts = array())
     {
+        $this->ensureAuthenticated();
         $alerts = $alerts;
         if (isset($_GET['status_id'])) {
             try {
@@ -184,7 +191,7 @@ class AdminController extends Controller
         }
     }
 
-    public function handleOrderStatusUpdate() 
+    private function handleOrderStatusUpdate() 
     {
         $order_id = (int)$this->sanitize($_GET['id']);
         $status_id = (int)$this->sanitize($_GET['status_id']);
@@ -196,5 +203,14 @@ class AdminController extends Controller
             return $row_count;
         }
         return false;
+    }
+
+    private function ensureAuthenticated()
+    {
+        // remove exclamation mark when admin login is fixed.
+        if (!empty($_SESSION["loggedinadmin"])) {
+            $this->admin_view->renderLoginPage();
+            exit;
+        }
     }
 }
