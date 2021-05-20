@@ -4,7 +4,7 @@
     <td>
         <form method="post" action="#" style="display: inline-block">
             <input  type="hidden" name="id" value="<?= $product['id'] ?>"/>
-            <select name="qty" onchange="this.form.submit()" class="form-control">
+            <select name="qty" onchange="this.form.submit()" class="form-control" style="min-width: 4em;">
                 <?php 
                 for ($i = 1; $i <= $product['stock']; $i++) {
                     $selected = $i === $qty ? "selected" : "";

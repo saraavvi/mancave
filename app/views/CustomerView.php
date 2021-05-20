@@ -88,6 +88,7 @@ class CustomerView extends View
     {
         $this->renderHead("Mancave - Products");
         $this->renderNav();
+        $this->renderAlerts();
         $this->renderCustomerProductList($products);
         $this->renderFooter();
     }
@@ -96,6 +97,7 @@ class CustomerView extends View
     {
         $this->renderHead("Mancave - Product Details");
         $this->renderNav();
+        $this->renderAlerts();
         $this->renderProductDetails($product);
         $this->renderFooter();
     }

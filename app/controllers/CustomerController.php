@@ -216,6 +216,7 @@ class CustomerController extends Controller
             //annars öka qty med 1
             $_SESSION["shopping_cart"][$id]++;
         }
+        $this->setAlert("success", "Added to shopping cart");
     }
 
     private function handleShoppingCartQtyUpdate()
@@ -225,6 +226,7 @@ class CustomerController extends Controller
         if ($id && $qty) {
             $_SESSION["shopping_cart"][$id] = $qty;
         }
+        $this->setAlert("success", "Shopping cart updated");
     }
 
     private function handleShoppingCartDelete($id)
