@@ -43,6 +43,23 @@ class CustomerView extends View
         $this->renderFooter();
     }
 
+    public function renderCheckoutPage($products, $total, $customer)
+    {
+        $column_name_array = array("Product name", "Amount", "Price each");
+        $this->renderHead("Mancave - Checkout");
+        $this->renderNav();
+        include_once "partials/list/listStart.php";
+        foreach ($products as $product) {
+            $qty = $_SESSION['shopping_cart'][$product['id']];
+            include "partials/list/productListCheckout.php";
+        }
+        include_once "partials/list/productCheckoutTotal.php";
+        include_once "partials/list/listEnd.php";
+        include_once "partials/customerCheckoutInfo.php";
+        $this->renderButton("Confirm Order", "?page=checkout/process-order");
+        $this->renderFooter();
+    }
+
     public function renderOrderConfirmationPage($customer, $order_id)
     {
         $this->renderHead("Mancave - Order Successful");
@@ -54,7 +71,7 @@ class CustomerView extends View
     /**
      * help method for shopping cart page - lists all products in the cart. 
      */
-    public function renderShoppingCartList($products)
+    private function renderShoppingCartList($products)
     {
         // print_r($_SESSION['shopping_cart']);
         // använda list start och list end sen istället
@@ -70,25 +87,6 @@ class CustomerView extends View
         echo "  </tbody>
                 </table>
             </div>";
-    }
-
-
-    public function renderCheckoutPage($products, $total, $customer)
-    {
-
-        $column_name_array = array("Product name", "Amount", "Price each");
-        $this->renderHead("Mancave - Checkout");
-        $this->renderNav();
-        include_once "partials/list/listStart.php";
-        foreach ($products as $product) {
-            $qty = $_SESSION['shopping_cart'][$product['id']];
-            include "partials/list/productListCheckout.php";
-        }
-        include_once "partials/list/productCheckoutTotal.php";
-        include_once "partials/list/listEnd.php";
-        include_once "partials/customerCheckoutInfo.php";
-        $this->renderButton("Confirm Order", "?page=checkout/process-order");
-        $this->renderFooter();
     }
 
     public function renderProductPage($products)

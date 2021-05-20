@@ -79,10 +79,9 @@ class CustomerController extends Controller
      */
     public function handleShoppingCart()
     {
-        $logged_in = isset($_SESSION["loggedinuser"]);
         $this->initializeShoppingCartDeleteButton();
-        $products = $this->getShoppingCartItems();
-        $this->customer_view->renderShoppingCartPage($products, $logged_in);
+        [$products, $customer] = $this->getShoppingCartDetailsAndCustomer();
+        $this->customer_view->renderShoppingCartPage($products, $customer);
     }
 
     public function handleCheckout()
@@ -235,17 +234,6 @@ class CustomerController extends Controller
         }
     }
 
-    private function getShoppingCartItems()
-    {
-        $items = $_SESSION["shopping_cart"];
-        $products = [];
-        foreach (array_keys($items) as $key) {
-            $product = $this->product_model->fetchProductById($key);
-            array_push($products, $product);
-        }
-        return $products;
-    }
-
     private function getShoppingCartDetailsAndCustomer()
     {
         $customer = $_SESSION["loggedinuser"];
@@ -257,7 +245,7 @@ class CustomerController extends Controller
             array_push($products, $product);
             $total_price += $product["price"] * $qty;
         }
-        return [$products, $total_price, $customer];
+        return [$products, $customer, $total_price];
     }
 
     /***
