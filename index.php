@@ -43,7 +43,7 @@ $admin_controller = new AdminController(
 
 $routes = [
     // Customer routes
-    "" => [$customer_controller, "index"], // In case no /?page=...
+    "" => [$customer_controller, "handleIndex"], // In case no /?page=...
     "register" => [$customer_controller, "register"],
     "login" => [$customer_controller, "login"],
     "logout" => [$customer_controller, "logout"],

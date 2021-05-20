@@ -23,7 +23,7 @@ class CustomerController extends Controller
 
     // MAIN METHODS:
 
-    public function index()
+    public function handleindex()
     {
         /* // Rendera random produkt på förstasidan:
         $products = $this->product_model->fetchAllProducts();
