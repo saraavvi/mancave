@@ -37,6 +37,15 @@ class CustomerView extends View
         $this->renderFooter();
     }
 
+    public function renderOrderConfirmationPage($order)
+    {
+        
+        $this->renderHead("Mancave - Order Successful");
+        $this->renderNav();
+        include_once "app/views/partials/orderConfirmation.php";
+        $this->renderFooter();
+    }
+
     /**
      * help method for shopping cart page - lists all products in the cart. 
      */
