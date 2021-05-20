@@ -7,10 +7,10 @@
 ?>
 
 <header>
-    <h1 class="text-center mt-5">ManCave</h1>
+    <h1 class="text-center mt-5"><a href="?page=index" class="header-name">ManCave<a></h1>
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/mancave">Home</a>
+            <a class="navbar-brand" href="?page=index">Home</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>

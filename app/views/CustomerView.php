@@ -62,7 +62,7 @@ class CustomerView extends View
             $qty = $_SESSION['shopping_cart'][$product['id']];
             include "partials/shoppingCartItem.php";
         }
-        include_once "partials/list/listStart.php";
+        include_once "partials/list/listEnd.php";
     }
 
 
