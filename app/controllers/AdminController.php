@@ -278,8 +278,7 @@ class AdminController extends Controller
                 $admin["password"] = null;
                 $_SESSION["loggedinadmin"] = $admin;
                 $this->setAlert("success", "Successfully Logged In!");
-                $this->index();
-                exit;
+                header("Location: ?page=admin");
             }
             $this->returnToLoginWithAlert("Unexpected error!");
         }
