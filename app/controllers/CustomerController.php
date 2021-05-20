@@ -36,8 +36,8 @@ class CustomerController extends Controller
 
     public function register()
     {
-        [$customer_data, $alerts] = $this->handleRegister();
-        $this->customer_view->renderRegisterPage($alerts, $customer_data);
+        $customer_data = $this->handleRegister();
+        $this->customer_view->renderRegisterPage($customer_data);
     }
 
     public function login()
@@ -110,7 +110,6 @@ class CustomerController extends Controller
     private function handleRegister()
     {
         $customer_data = [];
-        $alerts = [];
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             try {
                 $customer_data = $this->handleRegisterPost();
@@ -122,13 +121,15 @@ class CustomerController extends Controller
                     "success"
                 );
             } catch (Exception $error) {
-                $error_message = json_decode($error->getMessage(), true);
-                if ($error_message) {
-                    $alerts["danger"] = $error_message;
+                $errors_array = json_decode($error->getMessage(), true);
+                if ($errors_array) {                    
+                    foreach ($errors_array as $message) {
+                        $this->setAlert("danger", $message);  
+                    }
                 }
             }
         }
-        return [$customer_data, $alerts];
+        return $customer_data;
     }
 
     private function handleRegisterPost()
@@ -199,7 +200,6 @@ class CustomerController extends Controller
      */
     private function handleNewOrder()
     {
-        $alerts = [];
         // $shopping_cart = $_SESSION['shopping_cart']; eller hur man nu får den
         // array_push($_SESSION['shopping_cart'], array(orderraden))
         // $customer_id = $_SESSION['customer_id'];
@@ -225,11 +225,9 @@ class CustomerController extends Controller
                     $order_row
                 );
             }
-            $alerts["success"][] =
-                "Order successfully placed. Thank you come again:)))";
+            $this->setAlert("success", "Order successfully placed. Thank you come again:)))");
         } catch (Exception $e) {
-            $alerts["danger"][] =
-                "Failed to place order, please try again later or contact our customer service.";
+            $this->setAlert("danger", "Failed to place order, please try again later or contact our customer service.");
         }
     }
 
@@ -272,8 +270,8 @@ class CustomerController extends Controller
 
     private function returnToIndexWithAlert($message, $style = "danger")
     {
-        $alert[$style][] = $message;
-        $this->customer_view->renderIndexPage($alert);
+        $this->setAlert($style, $message);
+        $this->customer_view->renderIndexPage();
         exit();
     }
 }

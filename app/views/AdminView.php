@@ -4,7 +4,6 @@ require_once 'View.php';
 
 class AdminView extends View
 {
-
     // MAIN METHODS:
 
     public function renderLoginPage()
@@ -16,16 +15,14 @@ class AdminView extends View
         $this->renderFooter();
     }
 
-    public function renderIndexPage($products, $alerts = [])
+    public function renderIndexPage($products)
     {
         $this->renderHead("Admin - Home");
         $this->renderNav(true);
         $this->renderButton("Add new product", "?page=admin/products/create");
 
-        // other possible errors than "No products to show"?
-        if ($alerts) {
-            $this->renderAlerts($alerts);
-        } else {
+        $this->renderAlerts();
+        if (!empty($products)) {
             $this->renderListStart(["#", "Name", "Stock", "Edit", "Delete"]);
             $this->renderListItemsProducts($products);
             $this->renderListEnd();
@@ -33,7 +30,7 @@ class AdminView extends View
         $this->renderFooter();
     }
 
-    public function renderProductCreatePage($brands, $categories, $alerts)
+    public function renderProductCreatePage($brands, $categories)
     {
         $this->renderHead("Admin - Create Product");
         $this->renderNav(true);
@@ -47,7 +44,7 @@ class AdminView extends View
             "?page=admin/orders",
             "secondary"
         );
-        $this->renderAlerts($alerts);
+        $this->renderAlerts();
         $this->renderForm($brands, $categories);
         $this->renderFooter();
     }
@@ -70,7 +67,7 @@ class AdminView extends View
         $this->renderFooter();
     }
 
-    public function renderOrderListPage($orders, $alerts)
+    public function renderOrderListPage($orders)
     {
         $this->renderHead("Admin - Order List");
         $this->renderNav(true);
@@ -80,7 +77,7 @@ class AdminView extends View
             "secondary"
         );
 
-        $this->renderAlerts($alerts);
+        $this->renderAlerts();
         // avoid rendering list if orders is empty (CODE READABILITY?)
         if (!empty($orders)) {
             $this->renderListStart([
