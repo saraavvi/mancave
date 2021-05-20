@@ -22,7 +22,7 @@ class AdminView extends View
 
         $this->renderAlerts();
         if (!empty($products)) {
-            $this->renderListStart(["#", "Name", "Stock", "Edit", "Delete"]);
+            $this->renderListStart(["#", "Name", "Stock", "Edit", "Add to stock", "Delete"]);
             $this->renderListItemsProducts($products);
             $this->renderListEnd();
         }
