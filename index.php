@@ -44,11 +44,11 @@ $admin_controller = new AdminController(
 $routes = [
     // Customer routes
     "" => [$customer_controller, "handleIndex"], // In case no /?page=...
-    "register" => [$customer_controller, "register"],
-    "login" => [$customer_controller, "login"],
-    "logout" => [$customer_controller, "logout"],
-    "products" => [$customer_controller, "getProductsByCategory"],
-    "products/details" => [$customer_controller, "getProductById"],
+    "register" => [$customer_controller, "handleRegister"],
+    "login" => [$customer_controller, "handleLogin"],
+    "logout" => [$customer_controller, "handleLogout"],
+    "products" => [$customer_controller, "handleProducts"],
+    "products/details" => [$customer_controller, "handleProductDetails"],
     "shoppingcart" => [$customer_controller, "getShoppingCart"],
     "checkout/process-order" => [$customer_controller, "orderConfirmation"],
     "checkout" => [$customer_controller, "getCheckout"],

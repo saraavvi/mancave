@@ -23,53 +23,38 @@ class CustomerController extends Controller
 
     // MAIN METHODS:
 
-    public function handleindex()
+    public function handleIndex()
     {
         /* // Rendera random produkt på förstasidan:
         $products = $this->product_model->fetchAllProducts();
         shuffle($products);
         $product = $products[0];
         $this->view->renderCustomerIndexPage($product); */
-
         $this->customer_view->renderIndexPage();
     }
 
-    public function orderConfirmation()
+    public function handleRegister()
     {
-        [$customer, $order_id] = $this->handleNewOrder();
-        if($order_id) {
-            $this->customer_view->renderOrderConfirmationPage($customer, $order_id);
-        } else {
-            header("Location: ?page=checkout");
-        }
-    }
-
-    public function register()
-    {
-        $customer_data = $this->handleRegister();
+        $customer_data = $this->processRegisterForm();
         $this->customer_view->renderRegisterPage($customer_data);
     }
 
-    public function login()
+    public function handleLogin()
     {
-        $this->handleLogin();
+        $this->validateLoginForm();
     }
 
-    public function logout()
+    public function handleLogout()
     {
-        $this->handleLogout();
+        $this->logOutCustomer();
     }
 
     /**
      * list all products from the chosen category.
      */
-    public function getProductsByCategory()
+    public function handleProducts()
     {
-        // if any add button is klicked on category page: get id from $_POST and edit shopping_cart in session.
-        if (isset($_POST["add_to_cart"])) {
-            $id = $_POST["product_id"];
-            $this->handleShoppingCartAdd($id);
-        }
+        $this->initializeShoppingCartAddButton();
         $category = $this->sanitize($_GET["category"]);
         $products = $this->product_model->fetchProductsByCategory($category);
         $this->customer_view->renderProductPage($products);
@@ -78,21 +63,15 @@ class CustomerController extends Controller
     /**
      * display details about a specific product.
      */
-    public function getProductById()
+    public function handleProductDetails()
     {
+        $this->initializeShoppingCartAddButton();
         $id = $this->sanitize($_GET["id"]);
-        // if add button is clicked on detail page edit shopping_cart in session.
-        if (isset($_POST["add_to_cart"])) {
-            $this->handleShoppingCartAdd($id);
-        }
-
         $product = $this->product_model->fetchProductById($id);
-
         if (!$product) {
-            echo "Product id does not exist.";
-        } else {
-            $this->customer_view->renderDetailPage($product);
+            $this->rerenderPageWithAlert("Product id does not exist.");
         }
+        $this->customer_view->renderDetailPage($product);
     }
 
     /**
@@ -115,6 +94,19 @@ class CustomerController extends Controller
         $this->customer_view->renderShoppingCartPage($products, $logged_in);
     }
 
+    public function orderConfirmation()
+    {
+        [$customer, $order_id] = $this->handleNewOrder();
+        if ($order_id) {
+            $this->customer_view->renderOrderConfirmationPage(
+                $customer,
+                $order_id
+            );
+        } else {
+            header("Location: ?page=checkout");
+        }
+    }
+
     public function getCheckout()
     {
         $customer = $_SESSION["loggedinuser"];
@@ -131,12 +123,12 @@ class CustomerController extends Controller
 
     // HELPER METHODS:
 
-    private function handleRegister()
+    private function processRegisterForm()
     {
         $customer_data = [];
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             try {
-                $customer_data = $this->handleRegisterPost();
+                $customer_data = $this->validateRegisterForm();
                 $customer_id = $this->customer_model->createCustomer(
                     $customer_data
                 );
@@ -156,7 +148,7 @@ class CustomerController extends Controller
         return $customer_data;
     }
 
-    private function handleRegisterPost()
+    private function validateRegisterForm()
     {
         $errors = [];
 
@@ -197,57 +189,7 @@ class CustomerController extends Controller
         }
     }
 
-    /**
-     * method that edits the shopping cart in the session.
-     * look if product id already exists. if it does - increase qty by 1, if not - add the item.
-     */
-    private function handleShoppingCartAdd($id)
-    {
-        if (!array_key_exists($id, $_SESSION["shopping_cart"])) {
-            // om produkten ej finns i session - lägg till den
-            $_SESSION["shopping_cart"][$id] = 1;
-        } else {
-            //annars öka qty med 1
-            $_SESSION["shopping_cart"][$id]++;
-        }
-    }
-
-    private function handleShoppingCartDelete($id)
-    {
-        unset($_SESSION["shopping_cart"][$id]);
-    }
-
-    /***
-     * Handle new order placed by customer
-     * take info from session and send to order_model
-     * send success/error msg to customer_view
-     */
-    public function handleNewOrder()
-    {
-        $customer = $_SESSION["loggedinuser"];
-        $shopping_cart = $_SESSION["shopping_cart"];
-
-        try {
-            $order_id = $this->order_model->createNewOrder($customer['id']); //order_id (lastInsertId)
-            foreach ($shopping_cart as $product_id => $qty) {
-                $product = $this->product_model->fetchProductById($product_id);
-                $current_price = $product['price'];
-                $this->order_model->createNewOrderContent(
-                    $order_id,
-                    $product_id,
-                    $qty,
-                    $current_price
-                );
-            }
-            unset($_SESSION["shopping_cart"]);
-            return [$customer, $order_id];
-        } catch (Exception $e) {
-            $this->setAlert("danger", "Failed to place order, please try again later or contact our customer service.");
-            return false;
-        }
-    }
-
-    public function handleLogin()
+    public function validateLoginForm()
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if (empty($_POST["email"]) || empty($_POST["password"])) {
@@ -269,26 +211,83 @@ class CustomerController extends Controller
                 //To prevent storing the password in session storage
                 $customer["password"] = null;
                 $_SESSION["loggedinuser"] = $customer;
-                $this->rerenderPageWithAlert("Successfully Logged In!", "success");
+                $this->rerenderPageWithAlert(
+                    "Successfully Logged In!",
+                    "success"
+                );
             }
             $this->rerenderPageWithAlert("Unexpected error!");
         }
         echo "Page not found";
-        exit();       
+        exit();
     }
 
-    public function handleLogout()
+    private function logOutCustomer()
     {
         $_SESSION["loggedinuser"] = null;
         $this->returnToIndexWithAlert("Successfully Logged Out!", "success");
     }
 
+    private function initializeShoppingCartAddButton()
+    {
+        // If add button is klicked, get info from $_POST and add to cart in session.
+        if (isset($_POST["add_to_cart"])) {
+            $id = $_POST["product_id"];
+            $name = $_POST["product_name"];
+            //Add product or increase by one.
+            if (!array_key_exists($id, $_SESSION["shopping_cart"])) {
+                $_SESSION["shopping_cart"][$id] = 1;
+            } else {
+                $_SESSION["shopping_cart"][$id]++;
+            }
+            $this->rerenderPageWithAlert("$name added to cart", "info");
+        }
+    }
+
+    private function handleShoppingCartDelete($id)
+    {
+        unset($_SESSION["shopping_cart"][$id]);
+    }
+
+    /***
+     * Handle new order placed by customer
+     * take info from session and send to order_model
+     * send success/error msg to customer_view
+     */
+    public function handleNewOrder()
+    {
+        $customer = $_SESSION["loggedinuser"];
+        $shopping_cart = $_SESSION["shopping_cart"];
+
+        try {
+            $order_id = $this->order_model->createNewOrder($customer["id"]); //order_id (lastInsertId)
+            foreach ($shopping_cart as $product_id => $qty) {
+                $product = $this->product_model->fetchProductById($product_id);
+                $current_price = $product["price"];
+                $this->order_model->createNewOrderContent(
+                    $order_id,
+                    $product_id,
+                    $qty,
+                    $current_price
+                );
+            }
+            unset($_SESSION["shopping_cart"]);
+            return [$customer, $order_id];
+        } catch (Exception $e) {
+            $this->setAlert(
+                "danger",
+                "Failed to place order, please try again later or contact our customer service."
+            );
+            return false;
+        }
+    }
+
     private function rerenderPageWithAlert($message, $style = "danger")
     {
         $this->setAlert($style, $message);
-        $current_page = $_POST['current_page'] ?? "";
+        $current_page = $_POST["current_page"] ?? "";
         header("Location: ?$current_page");
-        exit;
+        exit();
     }
     private function returnToIndexWithAlert($message, $style = "danger")
     {
