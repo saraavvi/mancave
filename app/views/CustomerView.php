@@ -35,10 +35,9 @@ class CustomerView extends View
         $this->renderShoppingCartList($products);
         //skickar med en tom sträng som href nu. Ändra sen
         if ($logged_in) {
-            $this->renderButton("Continue to checkout", "?page=checkout/process-order");
+            $this->renderButton("Continue to checkout", "?page=checkout");
         } else {
             $this->renderModalButton();
-            $_SESSION['next_page'] = "?page=order/confirmation";
         }
         $this->renderFooter();
     }
