@@ -72,7 +72,7 @@ class CustomerView extends View
         }
         include_once "partials/list/productCheckoutTotal.php";
         include_once "partials/list/listEnd.php";
-        $this->renderButton("Confirm Order", "");
+        $this->renderButton("Confirm Order", "?page=checkout/process-order");
         $this->renderFooter();
     }
 

@@ -219,18 +219,8 @@ class CustomerController extends Controller
         // $customer_id = $_SESSION['customer_id'];
         $customer_id = 1;
         // Vi tänker att shopping_cart ser ut såhär:
-        $shopping_cart = [
-            [
-                "product_id" => 1,
-                "quantity" => 2,
-                "price_each" => 30,
-            ],
-            [
-                "product_id" => 2,
-                "quantity" => 3,
-                "price_each" => 40,
-            ],
-        ];
+        // [1] => 2 [11] => 1 [9] => 1
+        $shopping_cart = [];
         try {
             $order_id = $this->order_model->createNewOrder($customer_id); //order_id (lastInsertId)
             foreach ($shopping_cart as $order_row) {
