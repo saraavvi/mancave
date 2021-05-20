@@ -1,3 +1,6 @@
+<?php
+$adminname = $_SESSION["loggedinadmin"]["name"]; ?>
+
 <header>
     <h1 class="text-center mt-5">ManCave ADMIN</h1>
     <nav class="navbar navbar-expand-lg navbar-light">
@@ -13,13 +16,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="?page=admin/orders">Orders</a>
                     </li>
-                    <li class="nav-item">
-                        <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
-                            Log In
-                        </button>
-                    </li>
                 </ul>
+                <div class="d-flex">
+                    <span class="align-self-center px-3"> Logged in as <?= $adminname ?></span>
+                    <a type="button" class="btn btn-outline-primary"  href="?page=admin/logout">
+                        Log Out
+                    </a>
+                </div>
             </div>
         </div>
     </nav>

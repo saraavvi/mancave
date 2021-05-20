@@ -259,7 +259,7 @@ class AdminController extends Controller
             }
             $this->returnToLoginWithAlert("Unexpected error!");
         }
-        echo "Page not found";
+        $this->admin_view->renderLoginPage();
         exit();
     }
 

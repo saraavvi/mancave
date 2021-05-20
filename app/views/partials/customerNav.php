@@ -33,29 +33,29 @@
                         <a class="nav-link" href="#">Brands</a>
                     </li>
                     <li>
-                      <a class="nav-link" href="?page=shoppingcart">Shopping cart</a>
-                    </li>
-                    <li class="nav-item">
-                    <?php
-                        if (empty($_SESSION["loggedinuser"])) {
-                            echo '<!-- Button trigger modal -->
-                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
-                            Log In
-                        </button>';
-                        } else {
-                            echo '<a type="button" class="btn btn-outline-primary"  href="?page=logout">
-                            Log Out
-                            </a>
-                            </li>
-                            <li class="nav-item d-flex align-items-center px-3">
-                            <span> Logged in as ';
-                            echo $username;
-                            echo "</span>";
-                        }
-                    ?>
-                        
+                        <a class="nav-link" href="?page=shoppingcart">Shopping cart</a>
                     </li>
                 </ul>
+                <?php
+                    if (empty($_SESSION["loggedinuser"])) {
+                        echo '<div class="d-flex">
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                Log In
+                            </button>
+                        </div>';
+                    } else {
+                        echo '<div class="d-flex">
+                            <a type="button" class="btn btn-outline-primary"  href="?page=logout">
+                                Log Out
+                            </a>
+                            <li class="nav-item d-flex align-items-center px-3">
+                            <span> Logged in as ';
+                        echo $username;
+                        echo "</div></span>";
+                    }
+                ?>
+
                 <!-- <form class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
