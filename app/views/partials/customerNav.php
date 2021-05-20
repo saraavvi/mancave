@@ -46,11 +46,11 @@
                         </div>';
                     } else {
                         echo '<div class="d-flex">
-                            <span> Logged in as ';
+                            <span class="align-self-center px-3"> Logged in as ';
                         echo $username;
-                        echo '<a type="button" class="btn btn-outline-primary"  href="?page=logout">
+                        echo '</span><a type="button" class="btn btn-outline-primary"  href="?page=logout">
                             Log Out
-                        </a></div></span>';
+                        </a></div>';
                     }
                 ?>
 
