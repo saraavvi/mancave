@@ -9,7 +9,8 @@ class CustomerView extends View
 
     public function renderIndexPage()
     {
-        $this->renderHeader("ManCave - Home");
+        $this->renderHead("Mancave - Home");
+        $this->renderNav();
         $this->renderAlerts();
         include_once "app/views/partials/indexContent.php";
         $this->renderFooter();
@@ -17,7 +18,8 @@ class CustomerView extends View
 
     public function renderRegisterPage($customer_data = null)
     {
-        $this->renderHeader("New Customer");
+        $this->renderHead("Mancave - New Customer");
+        $this->renderNav();
         $this->renderAlerts();
         $this->renderRegisterForm($customer_data);
         include_once "app/views/partials/footer.php";
@@ -27,7 +29,8 @@ class CustomerView extends View
      */
     public function renderShoppingCartPage($products)
     {
-        $this->renderHeader("ManCave - Shopping Cart");
+        $this->renderHead("ManCave - Shopping Cart");
+        $this->renderNav();
         $this->renderShoppingCartList($products);
         //skickar med en tom sträng som href nu. Ändra sen
         $this->renderButton("Continue to checkout", "");
@@ -68,14 +71,16 @@ class CustomerView extends View
 
     public function renderProductPage($products)
     {
-        $this->renderHeader("mancave - products");
+        $this->renderHead("Mancave - Products");
+        $this->renderNav();
         $this->renderCustomerProductList($products);
         $this->renderFooter();
     }
 
     public function renderDetailPage($product)
     {
-        $this->renderHeader("mancave - products");
+        $this->renderHead("Mancave - Product Details");
+        $this->renderNav();
         $this->renderProductDetails($product);
         $this->renderFooter();
     }

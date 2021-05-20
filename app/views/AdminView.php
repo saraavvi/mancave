@@ -8,7 +8,7 @@ class AdminView extends View
 
     public function renderLoginPage()
     {
-        include_once "partials/head.php";
+        $this->renderHead("Admin - Log in");
 
         include_once "partials/adminLogin.php";
 
@@ -17,7 +17,8 @@ class AdminView extends View
 
     public function renderIndexPage($products)
     {
-        $this->renderHeader("admin - home", true);
+        $this->renderHead("Admin - Home");
+        $this->renderNav(true);
         $this->renderButton("Add new product", "?page=admin/products/create");
 
         $this->renderAlerts();
@@ -26,12 +27,13 @@ class AdminView extends View
             $this->renderListItemsProducts($products);
             $this->renderListEnd();
         }
-        include_once "app/views/partials/footer.php";
+        $this->renderFooter();
     }
 
     public function renderProductCreatePage($brands, $categories)
     {
-        $this->renderHeader("Admin Page - Create", true);
+        $this->renderHead("Admin - Create Product");
+        $this->renderNav(true);
         $this->renderButton(
             "Go back to product list",
             "?page=admin",
@@ -44,7 +46,7 @@ class AdminView extends View
         );
         $this->renderAlerts();
         $this->renderForm($brands, $categories);
-        include_once "app/views/partials/footer.php";
+        $this->renderFooter();
     }
 
     public function renderProductUpdatePage(
@@ -53,7 +55,8 @@ class AdminView extends View
         $product_data,
         $errors = []
     ) {
-        $this->renderHeader("Admin Page - Update", true);
+        $this->renderHead("Admin - Update Product");
+        $this->renderNav(true);
         $this->renderButton(
             "Go back to product list",
             "?page=admin",
@@ -61,12 +64,13 @@ class AdminView extends View
         );
         $this->renderAlerts($errors);
         $this->renderForm($brands, $categories, $product_data);
-        include_once "app/views/partials/footer.php";
+        $this->renderFooter();
     }
 
     public function renderOrderListPage($orders)
     {
-        $this->renderHeader("Admin - Order List", true);
+        $this->renderHead("Admin - Order List");
+        $this->renderNav(true);
         $this->renderButton(
             "Go back to product list",
             "?page=admin",
@@ -88,7 +92,7 @@ class AdminView extends View
             $this->renderListItemsOrders($orders);
             $this->renderListEnd();
         }
-        include_once "app/views/partials/footer.php";
+        $this->renderFooter();
     }
 
     // HELPER METHODS:
