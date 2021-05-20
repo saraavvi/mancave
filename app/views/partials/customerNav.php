@@ -1,74 +1,78 @@
 <?php
-    if (!empty($_SESSION["loggedinuser"])) {
-        $username = $_SESSION["loggedinuser"]["first_name"];
-        $username .= " ";
-        $username .= $_SESSION["loggedinuser"]["last_name"];
-    }
+if (!empty($_SESSION["loggedinuser"])) {
+    $username = $_SESSION["loggedinuser"]["first_name"];
+    $username .= " ";
+    $username .= $_SESSION["loggedinuser"]["last_name"];
+}
 ?>
 
-<header>
-    <h1 class="text-center mt-5">ManCave</h1>
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/mancave">Home</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+<header class="sticky-top">
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Products
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <!-- hämta kategorier från från databasen och skriv ut här istället sen -->
-                            <li><a class="dropdown-item" href="?page=products&category=1">Hobbies</a></li>
-                            <li><a class="dropdown-item" href="?page=products&category=2">Books</a></li>
-                            <li><a class="dropdown-item" href="?page=products&category=3">Interior</a></li>
-                            <li><a class="dropdown-item" href="?page=products&category=4">Health & Beauty</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Brands</a>
-                    </li>
-                    <li>
-                      <a class="nav-link" href="?page=shoppingcart">Shopping cart</a>
-                    </li>
-                    <li class="nav-item">
-                    <?php
-                        if (empty($_SESSION["loggedinuser"])) {
-                            echo '<!-- Button trigger modal -->
-                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+
+    <div class="border-bottom d-flex justify-content-end bg-light">
+        <div class="d-flex px-3">
+            <a class="nav-link" href="?page=shoppingcart"><i class="fa fa-shopping-cart fa-2x"></i>
+            </a>
+            <?php
+            if (empty($_SESSION["loggedinuser"])) {
+                echo '<!-- Button trigger modal -->
+                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#loginModal">
                             Log In
                         </button>';
-                        } else {
-                            echo '<a type="button" class="btn btn-outline-primary"  href="?page=logout">
+            } else {
+                echo '<a type="button" class="btn" href="?page=logout">
                             Log Out
                             </a>
                             </li>
                             <li class="nav-item d-flex align-items-center px-3">
                             <span> Logged in as ';
-                            echo $username;
-                            echo "</span>";
-                        }
-                    ?>
-                        
-                    </li>
-                </ul>
-                <!-- <form class="d-flex">
+                echo $username;
+                echo "</span>";
+            }
+            ?>
+        </div>
+    </div>
+    <div class="container bg-white">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid">
+                <a class="navbar-brand fs-1 text" href="/mancave">ManCave</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Products
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <!-- hämta kategorier från från databasen och skriv ut här istället sen -->
+                                <li><a class="dropdown-item" href="?page=products&category=1">Hobbies</a></li>
+                                <li><a class="dropdown-item" href="?page=products&category=2">Books</a></li>
+                                <li><a class="dropdown-item" href="?page=products&category=3">Interior</a></li>
+                                <li><a class="dropdown-item" href="?page=products&category=4">Health & Beauty</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Brands</a>
+                        </li>
+                    </ul>
+
+                    <!-- <form class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                     </form> -->
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </div>
+
 </header>
 
 <?php
-    if (empty($_SESSION["loggedinuser"])) {
-        include_once "app/views/partials/loginModal.php";
-    }
+if (empty($_SESSION["loggedinuser"])) {
+    include_once "app/views/partials/loginModal.php";
+}
 ?>
-
-<div class="row d-flex justify-content-center">
+<div class="container">
+    <div class="row d-flex justify-content-center">
