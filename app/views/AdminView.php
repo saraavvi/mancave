@@ -2,6 +2,13 @@
 
 require_once 'View.php';
 
+// INHERITED METHODS:
+// renderHead()
+// renderNav()
+// renderFooter()
+// renderAlerts()
+// renderButton()
+
 class AdminView extends View
 {
     // MAIN METHODS:
