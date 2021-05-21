@@ -14,4 +14,4 @@
     <link rel="stylesheet" href="public/styles/styles.css">
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
