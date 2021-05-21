@@ -63,38 +63,18 @@ class AdminController extends Controller
     {
         $this->ensureAuthenticated();
         $this->conditionForExit(empty($_GET["id"]));
-
         $id = (int) $this->sanitize($_GET["id"]);
-        $product_data = [];
-
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            try {
-                $product_data = $this->handleProductPost();
-                $this->product_model->updateProductById($id, $product_data);
-                $this->setAlert("success", "Product successfully updated");
-                header("Location: ?page=admin/products");
-                exit();
-            } catch (Exception $error) {
-                $errors_array = json_decode($error->getMessage(), true);
-                foreach ($errors_array as $message) {
-                    $this->setAlert("danger", $message);
-                }
-            }
-        }
-
+        $this->processProductUpdateById($id);
         $brands = $this->product_model->fetchAllBrands();
         $categories = $this->product_model->fetchAllCategories();
         $product_data = $this->product_model->fetchProductById($id);
         //TODO: Better error handling
-        if (!$product_data) {
-            echo "Product id does not exist.";
-        } else {
-            $this->admin_view->renderProductUpdatePage(
-                $brands,
-                $categories,
-                $product_data
-            );
-        }
+        if (!$product_data) echo 'Product id does not exist.';
+        $this->admin_view->renderProductUpdatePage(
+            $brands,
+            $categories,
+            $product_data
+        );
     }
 
     public function handleProductDelete()
@@ -326,6 +306,25 @@ class AdminController extends Controller
             return $product_data;
         } else {
             throw new Exception(json_encode($errors));
+        }
+    }
+
+    private function processProductUpdateById($id)
+    {
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $product_data = [];
+            try {
+                $product_data = $this->validateProductForm();
+                $this->product_model->updateProductById($id, $product_data);
+                $this->setAlert("success", "Product successfully updated");
+                header("Location: ?page=admin/products");
+                exit();
+            } catch (Exception $error) {
+                $errors_array = json_decode($error->getMessage(), true);
+                foreach ($errors_array as $message) {
+                    $this->setAlert("danger", $message);
+                }
+            }
         }
     }
 

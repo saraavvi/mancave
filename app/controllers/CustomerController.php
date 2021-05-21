@@ -319,6 +319,7 @@ class CustomerController extends Controller
         header("Location: ?$current_page");
         exit();
     }
+    
     private function returnToIndexWithAlert($message, $style = "danger")
     {
         $this->setAlert($style, $message);
