@@ -1,4 +1,5 @@
 <?php
+
 class View
 {
     //HELPER METHODS:
