@@ -39,11 +39,11 @@ class CustomerView extends View
         $this->renderHead("ManCave - Shopping Cart");
         $this->renderNav();
         $this->renderAlerts();
-        $this->renderShoppingCartList($products);
 
         if (empty($_SESSION["shopping_cart"])) {
             include_once "app/views/partials/emptyCart.php";
         } else {
+            $this->renderShoppingCartList($products);
             if ($logged_in) {
                 $this->renderButton("Continue to checkout", "?page=checkout");
             } else {
