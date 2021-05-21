@@ -106,8 +106,8 @@ class CustomerController extends Controller
         ] = $this->getShoppingCartDetailsAndCustomer();
         $this->customer_view->renderCheckoutPage(
             $products,
-            $total_price,
-            $customer
+            $customer,
+            $total_price
         );
     }
 
@@ -258,8 +258,8 @@ class CustomerController extends Controller
 
     private function handleShoppingCartQtyUpdate()
     {
-        $id = $this->getAndValidatePost('id', true);
-        $qty = $this->getAndValidatePost('qty', true);
+        $id = $this->getAndValidatePost("id", true);
+        $qty = $this->getAndValidatePost("qty", true);
         if ($id && $qty) {
             $_SESSION["shopping_cart"][$id] = $qty;
         }

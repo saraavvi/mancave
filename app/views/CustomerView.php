@@ -1,6 +1,6 @@
 <?php
 
-require_once 'View.php';
+require_once "View.php";
 
 // INHERITED METHODS:
 // renderHead()
@@ -11,7 +11,6 @@ require_once 'View.php';
 
 class CustomerView extends View
 {
-
     //CUSTOMER MAIN METHODS:
 
     public function renderIndexPage()
@@ -53,14 +52,14 @@ class CustomerView extends View
         $this->renderFooter();
     }
 
-    public function renderCheckoutPage($products, $total, $customer)
+    public function renderCheckoutPage($products, $customer, $total)
     {
-        $column_name_array = array("Product name", "Amount", "Price each");
+        $column_name_array = ["Product name", "Amount", "Price each"];
         $this->renderHead("Mancave - Checkout");
         $this->renderNav();
         include_once "partials/list/listStart.php";
         foreach ($products as $product) {
-            $qty = $_SESSION['shopping_cart'][$product['id']];
+            $qty = $_SESSION["shopping_cart"][$product["id"]];
             include "partials/list/productListCheckout.php";
         }
         include_once "partials/list/productCheckoutTotal.php";
@@ -79,15 +78,15 @@ class CustomerView extends View
     }
 
     /**
-     * help method for shopping cart page - lists all products in the cart. 
+     * help method for shopping cart page - lists all products in the cart.
      */
     private function renderShoppingCartList($products)
     {
-        $column_name_array = array("Product name", "Price each", "Amount", "Delete");
+        $column_name_array = ["Product name", "Price each", "Amount", "Delete"];
 
         include_once "partials/list/listStart.php";
         foreach ($products as $product) {
-            $qty = $_SESSION['shopping_cart'][$product['id']];
+            $qty = $_SESSION["shopping_cart"][$product["id"]];
             include "partials/shoppingCartItem.php";
         }
         include_once "partials/list/listEnd.php";
@@ -111,7 +110,6 @@ class CustomerView extends View
         $this->renderFooter();
     }
 
-
     //CUSTOMER HELPER METHODS:
 
     private function renderRegisterForm($customer_data = null)
@@ -124,10 +122,8 @@ class CustomerView extends View
         include_once "app/views/partials/customerProductList.php";
     }
 
-
     private function renderProductDetails($product)
     {
-
         //  Bara för att visa produkten just nu - byt ut detta mot vad vi vill visa på den här sidan.
 
         include_once "app/views/partials/productDetails.php";
@@ -136,10 +132,10 @@ class CustomerView extends View
     private function renderModalButton()
     {
         $html = <<<HTML
-                <div class="d-flex justify-content-center p-1">
-                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Log in to continue to checkout</a>
-                </div>
-            HTML;
+    <div class="d-flex justify-content-center p-1">
+        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Log in to continue to checkout</a>
+    </div>
+HTML;
         echo $html;
     }
 }
