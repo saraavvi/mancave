@@ -2,7 +2,12 @@
 $border = $out_of_stock ? "border-danger" : "";
 ?>
 <tr>
-    <td><?= $product['name'] ?></td>
+    <td>
+        <a href="?page=products/details&id=<?= $product['id'] ?>">
+            <img src="<?= $product['image'] ?>" class="rounded img-fluid mx-2" style="height: 3em;"/>
+                <?= $product['name'] ?>
+        </a>
+    </td>
     <td><?= $product['price'] ?> SEK</td>
     <td>
         <form method="post" action="#" style="display: inline-block">
