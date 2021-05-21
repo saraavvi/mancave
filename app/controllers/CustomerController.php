@@ -88,10 +88,7 @@ class CustomerController extends Controller
      */
     public function handleShoppingCart()
     {
-        // update quantity:
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            $this->handleShoppingCartQtyUpdate();
-        }
+        $this->initializeShoppingCartQtyUpdate();
         $this->initializeShoppingCartDelete();
         [$products, $customer] = $this->getShoppingCartDetailsAndCustomer();
         $this->customer_view->renderShoppingCartPage($products, $customer);
@@ -247,6 +244,18 @@ class CustomerController extends Controller
         }
     }
 
+    private function initializeShoppingCartQtyUpdate()
+    {
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $id = $this->getAndValidatePost("id", true);
+            $qty = $this->getAndValidatePost("qty", true);
+            if ($id && $qty) {
+                $_SESSION["shopping_cart"][$id] = $qty;
+            }
+            $this->setAlert("success", "Shopping cart updated");
+        }
+    }
+
     private function initializeShoppingCartDelete()
     {
         if (isset($_GET["action"]) && $_GET["action"] === "delete") {
@@ -254,16 +263,6 @@ class CustomerController extends Controller
             unset($_SESSION["shopping_cart"][$id]);
             $this->setAlert("success", "Removed from shopping cart");
         }
-    }
-
-    private function handleShoppingCartQtyUpdate()
-    {
-        $id = $this->getAndValidatePost("id", true);
-        $qty = $this->getAndValidatePost("qty", true);
-        if ($id && $qty) {
-            $_SESSION["shopping_cart"][$id] = $qty;
-        }
-        $this->setAlert("success", "Shopping cart updated");
     }
 
     private function getShoppingCartDetailsAndCustomer()
