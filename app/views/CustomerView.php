@@ -29,7 +29,7 @@ class CustomerView extends View
         $this->renderNav();
         $this->renderAlerts();
         $this->renderRegisterForm($customer_data);
-        include_once "app/views/partials/footer.php";
+        $this->renderFooter();
     }
     /**
      * display the whole shopping cart page
