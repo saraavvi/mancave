@@ -291,8 +291,6 @@ class CustomerController extends Controller
         $shopping_cart = $_SESSION["shopping_cart"];
 
         try {
-            $order_id = $this->order_model->createNewOrder($customer["id"]); //order_id (lastInsertId)
-
             // check each products stock against shopping cart quantity
             $available_products = [];
             foreach ($shopping_cart as $product_id => $qty) {
@@ -302,13 +300,15 @@ class CustomerController extends Controller
                 } else {
                     $this->setAlert(
                         "danger",
-                        "Failed to place order, you tried to order $qty $product[name] but unfortunately we've only got $product[stock] :("
+                        "Failed to place order, you tried to order $qty $product[name] but unfortunately we've got $product[stock] :("
                     );
                 }
             }
 
             // only execute order contents if all products are available
             if (count($available_products) === count($shopping_cart)) {
+                $order_id = $this->order_model->createNewOrder($customer["id"]);
+
                 foreach ($available_products as $product) {
                     try {
                         $current_price = $product["price"];
