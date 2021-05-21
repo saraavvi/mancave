@@ -52,11 +52,14 @@ class CustomerController extends Controller
     /**
      * list all products from the chosen category.
      */
-    public function handleProducts()
+    public function handleProductsByCategory()
     {
-        $this->initializeShoppingCartAddButton();
+        $this->initializeShoppingCartAdd();
         $category = $this->sanitize($_GET["category"]);
         $products = $this->product_model->fetchProductsByCategory($category);
+        if (!$products) {
+            $this->rerenderPageWithAlert("Category id does not exist.");
+        }
         $this->customer_view->renderProductPage($products);
     }
 
@@ -65,7 +68,7 @@ class CustomerController extends Controller
      */
     public function handleProductDetails()
     {
-        $this->initializeShoppingCartAddButton();
+        $this->initializeShoppingCartAdd();
         $id = $this->sanitize($_GET["id"]);
         $product = $this->product_model->fetchProductById($id);
         if (!$product) {
@@ -79,20 +82,28 @@ class CustomerController extends Controller
      */
     public function handleShoppingCart()
     {
-        $this->initializeShoppingCartDeleteButton();
+        $this->initializeShoppingCartDelete();
         [$products, $customer] = $this->getShoppingCartDetailsAndCustomer();
         $this->customer_view->renderShoppingCartPage($products, $customer);
     }
 
     public function handleCheckout()
     {
-        [$products, $total_price, $customer] = $this->getShoppingCartDetailsAndCustomer();
-        $this->customer_view->renderCheckoutPage($products, $total_price, $customer);
+        [
+            $products,
+            $total_price,
+            $customer,
+        ] = $this->getShoppingCartDetailsAndCustomer();
+        $this->customer_view->renderCheckoutPage(
+            $products,
+            $total_price,
+            $customer
+        );
     }
 
     public function handlePlaceOrder()
     {
-        [$customer, $order_id] = $this->handleNewOrder();
+        [$customer, $order_id] = $this->processNewOrder();
         if ($order_id) {
             $this->customer_view->renderOrderConfirmationPage(
                 $customer,
@@ -210,7 +221,7 @@ class CustomerController extends Controller
         $this->returnToIndexWithAlert("Successfully Logged Out!", "success");
     }
 
-    private function initializeShoppingCartAddButton()
+    private function initializeShoppingCartAdd()
     {
         // If add button is klicked, get info from $_POST and add to cart in session.
         if (isset($_POST["add_to_cart"])) {
@@ -226,7 +237,7 @@ class CustomerController extends Controller
         }
     }
 
-    private function initializeShoppingCartDeleteButton()
+    private function initializeShoppingCartDelete()
     {
         if (isset($_GET["action"]) && $_GET["action"] === "delete") {
             $id = $_GET["id"];
@@ -253,7 +264,7 @@ class CustomerController extends Controller
      * take info from session and send to order_model
      * send success/error msg to customer_view
      */
-    public function handleNewOrder()
+    public function processNewOrder()
     {
         $customer = $_SESSION["loggedinuser"];
         $shopping_cart = $_SESSION["shopping_cart"];
