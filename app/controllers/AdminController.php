@@ -53,28 +53,7 @@ class AdminController extends Controller
     public function handleProductCreate()
     {
         $this->ensureAuthenticated();
-        $product_data = [];
-
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            try {
-                $product_data = $this->handleProductPost();
-                $product_id = $this->product_model->createProduct(
-                    $product_data
-                );
-                $this->setAlert(
-                    "success",
-                    "Product successfully created with #id: $product_id"
-                );
-                header("Location: ?page=admin/products");
-                exit();
-            } catch (Exception $error) {
-                $errors_array = json_decode($error->getMessage(), true);
-                foreach ($errors_array as $message) {
-                    $this->setAlert("danger", $message);
-                }
-            }
-        }
-
+        $this->handleProductCreatePostRequest();
         $brands = $this->product_model->fetchAllBrands();
         $categories = $this->product_model->fetchAllCategories();
         $this->admin_view->renderProductCreatePage($brands, $categories);
@@ -229,7 +208,6 @@ class AdminController extends Controller
         exit();
     }
 
-
     private function logOutAdmin()
     {
         $_SESSION["loggedinadmin"] = null;
@@ -250,7 +228,10 @@ class AdminController extends Controller
             $qty = $this->getAndValidatePost("qty", true);
             if ($id && $qty) {
                 try {
-                    $row_count = $this->product_model->addProductStock($id, $qty);
+                    $row_count = $this->product_model->addProductStock(
+                        $id,
+                        $qty
+                    );
                     if ($row_count > 0) {
                         $this->setAlert(
                             "success",
@@ -272,7 +253,31 @@ class AdminController extends Controller
         }
     }
 
-    private function handleProductPost()
+    private function handleProductCreatePostRequest()
+    {
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $product_data = [];
+            try {
+                $product_data = $this->validateProductForm();
+                $product_id = $this->product_model->createProduct(
+                    $product_data
+                );
+                $this->setAlert(
+                    "success",
+                    "Product successfully created with #id: $product_id"
+                );
+                header("Location: ?page=admin/products");
+                exit();
+            } catch (Exception $error) {
+                $errors_array = json_decode($error->getMessage(), true);
+                foreach ($errors_array as $message) {
+                    $this->setAlert("danger", $message);
+                }
+            }
+        }
+    }
+
+    private function validateProductForm()
     {
         $errors = [];
 
