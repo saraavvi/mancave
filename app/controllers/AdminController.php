@@ -2,6 +2,12 @@
 
 require_once "Controller.php";
 
+// INHERITED METHODS:
+// conditionForExit()
+// getAndValidatePost()
+// sanitize()
+// setAlert()
+
 class AdminController extends Controller
 {
     private $order_model;
@@ -37,6 +43,10 @@ class AdminController extends Controller
     public function index()
     {
         $this->ensureAuthenticated();
+        // Added stock from product list
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $this->handleAddToStock();
+        }
         $products = $this->product_model->fetchAllProducts();
         if (empty($products)) {
             $this->setAlert("info", "No products to show.");
@@ -167,6 +177,25 @@ class AdminController extends Controller
 
     // HELPER METHODS:
 
+    private function handleAddToStock()
+    {
+        $id = $this->getAndValidatePost('id', true);
+        $qty = $this->getAndValidatePost('qty', true);
+        if ($id && $qty) {
+            try {
+                $row_count = $this->product_model->addProductStock($id, $qty);
+                if ($row_count > 0) {
+                    $this->setAlert("success", "$qty items added to stock for product #$id");
+                } else {
+                    $this->setAlert("warning", "Could not find product with ID #$id");
+                }
+            } catch (Exception $error) {
+                $this->setAlert("danger", "An error occured trying to add stock to product #$id");
+            }
+            
+        }
+    }
+
     private function handleProductPost()
     {
         $errors = array();
@@ -255,8 +284,7 @@ class AdminController extends Controller
                 $admin["password"] = null;
                 $_SESSION["loggedinadmin"] = $admin;
                 $this->setAlert("success", "Successfully Logged In!");
-                $this->index();
-                exit;
+                header("Location: ?page=admin");
             }
             $this->returnToLoginWithAlert("Unexpected error!");
         }

@@ -1,0 +1,16 @@
+.navbar-light .navbar-nav .nav-link {
+    color: black;
+}
+.brand {
+    font-size: 3.5rem;
+    font-family: 'Abril Fatface', cursive;
+}
+
+.fa {
+    color:
+        black;
+}
+
+.empty-cart-message {
+    font-family: 'Open Sans', sans-serif;
+}

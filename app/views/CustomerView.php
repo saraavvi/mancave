@@ -2,6 +2,13 @@
 
 require_once 'View.php';
 
+// INHERITED METHODS:
+// renderHead()
+// renderNav()
+// renderFooter()
+// renderAlerts()
+// renderButton()
+
 class CustomerView extends View
 {
 
@@ -22,7 +29,7 @@ class CustomerView extends View
         $this->renderNav();
         $this->renderAlerts();
         $this->renderRegisterForm($customer_data);
-        include_once "app/views/partials/footer.php";
+        $this->renderFooter();
     }
     /**
      * display the whole shopping cart page
@@ -32,13 +39,16 @@ class CustomerView extends View
         $this->renderHead("ManCave - Shopping Cart");
         $this->renderNav();
         $this->renderAlerts();
-        $this->renderShoppingCartList($products);
-        //skickar med en tom sträng som href nu. Ändra sen
-        if ($logged_in) {
-            $this->renderButton("Continue to checkout", "?page=checkout/process-order");
+
+        if (empty($_SESSION["shopping_cart"])) {
+            include_once "app/views/partials/emptyCart.php";
         } else {
-            $this->renderModalButton();
-            $_SESSION['next_page'] = "?page=order/confirmation";
+            $this->renderShoppingCartList($products);
+            if ($logged_in) {
+                $this->renderButton("Continue to checkout", "?page=checkout");
+            } else {
+                $this->renderModalButton();
+            }
         }
         $this->renderFooter();
     }
@@ -73,20 +83,14 @@ class CustomerView extends View
      */
     private function renderShoppingCartList($products)
     {
-        // print_r($_SESSION['shopping_cart']);
-        // använda list start och list end sen istället
+        $column_name_array = array("Product name", "Price each", "Amount", "Delete");
 
-        echo "
-        <div class='col-md-6 mt-5'>
-            <table class='table table-borderless'>
-                <tbody> ";
+        include_once "partials/list/listStart.php";
         foreach ($products as $product) {
             $qty = $_SESSION['shopping_cart'][$product['id']];
             include "partials/shoppingCartItem.php";
         }
-        echo "  </tbody>
-                </table>
-            </div>";
+        include_once "partials/list/listEnd.php";
     }
 
     public function renderProductPage($products)

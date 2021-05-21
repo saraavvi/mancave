@@ -140,6 +140,16 @@ class ProductModel
         return $last_insert_id;
     }
 
+    public function addProductStock($id, $qty)
+    {
+        $statement = "UPDATE products 
+            SET stock = stock + :qty 
+            WHERE products.id = :id;";
+        $params = array(':id' => $id, ':qty' => $qty);
+        $row_count = $this->db->update($statement, $params);
+        return $row_count;
+    }
+
     public function fetchAllBrands()
     {
         $statement = "SELECT * FROM brands";
@@ -163,4 +173,5 @@ class ProductModel
 
         return $last_insert_id;
     }
+
 }

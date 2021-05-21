@@ -2,6 +2,12 @@
 
 require_once "Controller.php";
 
+// INHERITED METHODS:
+// conditionForExit()
+// getAndValidatePost()
+// sanitize()
+// setAlert()
+
 class CustomerController extends Controller
 {
     private $order_model;
@@ -82,9 +88,14 @@ class CustomerController extends Controller
      */
     public function handleShoppingCart()
     {
+        // update quantity:
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $this->handleShoppingCartQtyUpdate();
+        }
         $this->initializeShoppingCartDelete();
         [$products, $customer] = $this->getShoppingCartDetailsAndCustomer();
         $this->customer_view->renderShoppingCartPage($products, $customer);
+        
     }
 
     public function handleCheckout()
@@ -243,6 +254,17 @@ class CustomerController extends Controller
             $id = $_GET["id"];
             unset($_SESSION["shopping_cart"][$id]);
         }
+        $this->setAlert("success", "Added to shopping cart");
+    }
+
+    private function handleShoppingCartQtyUpdate()
+    {
+        $id = $this->getAndValidatePost('id', true);
+        $qty = $this->getAndValidatePost('qty', true);
+        if ($id && $qty) {
+            $_SESSION["shopping_cart"][$id] = $qty;
+        }
+        $this->setAlert("success", "Shopping cart updated");
     }
 
     private function getShoppingCartDetailsAndCustomer()
