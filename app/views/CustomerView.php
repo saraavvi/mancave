@@ -33,12 +33,15 @@ class CustomerView extends View
         $this->renderNav();
         $this->renderAlerts();
         $this->renderShoppingCartList($products);
-        //skickar med en tom sträng som href nu. Ändra sen
-        if ($logged_in) {
-            $this->renderButton("Continue to checkout", "?page=checkout/process-order");
+        if (empty($_SESSION["shopping_cart"])) {
+            include_once "app/views/partials/emptyCart.php";
         } else {
-            $this->renderModalButton();
-            $_SESSION['next_page'] = "?page=order/confirmation";
+            if ($logged_in) {
+                $this->renderButton("Continue to checkout", "?page=checkout/process-order");
+            } else {
+                $this->renderModalButton();
+                $_SESSION['next_page'] = "?page=order/confirmation";
+            }
         }
         $this->renderFooter();
     }
