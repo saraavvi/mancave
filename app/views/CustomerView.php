@@ -42,11 +42,13 @@ class CustomerView extends View
         if (empty($_SESSION["shopping_cart"])) {
             include_once "app/views/partials/emptyCart.php";
         } else {
-            $this->renderShoppingCartList($products);
-            if ($customer) {
+            $items_in_stock = $this->renderShoppingCartList($products);
+            if ($customer && $items_in_stock) {
                 $this->renderButton("Continue to checkout", "?page=checkout");
-            } else {
+            } else if ($items_in_stock) {
                 $this->renderModalButton();
+            } else {
+                $this->renderButton("Some items are out of stock, please update your order to continue.", "");
             }
         }
         $this->renderFooter();
@@ -83,14 +85,21 @@ class CustomerView extends View
      */
     private function renderShoppingCartList($products)
     {
+        $items_in_stock = true;
         $column_name_array = ["Product name", "Price each", "Amount", "Delete"];
 
         include_once "partials/list/listStart.php";
         foreach ($products as $product) {
             $qty = $_SESSION["shopping_cart"][$product["id"]];
+            $out_of_stock = $qty > $product['stock'];
+            if ($out_of_stock) {
+                $items_in_stock = false;
+            }
+            
             include "partials/shoppingCartItem.php";
         }
         include_once "partials/list/listEnd.php";
+        return $items_in_stock;
     }
 
     public function renderProductPage($products)
