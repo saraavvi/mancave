@@ -22,6 +22,15 @@ class CustomerView extends View
         $this->renderFooter();
     }
 
+    public function renderAboutPage()
+    {
+        $this->renderHead("Mancave - About");
+        $this->renderNav();
+        $this->renderAlerts();
+        include_once "app/views/partials/about.php";
+        $this->renderFooter();
+    }
+
     public function renderRegisterPage($customer_data = null)
     {
         $this->renderHead("Mancave - New Customer");

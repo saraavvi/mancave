@@ -9,10 +9,12 @@ body {
 
 .navbar-light .navbar-nav .nav-link {
     color: black;
+    margin-top: 3.8em;
 }
 .brand {
-    font-size: 3.5rem;
+    font-size: 4.2rem;
     font-family: var(--large);
+    line-height: .2;
 }
 
 .fa {
@@ -20,8 +22,25 @@ body {
         black;
 }
 
-td a {
+a.navbar-brand {
+    text-align: left !important;
+}
+
+a span.brand-by {
+    font-size: 0.3em;
+}
+
+a span.brand-founder {
+    display: block;
+    font-size: .3em;
+}
+
+a {
     text-decoration: none;
     color: unset;
 }
 
+#navbarSupportedContent {
+    max-width: max-content;
+    margin-right: 1em;
+}

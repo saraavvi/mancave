@@ -34,6 +34,11 @@ class CustomerController extends Controller
         $this->customer_view->renderIndexPage();
     }
 
+    public function handleAbout()
+    {
+        $this->customer_view->renderAboutPage();
+    }
+
     public function handleRegister()
     {
         $customer_data = $this->processRegisterForm();

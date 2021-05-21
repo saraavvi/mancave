@@ -24,6 +24,10 @@ class View
 
     protected function renderFooter()
     {
+        $page = explode("/", $_GET['page']);
+        $link = $page[0] === "admin" ? "?page=index" : "?page=admin";
+        $name = $page[0] === "admin" ? "Man Cave" : "Admin";
+
         include_once "app/views/partials/footer.php";
     }
 

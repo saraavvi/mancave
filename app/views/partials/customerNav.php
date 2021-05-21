@@ -34,7 +34,8 @@ if (!empty($_SESSION["loggedinuser"])) {
     <div class="bg-white rounded">
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid text-center">
-                <a class="navbar-brand fs-1 mx-5" href="?page=index"><span class="brand">ManCave.</span></a>
+                <a class="navbar-brand fs-1 mx-5" href="?page=index">
+                    <span class="brand">ManCave.<span class="brand-by">by</span><span class="brand-founder">Bob Franker Transatlantic Fellows</span></span></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -54,6 +55,9 @@ if (!empty($_SESSION["loggedinuser"])) {
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Brands</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="?page=about">About us</a>
                         </li>
                     </ul>
 
