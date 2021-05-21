@@ -63,8 +63,8 @@ $routes = [
     "admin/products/create" => [$admin_controller, "handleProductCreate"],
     "admin/products/update" => [$admin_controller, "handleProductUpdate"],
     "admin/products/delete" => [$admin_controller, "handleProductDelete"],
-    "admin/orders/delete" => [$admin_controller, "handleOrderDelete"],
     "admin/orders" => [$admin_controller, "handleOrderList"],
+    "admin/orders/delete" => [$admin_controller, "handleOrderDelete"],
 ];
 
 $router = new Router($customer_controller, $admin_controller, $routes);

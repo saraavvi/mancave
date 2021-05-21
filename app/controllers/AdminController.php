@@ -84,6 +84,19 @@ class AdminController extends Controller
         $this->deleteProduct();
     }
 
+    public function handleOrderList()
+    {
+        $this->ensureAuthenticated();
+        $this->initalizeOrderStatusChange();
+        //TODO: create order functionality
+        //$statuses = $this->order_model->fetchAllStatuses(); //värt?
+        $orders = $this->order_model->fetchAllOrders();
+        if (empty($orders)) {
+            $this->setAlert("info", "No orders to show.");
+        }
+        $this->admin_view->renderOrderListPage($orders);
+    }
+
     public function handleOrderDelete()
     {
         $this->ensureAuthenticated();
@@ -107,37 +120,6 @@ class AdminController extends Controller
             $this->setAlert("danger", "This order can not be deleted.");
         }
         $this->handleOrderList();
-    }
-
-    public function handleOrderList()
-    {
-        $this->ensureAuthenticated();
-        if (isset($_GET["status_id"])) {
-            try {
-                $row_count = $this->handleOrderStatusUpdate();
-                if ($row_count > 0) {
-                    $this->setAlert(
-                        "success",
-                        "Status was updated for $row_count order(s)."
-                    );
-                } else {
-                    $this->setAlert(
-                        "warning",
-                        "Unable to update to this status for this order."
-                    );
-                }
-            } catch (Exception $error) {
-                $this->setAlert("danger", "Unable to update status.");
-            }
-        }
-
-        //TODO: create order functionality
-        //$statuses = $this->order_model->fetchAllStatuses(); //värt?
-        $orders = $this->order_model->fetchAllOrders();
-        if (empty($orders)) {
-            $this->setAlert("info", "No orders to show.");
-        }
-        $this->admin_view->renderOrderListPage($orders);
     }
 
     // HELPER METHODS:
@@ -332,6 +314,28 @@ class AdminController extends Controller
             }
         }
         header("Location: ?page=admin/products");
+    }
+
+    private function initalizeOrderStatusChange()
+    {
+        if (isset($_GET["status_id"])) {
+            try {
+                $row_count = $this->handleOrderStatusUpdate();
+                if ($row_count > 0) {
+                    $this->setAlert(
+                        "success",
+                        "Status was updated for $row_count order(s)."
+                    );
+                } else {
+                    $this->setAlert(
+                        "warning",
+                        "Unable to update to this status for this order."
+                    );
+                }
+            } catch (Exception $error) {
+                $this->setAlert("danger", "Unable to update status.");
+            }
+        }
     }
 
     private function handleOrderStatusUpdate()
