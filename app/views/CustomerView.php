@@ -2,6 +2,13 @@
 
 require_once 'View.php';
 
+// INHERITED METHODS:
+// renderHead()
+// renderNav()
+// renderFooter()
+// renderAlerts()
+// renderButton()
+
 class CustomerView extends View
 {
 
@@ -22,7 +29,7 @@ class CustomerView extends View
         $this->renderNav();
         $this->renderAlerts();
         $this->renderRegisterForm($customer_data);
-        include_once "app/views/partials/footer.php";
+        $this->renderFooter();
     }
     /**
      * display the whole shopping cart page
@@ -33,11 +40,15 @@ class CustomerView extends View
         $this->renderNav();
         $this->renderAlerts();
         $this->renderShoppingCartList($products);
-        //skickar med en tom sträng som href nu. Ändra sen
-        if ($logged_in) {
-            $this->renderButton("Continue to checkout", "?page=checkout");
+
+        if (empty($_SESSION["shopping_cart"])) {
+            include_once "app/views/partials/emptyCart.php";
         } else {
-            $this->renderModalButton();
+            if ($logged_in) {
+                $this->renderButton("Continue to checkout", "?page=checkout");
+            } else {
+                $this->renderModalButton();
+            }
         }
         $this->renderFooter();
     }

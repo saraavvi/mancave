@@ -2,6 +2,12 @@
 
 require_once "Controller.php";
 
+// INHERITED METHODS:
+// conditionForExit()
+// getAndValidatePost()
+// sanitize()
+// setAlert()
+
 class CustomerController extends Controller
 {
     private $order_model;
