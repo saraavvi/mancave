@@ -2,8 +2,8 @@
 -- version 4.9.7
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:8889
--- Generation Time: May 20, 2021 at 01:27 PM
+-- Host: localhost:3306
+-- Generation Time: May 21, 2021 at 12:28 PM
 -- Server version: 5.7.32
 -- PHP Version: 7.4.12
 
@@ -63,7 +63,14 @@ INSERT INTO `brands` (`id`, `name`) VALUES
 (9, 'The Rugged Bros'),
 (10, 'Viking Revolution'),
 (11, 'Grow Alpha Beard'),
-(12, 'Novel');
+(12, 'Novel'),
+(13, 'Mark Manson'),
+(14, 'Mark Manson'),
+(15, 'Niklas Kämpargård'),
+(16, 'Jeremy Wade'),
+(17, 'Jordan B. Peterson'),
+(18, 'Robert Greene'),
+(19, 'Joe O\'Leary');
 
 -- --------------------------------------------------------
 
@@ -100,6 +107,13 @@ CREATE TABLE `customers` (
   `password` varchar(255) COLLATE utf8_swedish_ci NOT NULL,
   `address` varchar(150) COLLATE utf8_swedish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+
+--
+-- Dumping data for table `customers`
+--
+
+INSERT INTO `customers` (`id`, `first_name`, `last_name`, `email`, `password`, `address`) VALUES
+(4, 'sara', 'viktorsson', 'saraviktorsson@hotmail.com', '$2y$10$XSjmzfcHUmLcoQrpx/YUCeSaagwtqyeuYx/hh/imQKr1CTz0u5Km2', 'verkstadsgatan 4');
 
 -- --------------------------------------------------------
 
@@ -185,7 +199,15 @@ INSERT INTO `products` (`id`, `name`, `price`, `description`, `category_id`, `br
 (34, 'Tattoo Balm', 99, 'Don’t suffer for your art, use our tattoo ointment for the smoothest application process you’ve ever had. If you’re planning on getting another tattoo, use this tattoo cream that makes the skin more receptive. Your tattoo artist will thank you, your skin will thank you, and your inner artist will as well. With our tattoo lotion, the whole process is easier and more pleasant.', 4, 10, 20, 'https://images-na.ssl-images-amazon.com/images/I/811DkLDjf-L._SL1500_.jpg', 'Containing no harsh chemicals, just safe and gentle natural ingredients'),
 (35, 'Beard Brush for Men', 399, 'CURVED DESIGN - Your face isn\'t flat, is it? Your hand isn\'t either right? Why would you want a FLAT brush? This brush is ergonomically designed to hug your face, and fit naturally in your hand, making styling and shaping your facial hair easy. ', 4, 9, 0, 'https://images-na.ssl-images-amazon.com/images/I/812IgBlCMpL._AC_SL1500_.jpg', '100% WILD BOAR BRISTLES'),
 (36, 'Goatee Shaving Template', 89, 'Efficient goatee trim:Barbers,haircuts,beard trims can be expensive.This beard trimmer guide is designed to help you trim at the comfort of your home and give you the perfect goatee.', 4, 12, 80, 'https://images-na.ssl-images-amazon.com/images/I/61bZ-LA7IIL._SL1001_.jpg', 'Size: 10*8.3 cm 10*7.5 cm 9.1*7.5 cm 8*7 cm 8*6.3 cm '),
-(37, 'Beard Shaping Tool Kit for Men', 119, 'Feel And Look Your Best - Get ready for a shape you want, perfect shave lines in no time & expensive shaves from the barber! Designed For Beards: Lightweight & compact great for home and travel, made from long lasting and durable raw materials, created to last forever.', 4, 11, 0, 'https://images-na.ssl-images-amazon.com/images/I/81GfBwv8TBL._AC_SL1500_.jpg', '8 in 1 MULTI-LINER TOOL - The Proprietary and innovative design of this Beard Shaping Tool gives the ability to draw MULTIPLE BEARD STYLES such as Curve or Straight cheek lines, extra clean Neck lines, Curve or Straight Goatee lines and perfect Sideburns.');
+(37, 'Beard Shaping Tool Kit for Men', 119, 'Feel And Look Your Best - Get ready for a shape you want, perfect shave lines in no time & expensive shaves from the barber! Designed For Beards: Lightweight & compact great for home and travel, made from long lasting and durable raw materials, created to last forever.', 4, 11, 0, 'https://images-na.ssl-images-amazon.com/images/I/81GfBwv8TBL._AC_SL1500_.jpg', '8 in 1 MULTI-LINER TOOL - The Proprietary and innovative design of this Beard Shaping Tool gives the ability to draw MULTIPLE BEARD STYLES such as Curve or Straight cheek lines, extra clean Neck lines, Curve or Straight Goatee lines and perfect Sideburns.'),
+(39, 'The Subtle Art of Not Giving a F*ck', 167, '#1 New York Times Bestseller\r\n\r\nOver 6 million copies sold\r\n\r\nIn this generation-defining self-help guide, a superstar blogger cuts through the crap to show us how to stop trying to be positive all the time so that we can truly become better, happier people.\r\n\r\nFor decades, we\'ve been told that positive thinking is the key to a happy, rich life. F**k positivity, Mark Manson says. Let\'s be honest, shit is f**ked and we have to live with it. In his wildly popular Internet blog, Manson doesn\'t sugarcoat or equivocate. He tells it like it is--a dose of raw, refreshing, honest truth that is sorely lacking today. The Subtle Art of Not Giving a F**k is his antidote to the coddling, let\'s-all-feel-good mindset that has infected modern society and spoiled a generation, rewarding them with gold medals just for showing up.', 2, 13, 100, 'https://images-na.ssl-images-amazon.com/images/I/51mN3bY0JjL._SX332_BO1,204,203,200_.jpg', ''),
+(40, 'Everything Is F*cked', 170, 'From the author of the international megabestseller The Subtle Art of Not Giving a Fuck comes a counterintuitive guide to the problems of hope.\r\n\r\nWe live in an interesting time. Materially, everything is the best it\'s ever been--we are freer, healthier, and wealthier than any people in human history. Yet somehow everything seems to be irreparably and horribly fucked--the planet is warming, governments are failing, economies are collapsing, and everyone is perpetually offended on Twitter.\r\n\r\nWhat\'s going on? If anyone can put a name to our current malaise and help fix it, it\'s Mark Manson. In 2016, Manson published The Subtle Art of Not Giving a Fuck, a book that brilliantly gave shape to the ever-present, low-level hum of anxiety that permeates modern living. He showed us that our maddening urge always to find happiness only serves to make us unhappier. And the &quot;subtle art&quot; of that title turned out to be a bold challenge: to choose your struggle; to narrow and focus and find the pain you want to sustain. The result was a book that became an international phenomenon, selling millions of copies worldwide while becoming the number one bestseller in thirteen countries.', 2, 14, 100, 'https://images-na.ssl-images-amazon.com/images/I/416T7uchqcL._SX329_BO1,204,203,200_.jpg', ''),
+(41, 'Krishandboken : allt du behöver för att klara dig', 271, 'Om Sverige drabbas av ett långvarigt strömavbrott blir följderna snabbt besvärliga. På bara några timmar blir det kallt inomhus, vattnet slutar att rinna ur kranen och maten tar snabbt slut i både kylskåp och skafferi.\r\n\r\nDet finns ett växande intresse för att i högre grad kunna klara sig och sin familj på egen hand om en krissituation uppstår. Med Krishandboken får du bättre koll på hur du ska tänka vid olika katastrofscenarier. Allt från hur du håller värmen inomhus till hur kroppen reagerar fysiskt och psykiskt i en kris. Det finns avsnitt om första hjälpen liksom hur du klarar den personliga hygienen eller matlagning utan vatten. Pedagogiska åtgärdsscheman för naturkatastrofer eller strömavbrott kommer också att ingå i den här heltäckande boken för krisberedskap.\r\n\r\nMånga skulle inte klara de 72 timmar på egen hand som myndigheterna förväntar sig av oss. Med Krishandboken kommer du närmare målet.', 2, 15, 100, 'https://s2.adlibris.com/images/33805368/krishandboken-allt-du-behover-for-att-klara-dig.jpg', ''),
+(42, 'How I Fish: And Other Lessons from a Lifetime in Angling', 284, 'Jeremy vade har en opparallell array av outstorlek och outlandisk fisk från alla platser – naturtrogen tigerfisk från kongo, arapaima från Amazon, &quot;giant djävul catfish&quot; från himalayan foothills. . .\r\nSom en his catches attract förbättrar public skuggning, många people ask hin how den kan improva för att bli till med dem.\r\nDenna bok är his reply. Spara på detaljerna på tekniken, den tar bara bort enkel, fundamentala principer – en uppsättning för success. Sätt design, part typ och ger självhäftande gummipläd, denna herr, är utan problem för att få bort den.\r\nHow to tanch liknar en fisk är att distillera ett liv spenderar livet. Along spelanvändarna kommer att läsa när du tar lite ur logiken. Why less time kan lägga bättre resultat på grund av det. Vilken detalj är vital och vilket gör det irrelevant. Och how a &quot;non-result&quot; kan resultera i ett meddelande.\r\nDaglig och funlig, rolig med kunskap och äventyr, här är book för alla återförsäljare – nyhet eller äldre hand – där du har letat efter att ha tagit sig denna stora tanke.', 2, 16, 100, 'https://images-na.ssl-images-amazon.com/images/I/41Ro+184z0L._SX323_BO1,204,203,200_.jpg', ''),
+(43, '12 Rules for Life: An Antidote to Chaos', 230, 'Acclaimed psychologist Jordan Peterson has become one of the most influential public thinkers to emerge on the world stage for many years, with his lectures on topics from the Bible to romantic relationships to mythology drawing an unprecedented following of tens of millions of viewers. In an era of unprecedented change and polarizing politics, his frank and refreshing message about the value of individual responsibility has resonated powerfully around the world. In this #1 international bestseller, he provides twelve profound and practical principles for how to live a meaningful life, from setting your house in order before criticising others to comparing yourself to who you were yesterday, not someone else today. Drawing on vivid examples from Peterson\'s clinical practice and personal life, cutting edge psychology and philosophy, and lessons from humanity\'s oldest myths and stories, 12 Rules for Life offers a deeply rewarding antidote to the chaos in our lives: eternal truths applied to our modern problems.', 2, 17, 100, 'https://images-na.ssl-images-amazon.com/images/I/41EATHVLJRL._SX324_BO1,204,203,200_.jpg', ''),
+(44, 'The 48 Laws Of Power', 160, 'Drawn from 3,000 years of the history of power, this guide helps readers achieve for themselves what Queen Elizabeth I, Henry Kissinger, Louis XIV and Machiavelli learnt the hard way.', 2, 18, 100, 'https://images-na.ssl-images-amazon.com/images/I/31wylG8ixTL._SX341_BO1,204,203,200_.jpg', ''),
+(45, 'The 33 Strategies Of War', 140, 'Offers the strategies of war that can help us gain mastery in the modern world. Spanning world civilisations, and synthesising dozens of political, philosophical, and religious texts, this comprehensive guide focuses on the subtle social game of everyday life.', 2, 18, 100, 'https://images-na.ssl-images-amazon.com/images/I/31EB3EN3q0L._SX345_BO1,204,203,200_.jpg', ''),
+(46, 'The Wilderness Survival Guide', 135, 'A realistic approach to survival training and bushcraft from one of the country\'s top survival skills teachers - learn the techniques and confidence to fend for yourself in any situation.', 2, 19, 100, 'https://images-na.ssl-images-amazon.com/images/I/51I51-h2-eL._SX328_BO1,204,203,200_.jpg', '');
 
 -- --------------------------------------------------------
 
@@ -280,7 +302,7 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `brands`
 --
 ALTER TABLE `brands`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -292,7 +314,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -304,19 +326,19 @@ ALTER TABLE `orders`
 -- AUTO_INCREMENT for table `order_contents`
 --
 ALTER TABLE `order_contents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `statuses`
 --
 ALTER TABLE `statuses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables

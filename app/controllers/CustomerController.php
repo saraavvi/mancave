@@ -77,10 +77,11 @@ class CustomerController extends Controller
         $this->initializeShoppingCartAdd();
         $id = $this->sanitize($_GET["id"]);
         $product = $this->product_model->fetchProductById($id);
+        $brand = $this->product_model->fetchBrandById($product['brand_id']);
         if (!$product) {
             $this->rerenderPageWithAlert("Product id does not exist.");
         }
-        $this->customer_view->renderDetailPage($product);
+        $this->customer_view->renderDetailPage($product, $brand);
     }
 
     /**

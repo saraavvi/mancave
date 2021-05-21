@@ -157,6 +157,14 @@ class ProductModel
         return $brands;
     }
 
+    public function fetchBrandById($id)
+    {
+        $statement = "SELECT * FROM brands WHERE id = :id";
+        $params = array(":id" => $id);
+        $brand = $this->db->select($statement, $params);
+        return $brand;
+    }
+
     public function fetchAllCategories()
     {
         $statement = "SELECT * FROM categories";
@@ -173,5 +181,4 @@ class ProductModel
 
         return $last_insert_id;
     }
-
 }
