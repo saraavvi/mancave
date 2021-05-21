@@ -100,26 +100,7 @@ class AdminController extends Controller
     public function handleOrderDelete()
     {
         $this->ensureAuthenticated();
-        try {
-            $order_id = (int) $_GET["id"];
-            if ($order_id) {
-                $row_count = $this->order_model->deleteOrder($order_id);
-                if ($row_count > 0) {
-                    $this->setAlert(
-                        "success",
-                        "Successfully deleted $row_count order(s)."
-                    );
-                } else {
-                    $this->setAlert(
-                        "warning",
-                        "Order with id #$order_id could not be found."
-                    );
-                }
-            }
-        } catch (Exception $error) {
-            $this->setAlert("danger", "This order can not be deleted.");
-        }
-        $this->handleOrderList();
+        $this->deleteOrder();
     }
 
     // HELPER METHODS:
@@ -157,6 +138,14 @@ class AdminController extends Controller
     {
         $_SESSION["loggedinadmin"] = null;
         $this->returnToLoginWithAlert("Successfully Logged Out!", "success");
+    }
+
+    private function ensureAuthenticated()
+    {
+        if (empty($_SESSION["loggedinadmin"])) {
+            $this->admin_view->renderLoginPage();
+            exit();
+        }
     }
 
     private function returnToLoginWithAlert($message, $style = "danger")
@@ -355,11 +344,27 @@ class AdminController extends Controller
         return false;
     }
 
-    private function ensureAuthenticated()
+    private function deleteOrder()
     {
-        if (empty($_SESSION["loggedinadmin"])) {
-            $this->admin_view->renderLoginPage();
-            exit();
+        try {
+            $order_id = (int) $_GET["id"];
+            if ($order_id) {
+                $row_count = $this->order_model->deleteOrder($order_id);
+                if ($row_count > 0) {
+                    $this->setAlert(
+                        "success",
+                        "Successfully deleted $row_count order(s)."
+                    );
+                } else {
+                    $this->setAlert(
+                        "warning",
+                        "Order with id #$order_id could not be found."
+                    );
+                }
+            }
+        } catch (Exception $error) {
+            $this->setAlert("danger", "This order can not be deleted.");
         }
+        header("Location: ?page=admin/orders");
     }
 }
