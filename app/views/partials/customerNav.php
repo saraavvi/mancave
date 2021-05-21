@@ -10,8 +10,6 @@ if (!empty($_SESSION["loggedinuser"])) {
 
     <div class="border-bottom d-flex justify-content-end bg-light">
         <div class="d-flex px-3">
-            <a class="nav-link" href="?page=shoppingcart"><i class="fa fa-shopping-cart fa-2x"></i>
-            </a>
             <?php
             if (empty($_SESSION["loggedinuser"])) {
                 echo '<div class="d-flex">
@@ -29,11 +27,13 @@ if (!empty($_SESSION["loggedinuser"])) {
                         </a></div>';
             }
             ?>
+            <a class="nav-link" href="?page=shoppingcart"><i class="fa fa-shopping-cart fa-2x"></i>
+            </a>
         </div>
     </div>
-    <div class="container bg-white">
+    <div class="bg-white">
         <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="container-fluid">
+            <div class="container-fluid text-center">
                 <a class="navbar-brand fs-1 mx-5" href="/mancave"><span class="brand">ManCave.</span></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
