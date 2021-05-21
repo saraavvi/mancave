@@ -6,8 +6,8 @@ if (!empty($_SESSION["loggedinuser"])) {
 }
 ?>
 
-<header class="sticky-top">
 
+<header class="sticky-top">
     <div class="border-bottom d-flex justify-content-end bg-light">
         <div class="d-flex px-3">
             <?php
@@ -34,7 +34,7 @@ if (!empty($_SESSION["loggedinuser"])) {
     <div class="bg-white">
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid text-center">
-                <a class="navbar-brand fs-1 mx-5" href="/mancave"><span class="brand">ManCave.</span></a>
+                <a class="navbar-brand fs-1 mx-5" href="?page=index"><span class="brand">ManCave.</span></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -73,5 +73,6 @@ if (empty($_SESSION["loggedinuser"])) {
     include_once "app/views/partials/loginModal.php";
 }
 ?>
+
 <div class="container">
     <div class="row d-flex justify-content-center">

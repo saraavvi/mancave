@@ -9,6 +9,14 @@ foreach ($products as $product) {
             <a href="?page=admin/products/update&id=$product[id]" class="btn btn-sm btn-outline-primary">Edit</a>
             </td>
             <td>
+                <form method="post" action="#" style="display: flex">
+                    <input  type="hidden" name="id" value="$product[id]"/>
+                    <input type="number" name="qty" class="form-control" style="max-width: 6em;"></input>
+                    <button type="submit" class="btn btn-sm btn-outline-primary">Add</button>
+                </form>
+            </td>
+
+            <td>
                 <form method="post" action="?page=admin/products/delete" style="display: inline-block">
                     <input  type="hidden" name="id" value="$product[id]"/>
                     <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>

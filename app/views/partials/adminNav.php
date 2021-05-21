@@ -2,7 +2,7 @@
 $adminname = $_SESSION["loggedinadmin"]["name"]; ?>
 
 <header>
-    <h1 class="text-center mt-5">ManCave ADMIN</h1>
+    <h1 class="text-center mt-5"><a href="?page=admin" class="header-name">ManCave ADMIN</a></h1>
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
