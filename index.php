@@ -43,16 +43,16 @@ $admin_controller = new AdminController(
 
 $routes = [
     // Customer routes
-    "" => [$customer_controller, "index"], // In case no /?page=...
-    "index" => [$customer_controller, "index"], // In case no /?page=...
-    "register" => [$customer_controller, "register"],
-    "login" => [$customer_controller, "login"],
-    "logout" => [$customer_controller, "logout"],
-    "products" => [$customer_controller, "getProductsByCategory"],
-    "products/details" => [$customer_controller, "getProductById"],
-    "shoppingcart" => [$customer_controller, "getShoppingCart"],
-    "checkout/process-order" => [$customer_controller, "orderConfirmation"],
-    "checkout" => [$customer_controller, "getCheckout"],
+    "" => [$customer_controller, "handleIndex"], // In case no /?page=...
+    "index" => [$customer_controller, "handleIndex"],
+    "register" => [$customer_controller, "handleRegister"],
+    "login" => [$customer_controller, "handleLogin"],
+    "logout" => [$customer_controller, "handleLogout"],
+    "products" => [$customer_controller, "handleProductsByCategory"],
+    "products/details" => [$customer_controller, "handleProductDetails"],
+    "shoppingcart" => [$customer_controller, "handleShoppingCart"],
+    "checkout" => [$customer_controller, "handleCheckout"],
+    "checkout/process-order" => [$customer_controller, "handlePlaceOrder"],
 
     // Admin routes
     "admin/login" => [$admin_controller, "login"],

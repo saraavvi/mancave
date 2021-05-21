@@ -53,33 +53,8 @@ class CustomerView extends View
         $this->renderFooter();
     }
 
-    public function renderOrderConfirmationPage($customer, $order_id)
-    {
-        $this->renderHead("Mancave - Order Successful");
-        $this->renderNav();
-        include_once "app/views/partials/orderConfirmation.php";
-        $this->renderFooter();
-    }
-
-    /**
-     * help method for shopping cart page - lists all products in the cart. 
-     */
-    public function renderShoppingCartList($products)
-    {
-        $column_name_array = array("Product name", "Price each", "Amount", "Delete");
-
-        include_once "partials/list/listStart.php";
-        foreach ($products as $product) {
-            $qty = $_SESSION['shopping_cart'][$product['id']];
-            include "partials/shoppingCartItem.php";
-        }
-        include_once "partials/list/listEnd.php";
-    }
-
-
     public function renderCheckoutPage($products, $total, $customer)
     {
-
         $column_name_array = array("Product name", "Amount", "Price each");
         $this->renderHead("Mancave - Checkout");
         $this->renderNav();
@@ -93,6 +68,29 @@ class CustomerView extends View
         include_once "partials/customerCheckoutInfo.php";
         $this->renderButton("Confirm Order", "?page=checkout/process-order");
         $this->renderFooter();
+    }
+
+    public function renderOrderConfirmationPage($customer, $order_id)
+    {
+        $this->renderHead("Mancave - Order Successful");
+        $this->renderNav();
+        include_once "app/views/partials/orderConfirmation.php";
+        $this->renderFooter();
+    }
+
+    /**
+     * help method for shopping cart page - lists all products in the cart. 
+     */
+    private function renderShoppingCartList($products)
+    {
+        $column_name_array = array("Product name", "Price each", "Amount", "Delete");
+
+        include_once "partials/list/listStart.php";
+        foreach ($products as $product) {
+            $qty = $_SESSION['shopping_cart'][$product['id']];
+            include "partials/shoppingCartItem.php";
+        }
+        include_once "partials/list/listEnd.php";
     }
 
     public function renderProductPage($products)

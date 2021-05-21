@@ -5,6 +5,9 @@
     <h2><?= $product['name'] ?></h2>
     <p class="fs-1"><?= $product['price'] ?> SEK</p>
     <form action="#" method="POST">
+        <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+        <input type="hidden" name="product_name" value="<?=$product['name']?>">
+        <input type="hidden" name="current_page" value="<?=$_SERVER["QUERY_STRING"]?>">
         <button type="submit" name="add_to_cart" class="btn btn-primary w-100">Add to Cart</button>
     </form>
     <div class="mt-3">
