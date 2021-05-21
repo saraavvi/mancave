@@ -253,8 +253,8 @@ class CustomerController extends Controller
         if (isset($_GET["action"]) && $_GET["action"] === "delete") {
             $id = $_GET["id"];
             unset($_SESSION["shopping_cart"][$id]);
+            $this->setAlert("success", "Removed from shopping cart");
         }
-        $this->setAlert("success", "Added to shopping cart");
     }
 
     private function handleShoppingCartQtyUpdate()

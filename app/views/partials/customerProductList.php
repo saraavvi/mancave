@@ -9,7 +9,7 @@ foreach ($products as $product) {
                 <div class='card-body'>
                     <h5 class='card-title'>$product[name]</h5>
                     <p class='card-text'>$product[price] SEK</p>
-                    <form action='?page=admin/products/delete' method='POST'>
+                    <form action='#' method='POST'>
                         <input type='hidden' name='product_id' value='$product[id]'>
                         <input type='hidden' name='product_name' value='$product[name]'>
                         <input type='hidden' name='current_page' value='$_SERVER[QUERY_STRING]'>
