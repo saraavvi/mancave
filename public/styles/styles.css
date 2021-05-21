@@ -1,9 +1,18 @@
+:root {
+    --small: 'Open Sans', sans-serif;
+    --large: 'Abril Fatface', cursive;
+}
+body {
+    font-family: var(--small);
+
+}
+
 .navbar-light .navbar-nav .nav-link {
     color: black;
 }
 .brand {
     font-size: 3.5rem;
-    font-family: 'Abril Fatface', cursive;
+    font-family: var(--large);
 }
 
 .fa {
@@ -11,6 +20,4 @@
         black;
 }
 
-.empty-cart-message {
-    font-family: 'Open Sans', sans-serif;
-}
+

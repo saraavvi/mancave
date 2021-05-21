@@ -102,12 +102,12 @@ class CustomerView extends View
         $this->renderFooter();
     }
 
-    public function renderDetailPage($product)
+    public function renderDetailPage($product, $brand)
     {
         $this->renderHead("Mancave - Product Details");
         $this->renderNav();
         $this->renderAlerts();
-        $this->renderProductDetails($product);
+        $this->renderProductDetails($product, $brand);
         $this->renderFooter();
     }
 
@@ -125,7 +125,7 @@ class CustomerView extends View
     }
 
 
-    private function renderProductDetails($product)
+    private function renderProductDetails($product, $brand)
     {
 
         //  Bara för att visa produkten just nu - byt ut detta mot vad vi vill visa på den här sidan.
