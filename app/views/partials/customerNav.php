@@ -8,7 +8,7 @@ if (!empty($_SESSION["loggedinuser"])) {
 
 
 <header class="sticky-top">
-    <div class="border-bottom d-flex justify-content-end bg-light">
+    <div class=" border-bottom d-flex justify-content-end bg-light">
         <div class="d-flex px-3">
             <?php
             if (empty($_SESSION["loggedinuser"])) {
@@ -31,7 +31,7 @@ if (!empty($_SESSION["loggedinuser"])) {
             </a>
         </div>
     </div>
-    <div class="bg-white">
+    <div class="bg-white rounded">
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid text-center">
                 <a class="navbar-brand fs-1 mx-5" href="?page=index"><span class="brand">ManCave.</span></a>

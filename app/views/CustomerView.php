@@ -57,6 +57,7 @@ class CustomerView extends View
         $column_name_array = ["Product name", "Amount", "Price each"];
         $this->renderHead("Mancave - Checkout");
         $this->renderNav();
+        $this->renderAlerts();
         include_once "partials/list/listStart.php";
         foreach ($products as $product) {
             $qty = $_SESSION["shopping_cart"][$product["id"]];
@@ -101,12 +102,12 @@ class CustomerView extends View
         $this->renderFooter();
     }
 
-    public function renderDetailPage($product)
+    public function renderDetailPage($product, $brand)
     {
         $this->renderHead("Mancave - Product Details");
         $this->renderNav();
         $this->renderAlerts();
-        $this->renderProductDetails($product);
+        $this->renderProductDetails($product, $brand);
         $this->renderFooter();
     }
 
@@ -122,20 +123,18 @@ class CustomerView extends View
         include_once "app/views/partials/customerProductList.php";
     }
 
-    private function renderProductDetails($product)
+    private function renderProductDetails($product, $brand)
     {
-        //  Bara för att visa produkten just nu - byt ut detta mot vad vi vill visa på den här sidan.
-
         include_once "app/views/partials/productDetails.php";
     }
 
     private function renderModalButton()
     {
         $html = <<<HTML
-    <div class="d-flex justify-content-center p-1">
-        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Log in to continue to checkout</a>
-    </div>
-HTML;
+            <div class="d-flex justify-content-center p-1">
+                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Log in to continue to checkout</a>
+            </div>
+        HTML;
         echo $html;
     }
 }

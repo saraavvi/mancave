@@ -149,12 +149,30 @@ class ProductModel
         $row_count = $this->db->update($statement, $params);
         return $row_count;
     }
-
+    
+    public function reduceProductStock($id, $qty)
+    {
+        $statement = "UPDATE products 
+            SET stock = stock - :qty 
+            WHERE products.id = :id;";
+        $params = array(':id' => $id, ':qty' => $qty);
+        $row_count = $this->db->update($statement, $params);
+        return $row_count;
+    }
+    
     public function fetchAllBrands()
     {
         $statement = "SELECT * FROM brands";
         $brands = $this->db->select($statement);
         return $brands;
+    }
+
+    public function fetchBrandById($id)
+    {
+        $statement = "SELECT * FROM brands WHERE id = :id";
+        $params = array(":id" => $id);
+        $brand = $this->db->select($statement, $params);
+        return $brand;
     }
 
     public function fetchAllCategories()
@@ -173,5 +191,4 @@ class ProductModel
 
         return $last_insert_id;
     }
-
 }
