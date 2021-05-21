@@ -189,7 +189,7 @@ class CustomerController extends Controller
         }
     }
 
-    public function validateLoginForm()
+    private function validateLoginForm()
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if (empty($_POST["email"]) || empty($_POST["password"])) {
@@ -284,7 +284,7 @@ class CustomerController extends Controller
      * take info from session and send to order_model
      * send success/error msg to customer_view
      */
-    public function processNewOrder()
+    private function processNewOrder()
     {
         $customer = $_SESSION["loggedinuser"];
         $shopping_cart = $_SESSION["shopping_cart"];
