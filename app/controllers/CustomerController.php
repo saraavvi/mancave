@@ -31,11 +31,6 @@ class CustomerController extends Controller
 
     public function handleIndex()
     {
-        /* // Rendera random produkt på förstasidan:
-        $products = $this->product_model->fetchAllProducts();
-        shuffle($products);
-        $product = $products[0];
-        $this->view->renderCustomerIndexPage($product); */
         $this->customer_view->renderIndexPage();
     }
 

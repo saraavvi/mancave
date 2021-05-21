@@ -88,8 +88,6 @@ class AdminController extends Controller
     {
         $this->ensureAuthenticated();
         $this->initalizeOrderStatusChange();
-        //TODO: create order functionality
-        //$statuses = $this->order_model->fetchAllStatuses(); //värt?
         $orders = $this->order_model->fetchAllOrders();
         if (empty($orders)) {
             $this->setAlert("info", "No orders to show.");
