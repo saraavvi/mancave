@@ -58,6 +58,7 @@ class CustomerView extends View
         $column_name_array = array("Product name", "Amount", "Price each");
         $this->renderHead("Mancave - Checkout");
         $this->renderNav();
+        $this->renderAlerts();
         include_once "partials/list/listStart.php";
         foreach ($products as $product) {
             $qty = $_SESSION['shopping_cart'][$product['id']];

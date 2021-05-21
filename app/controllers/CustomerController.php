@@ -292,18 +292,44 @@ class CustomerController extends Controller
 
         try {
             $order_id = $this->order_model->createNewOrder($customer["id"]); //order_id (lastInsertId)
+
+            // check each products stock against shopping cart quantity
+            $available_products = [];
             foreach ($shopping_cart as $product_id => $qty) {
                 $product = $this->product_model->fetchProductById($product_id);
-                $current_price = $product["price"];
-                $this->order_model->createNewOrderContent(
-                    $order_id,
-                    $product_id,
-                    $qty,
-                    $current_price
-                );
+                if ($product['stock'] >= $qty) {
+                    array_push($available_products, $product);
+                } else {
+                    $this->setAlert(
+                        "danger",
+                        "Failed to place order, you tried to order $qty $product[name] but unfortunately we've only got $product[stock] :("
+                    );
+                }
             }
-            unset($_SESSION["shopping_cart"]);
-            return [$customer, $order_id];
+
+            // only execute order contents if all products are available
+            if (count($available_products) === count($shopping_cart)) {
+                foreach ($available_products as $product) {
+                    try {
+                        $current_price = $product["price"];
+                        $this->order_model->createNewOrderContent(
+                            $order_id,
+                            $product_id,
+                            $qty,
+                            $current_price
+                        );
+                    } catch (Exception $e) {
+                        throw new Exception($e->getMessage());
+                    }
+                    $this->product_model->reduceProductStock($product_id, $qty);
+                }
+                unset($_SESSION["shopping_cart"]);
+                return [$customer, $order_id];
+            } else {
+                // send back to shopping cart with alert(s).
+                header("Location: ?page=shoppingcart");
+                exit;
+            }
         } catch (Exception $e) {
             $this->setAlert(
                 "danger",
