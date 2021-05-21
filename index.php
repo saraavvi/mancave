@@ -55,16 +55,16 @@ $routes = [
     "checkout/process-order" => [$customer_controller, "handlePlaceOrder"],
 
     // Admin routes
-    "admin/login" => [$admin_controller, "login"],
-    "admin/logout" => [$admin_controller, "logout"],
-    "admin" => [$admin_controller, "index"],
-    "admin/products" => [$admin_controller, "index"],
-    "admin/products/index" => [$admin_controller, "index"],
-    "admin/products/create" => [$admin_controller, "productCreate"],
-    "admin/products/update" => [$admin_controller, "productUpdate"],
-    "admin/products/delete" => [$admin_controller, "productDelete"],
-    "admin/orders/delete" => [$admin_controller, "orderDelete"],
-    "admin/orders" => [$admin_controller, "orderList"],
+    "admin/login" => [$admin_controller, "handleLogin"],
+    "admin/logout" => [$admin_controller, "handleLogout"],
+    "admin" => [$admin_controller, "handleIndex"],
+    "admin/products" => [$admin_controller, "handleIndex"],
+    "admin/products/index" => [$admin_controller, "handleIndex"],
+    "admin/products/create" => [$admin_controller, "handleProductCreate"],
+    "admin/products/update" => [$admin_controller, "handleProductUpdate"],
+    "admin/products/delete" => [$admin_controller, "handleProductDelete"],
+    "admin/orders/delete" => [$admin_controller, "handleOrderDelete"],
+    "admin/orders" => [$admin_controller, "handleOrderList"],
 ];
 
 $router = new Router($customer_controller, $admin_controller, $routes);
