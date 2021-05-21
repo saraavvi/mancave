@@ -59,12 +59,13 @@ class AdminController extends Controller
         $this->admin_view->renderProductCreatePage($brands, $categories);
     }
 
+    //Hard to refactor into smaller method
     public function handleProductUpdate()
     {
         $this->ensureAuthenticated();
         $this->conditionForExit(empty($_GET["id"]));
         $id = (int) $this->sanitize($_GET["id"]);
-        $this->processProductUpdateById($id);
+        $this->initializeProductUpdateById($id);
         $brands = $this->product_model->fetchAllBrands();
         $categories = $this->product_model->fetchAllCategories();
         $product_data = $this->product_model->fetchProductById($id);
@@ -80,25 +81,7 @@ class AdminController extends Controller
     public function handleProductDelete()
     {
         $this->ensureAuthenticated();
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            try {
-                $product_id = (int) $_POST["id"];
-                $row_count = $this->product_model->deleteProductById(
-                    $product_id
-                );
-                if ($row_count > 0) {
-                    $this->setAlert("success", "Product successfully deleted.");
-                } else {
-                    $this->setAlert(
-                        "warning",
-                        "No product found with this ID."
-                    );
-                }
-            } catch (Exception $error) {
-                $this->setAlert("danger", "Product could not be deleted.");
-            }
-        }
-        header("Location: ?page=admin/products");
+        $this->deleteProduct();
     }
 
     public function handleOrderDelete()
@@ -309,7 +292,7 @@ class AdminController extends Controller
         }
     }
 
-    private function processProductUpdateById($id)
+    private function initializeProductUpdateById($id)
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $product_data = [];
@@ -326,6 +309,29 @@ class AdminController extends Controller
                 }
             }
         }
+    }
+
+    private function deleteProduct()
+    {
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            try {
+                $product_id = (int) $_POST["id"];
+                $row_count = $this->product_model->deleteProductById(
+                    $product_id
+                );
+                if ($row_count > 0) {
+                    $this->setAlert("success", "Product successfully deleted.");
+                } else {
+                    $this->setAlert(
+                        "warning",
+                        "No product found with this ID."
+                    );
+                }
+            } catch (Exception $error) {
+                $this->setAlert("danger", "Product could not be deleted.");
+            }
+        }
+        header("Location: ?page=admin/products");
     }
 
     private function handleOrderStatusUpdate()
