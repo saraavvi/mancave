@@ -95,15 +95,14 @@ class CustomerController extends Controller
         $this->initializeShoppingCartDelete();
         [$products, $customer] = $this->getShoppingCartDetailsAndCustomer();
         $this->customer_view->renderShoppingCartPage($products, $customer);
-        
     }
 
     public function handleCheckout()
     {
         [
             $products,
-            $total_price,
             $customer,
+            $total_price,
         ] = $this->getShoppingCartDetailsAndCustomer();
         $this->customer_view->renderCheckoutPage(
             $products,
@@ -269,7 +268,7 @@ class CustomerController extends Controller
 
     private function getShoppingCartDetailsAndCustomer()
     {
-        $customer = $_SESSION["loggedinuser"];
+        $customer = $_SESSION["loggedinuser"] ?? false;
         $shopping_cart = $_SESSION["shopping_cart"];
         $total_price = 0;
         $products = [];

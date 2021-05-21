@@ -34,7 +34,7 @@ class CustomerView extends View
     /**
      * display the whole shopping cart page
      */
-    public function renderShoppingCartPage($products, $logged_in = false)
+    public function renderShoppingCartPage($products, $customer = false)
     {
         $this->renderHead("ManCave - Shopping Cart");
         $this->renderNav();
@@ -44,7 +44,7 @@ class CustomerView extends View
             include_once "app/views/partials/emptyCart.php";
         } else {
             $this->renderShoppingCartList($products);
-            if ($logged_in) {
+            if ($customer) {
                 $this->renderButton("Continue to checkout", "?page=checkout");
             } else {
                 $this->renderModalButton();
