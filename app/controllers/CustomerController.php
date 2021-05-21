@@ -31,11 +31,6 @@ class CustomerController extends Controller
 
     public function handleIndex()
     {
-        /* // Rendera random produkt på förstasidan:
-        $products = $this->product_model->fetchAllProducts();
-        shuffle($products);
-        $product = $products[0];
-        $this->view->renderCustomerIndexPage($product); */
         $this->customer_view->renderIndexPage();
     }
 
@@ -89,10 +84,7 @@ class CustomerController extends Controller
      */
     public function handleShoppingCart()
     {
-        // update quantity:
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            $this->handleShoppingCartQtyUpdate();
-        }
+        $this->initializeShoppingCartQtyUpdate();
         $this->initializeShoppingCartDelete();
         [$products, $customer] = $this->getShoppingCartDetailsAndCustomer();
         $this->customer_view->renderShoppingCartPage($products, $customer);
@@ -107,8 +99,8 @@ class CustomerController extends Controller
         ] = $this->getShoppingCartDetailsAndCustomer();
         $this->customer_view->renderCheckoutPage(
             $products,
-            $total_price,
-            $customer
+            $customer,
+            $total_price
         );
     }
 
@@ -193,7 +185,7 @@ class CustomerController extends Controller
         }
     }
 
-    public function validateLoginForm()
+    private function validateLoginForm()
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if (empty($_POST["email"]) || empty($_POST["password"])) {
@@ -248,6 +240,18 @@ class CustomerController extends Controller
         }
     }
 
+    private function initializeShoppingCartQtyUpdate()
+    {
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $id = $this->getAndValidatePost("id", true);
+            $qty = $this->getAndValidatePost("qty", true);
+            if ($id && $qty) {
+                $_SESSION["shopping_cart"][$id] = $qty;
+            }
+            $this->setAlert("success", "Shopping cart updated");
+        }
+    }
+
     private function initializeShoppingCartDelete()
     {
         if (isset($_GET["action"]) && $_GET["action"] === "delete") {
@@ -255,16 +259,6 @@ class CustomerController extends Controller
             unset($_SESSION["shopping_cart"][$id]);
             $this->setAlert("success", "Removed from shopping cart");
         }
-    }
-
-    private function handleShoppingCartQtyUpdate()
-    {
-        $id = $this->getAndValidatePost('id', true);
-        $qty = $this->getAndValidatePost('qty', true);
-        if ($id && $qty) {
-            $_SESSION["shopping_cart"][$id] = $qty;
-        }
-        $this->setAlert("success", "Shopping cart updated");
     }
 
     private function getShoppingCartDetailsAndCustomer()
@@ -286,7 +280,7 @@ class CustomerController extends Controller
      * take info from session and send to order_model
      * send success/error msg to customer_view
      */
-    public function processNewOrder()
+    private function processNewOrder()
     {
         $customer = $_SESSION["loggedinuser"];
         $shopping_cart = $_SESSION["shopping_cart"];
@@ -347,6 +341,7 @@ class CustomerController extends Controller
         header("Location: ?$current_page");
         exit();
     }
+    
     private function returnToIndexWithAlert($message, $style = "danger")
     {
         $this->setAlert($style, $message);
