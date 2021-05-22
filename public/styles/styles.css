@@ -9,7 +9,6 @@ body {
 
 .navbar-light .navbar-nav .nav-link {
     color: black;
-    margin-top: 3.8em;
 }
 .brand {
     font-size: 4.2rem;
@@ -44,3 +43,27 @@ a {
     max-width: max-content;
     margin-right: 1em;
 }
+
+@media only screen and (max-width: 575px) {
+    .navbar-brand {
+        margin-left: 4vw !important;
+    }
+    .brand {
+        font-size: 10vw;
+        font-family: var(--large);
+        line-height: .2;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+
+    footer.mancave-footer {
+        font-size: 2vw;
+        padding: 2vw !important;
+    }
+
+    footer .btn {
+        font-size: 2vw;
+    }
+
+  }

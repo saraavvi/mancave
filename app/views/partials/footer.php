@@ -1,6 +1,6 @@
                     </div>
                 </div>
-            <footer class="bg-light border-top px-5 py-3 mt-auto d-flex justify-content-between align-items-center">
+            <footer class="mancave-footer bg-light border-top px-5 py-3 mt-auto d-flex justify-content-between align-items-center">
                 <a href="<?= $link ?>" class="btn p-3 text-muted"><?= $name ?></a>
                 <small class="p-0 m-0 text-sm text-muted">Brought to you by <i><strong><a href="https://github.com/saraavvi/mancave">Bro Tech Finence Tech Bro Web Agency Ltd.</a></strong></i></small>
             </footer>
