@@ -46,7 +46,11 @@ class CustomerController extends Controller
             $customer = $this->customer_model->fetchCustomerByEmail(
                 $_POST["email"]
             );
-            $this->validateLoginForm($customer, "customer", $_POST["current_page"]);
+            $this->validateLoginForm(
+                $customer,
+                "customer",
+                $_POST["current_page"]
+            );
         }
         echo "Page not found";
         exit();

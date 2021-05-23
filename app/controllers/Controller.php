@@ -57,7 +57,8 @@ class Controller
     protected function validateLoginForm(
         $user,
         $session_variable,
-        $success_redirect) {
+        $success_redirect
+    ) {
         $current_page = $_POST["current_page"];
         if (empty($_POST["email"]) || empty($_POST["password"])) {
             $this->goToPageWithAlert(
