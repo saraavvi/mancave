@@ -41,4 +41,14 @@ class Controller
     {
         $_SESSION['alerts'][$category][] = $message;
     }
+
+    protected function goToPageWithAlert(
+        $message,
+        $page = "page=index",
+        $style = "danger"
+    ) {
+        $this->setAlert($style, $message);
+        header("Location: ?$page");
+        exit();
+    }
 }

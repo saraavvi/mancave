@@ -59,7 +59,7 @@ class CustomerController extends Controller
         $category = $this->sanitize($_GET["category"]);
         $products = $this->product_model->fetchProductsByCategory($category);
         if (!$products) {
-            $this->rerenderPageWithAlert("Category id does not exist.");
+            $this->goToPageWithAlert("Category id does not exist.");
         }
         $this->customer_view->renderProductPage($products);
     }
@@ -72,9 +72,9 @@ class CustomerController extends Controller
         $this->initializeShoppingCartAdd();
         $id = $this->sanitize($_GET["id"]);
         $product = $this->product_model->fetchProductById($id);
-        $brand = $this->product_model->fetchBrandById($product['brand_id']);
+        $brand = $this->product_model->fetchBrandById($product["brand_id"]);
         if (!$product) {
-            $this->rerenderPageWithAlert("Product id does not exist.");
+            $this->goToPageWithAlert("Product id does not exist.");
         }
         $this->customer_view->renderDetailPage($product, $brand);
     }
@@ -128,8 +128,9 @@ class CustomerController extends Controller
                 $customer_id = $this->customer_model->createCustomer(
                     $customer_data
                 );
-                $this->returnToIndexWithAlert(
+                $this->goToPageWithAlert(
                     "Customer successfully created! New customer id: $customer_id. Please Log In.",
+                    "page=index",
                     "success"
                 );
             } catch (Exception $error) {
@@ -188,31 +189,33 @@ class CustomerController extends Controller
     private function validateLoginForm()
     {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $current_page = $_POST["current_page"];
             if (empty($_POST["email"]) || empty($_POST["password"])) {
-                $this->rerenderPageWithAlert(
-                    "Please enter username and password."
+                $this->goToPageWithAlert(
+                    "Please enter username and password.", $current_page
                 );
             }
             $customer = $this->customer_model->fetchCustomerByEmail(
                 $_POST["email"]
             );
             if (!$customer) {
-                $this->rerenderPageWithAlert("Incorrect username/email.");
+                $this->goToPageWithAlert("Incorrect username/email.", $current_page);
             }
             $hashed_password = $customer["password"];
             $entered_password = $_POST["password"];
             if (!password_verify($entered_password, $hashed_password)) {
-                $this->rerenderPageWithAlert("Incorrect password.");
+                $this->goToPageWithAlert("Incorrect password.", $current_page);
             } else {
                 //To prevent storing the password in session storage
                 $customer["password"] = null;
                 $_SESSION["loggedinuser"] = $customer;
-                $this->rerenderPageWithAlert(
+                $this->goToPageWithAlert(
                     "Successfully Logged In!",
+                    $current_page,
                     "success"
                 );
             }
-            $this->rerenderPageWithAlert("Unexpected error!");
+            $this->goToPageWithAlert("Unexpected error!", $current_page);
         }
         echo "Page not found";
         exit();
@@ -221,7 +224,7 @@ class CustomerController extends Controller
     private function logOutCustomer()
     {
         $_SESSION["loggedinuser"] = null;
-        $this->returnToIndexWithAlert("Successfully Logged Out!", "success");
+        $this->goToPageWithAlert("Successfully Logged Out!", "page=index", "success");
     }
 
     private function initializeShoppingCartAdd()
@@ -236,7 +239,11 @@ class CustomerController extends Controller
             } else {
                 $_SESSION["shopping_cart"][$id]++;
             }
-            $this->rerenderPageWithAlert("$name added to cart", "info");
+            $this->goToPageWithAlert(
+                "$name added to cart",
+                $_POST["current_page"],
+                "info"
+            );
         }
     }
 
@@ -290,7 +297,7 @@ class CustomerController extends Controller
             $available_products = [];
             foreach ($shopping_cart as $product_id => $qty) {
                 $product = $this->product_model->fetchProductById($product_id);
-                if ($product['stock'] >= $qty) {
+                if ($product["stock"] >= $qty) {
                     array_push($available_products, $product);
                 } else {
                     $this->setAlert(
@@ -323,7 +330,7 @@ class CustomerController extends Controller
             } else {
                 // send back to shopping cart with alert(s).
                 header("Location: ?page=shoppingcart");
-                exit;
+                exit();
             }
         } catch (Exception $e) {
             $this->setAlert(
@@ -332,20 +339,5 @@ class CustomerController extends Controller
             );
             return false;
         }
-    }
-
-    private function rerenderPageWithAlert($message, $style = "danger")
-    {
-        $this->setAlert($style, $message);
-        $current_page = $_POST["current_page"] ?? "";
-        header("Location: ?$current_page");
-        exit();
-    }
-    
-    private function returnToIndexWithAlert($message, $style = "danger")
-    {
-        $this->setAlert($style, $message);
-        $this->customer_view->renderIndexPage();
-        exit();
     }
 }
