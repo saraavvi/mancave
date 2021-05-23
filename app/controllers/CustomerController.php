@@ -7,6 +7,9 @@ require_once "Controller.php";
 // getAndValidatePost()
 // sanitize()
 // setAlert()
+// goToPageWithAlert()
+// validateLoginForm()
+// logOutAndGoToPage()
 
 class CustomerController extends Controller
 {
