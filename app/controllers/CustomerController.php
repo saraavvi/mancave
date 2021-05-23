@@ -47,7 +47,7 @@ class CustomerController extends Controller
 
     public function handleLogout()
     {
-        $this->logOutCustomer();
+        $this->logOutAndGoToPage();
     }
 
     /**
@@ -223,16 +223,6 @@ class CustomerController extends Controller
         }
         echo "Page not found";
         exit();
-    }
-
-    private function logOutCustomer()
-    {
-        unset($_SESSION["customer"]);
-        $this->goToPageWithAlert(
-            "Successfully Logged Out!",
-            "page=index",
-            "success"
-        );
     }
 
     private function initializeShoppingCartAdd()

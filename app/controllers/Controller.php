@@ -51,4 +51,14 @@ class Controller
         header("Location: ?$page");
         exit();
     }
+
+    protected function logOutAndGoToPage($user = "customer", $page = "page=index")
+    {
+        unset($_SESSION["$user"]);
+        $this->goToPageWithAlert(
+            "Successfully Logged Out!",
+            $page,
+            "success"
+        );
+    }
 }

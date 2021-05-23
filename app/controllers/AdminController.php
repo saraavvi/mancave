@@ -36,7 +36,7 @@ class AdminController extends Controller
 
     public function handleLogout()
     {
-        $this->logOutAdmin();
+        $this->logOutAndGoToPage("admin", "page=admin/login");
     }
 
     public function handleIndex()
@@ -142,16 +142,6 @@ class AdminController extends Controller
         }
         $this->admin_view->renderLoginPage();
         exit();
-    }
-
-    private function logOutAdmin()
-    {
-        unset($_SESSION["admin"]);
-        $this->goToPageWithAlert(
-            "Successfully Logged Out!",
-            "page=admin/login",
-            "success"
-        );
     }
 
     private function ensureAuthenticated()
