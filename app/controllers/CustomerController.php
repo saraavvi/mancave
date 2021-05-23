@@ -42,7 +42,14 @@ class CustomerController extends Controller
 
     public function handleLogin()
     {
-        $this->validateLoginForm();
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $customer = $this->customer_model->fetchCustomerByEmail(
+                $_POST["email"]
+            );
+            $this->validateLoginForm($customer, "customer", $_POST["current_page"]);
+        }
+        echo "Page not found";
+        exit();
     }
 
     public function handleLogout()
@@ -184,45 +191,6 @@ class CustomerController extends Controller
         } else {
             throw new Exception(json_encode($errors));
         }
-    }
-
-    private function validateLoginForm()
-    {
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            $current_page = $_POST["current_page"];
-            if (empty($_POST["email"]) || empty($_POST["password"])) {
-                $this->goToPageWithAlert(
-                    "Please enter username and password.",
-                    $current_page
-                );
-            }
-            $customer = $this->customer_model->fetchCustomerByEmail(
-                $_POST["email"]
-            );
-            if (!$customer) {
-                $this->goToPageWithAlert(
-                    "Incorrect username/email.",
-                    $current_page
-                );
-            }
-            $hashed_password = $customer["password"];
-            $entered_password = $_POST["password"];
-            if (!password_verify($entered_password, $hashed_password)) {
-                $this->goToPageWithAlert("Incorrect password.", $current_page);
-            } else {
-                //To prevent storing the password in session storage
-                $customer["password"] = null;
-                $_SESSION["customer"] = $customer;
-                $this->goToPageWithAlert(
-                    "Successfully Logged In!",
-                    $current_page,
-                    "success"
-                );
-            }
-            $this->goToPageWithAlert("Unexpected error!", $current_page);
-        }
-        echo "Page not found";
-        exit();
     }
 
     private function initializeShoppingCartAdd()

@@ -31,7 +31,12 @@ class AdminController extends Controller
 
     public function handleLogin()
     {
-        $this->validateLoginForm();
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $admin = $this->admin_model->fetchAdminByEmail($_POST["email"]);
+            $this->validateLoginForm($admin, "admin", "page=admin");
+        }
+        $this->admin_view->renderLoginPage();
+        exit();
     }
 
     public function handleLogout()
@@ -104,45 +109,6 @@ class AdminController extends Controller
     }
 
     // HELPER METHODS:
-
-    private function validateLoginForm()
-    {
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            if (empty($_POST["email"]) || empty($_POST["password"])) {
-                $this->goToPageWithAlert(
-                    "Please enter username and password.",
-                    "page=admin/login"
-                );
-            }
-            $admin = $this->admin_model->fetchAdminByEmail($_POST["email"]);
-            if (!$admin) {
-                $this->goToPageWithAlert(
-                    "Incorrect username/email.",
-                    "page=admin/login"
-                );
-            }
-            $hashed_password = $admin["password"];
-            $entered_password = $_POST["password"];
-            if (!password_verify($entered_password, $hashed_password)) {
-                $this->goToPageWithAlert(
-                    "Incorrect password.",
-                    "page=admin/login"
-                );
-            } else {
-                //To prevent storing the password in session storage
-                $admin["password"] = null;
-                $_SESSION["admin"] = $admin;
-                $this->goToPageWithAlert(
-                    "Successfully Logged In!",
-                    "page=admin",
-                    "success"
-                );
-            }
-            $this->goToPageWithAlert("Unexpected error!", "page=admin/login");
-        }
-        $this->admin_view->renderLoginPage();
-        exit();
-    }
 
     private function ensureAuthenticated()
     {
