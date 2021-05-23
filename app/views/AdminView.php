@@ -4,7 +4,7 @@ require_once 'View.php';
 
 // INHERITED METHODS:
 // renderHead()
-// renderNav()
+// renderNav() 
 // renderFooter()
 // renderAlerts()
 // renderButton()
@@ -24,7 +24,7 @@ class AdminView extends View
     public function renderIndexPage($products)
     {
         $this->renderHead("Admin - Home");
-        $this->renderNav(true);
+        $this->renderNav();
         $this->renderButton("Add new product", "?page=admin/products/create");
 
         $this->renderAlerts();
@@ -39,7 +39,7 @@ class AdminView extends View
     public function renderProductCreatePage($brands, $categories)
     {
         $this->renderHead("Admin - Create Product");
-        $this->renderNav(true);
+        $this->renderNav();
         $this->renderButton(
             "Go back to product list",
             "?page=admin",
@@ -62,7 +62,7 @@ class AdminView extends View
         $errors = []
     ) {
         $this->renderHead("Admin - Update Product");
-        $this->renderNav(true);
+        $this->renderNav();
         $this->renderButton(
             "Go back to product list",
             "?page=admin",
@@ -76,7 +76,7 @@ class AdminView extends View
     public function renderOrderListPage($orders)
     {
         $this->renderHead("Admin - Order List");
-        $this->renderNav(true);
+        $this->renderNav();
         $this->renderButton(
             "Go back to product list",
             "?page=admin",

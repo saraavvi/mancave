@@ -53,8 +53,17 @@ if (!empty($_SESSION["loggedinuser"])) {
                                 <li><a class="dropdown-item" href="?page=products&category=4">Health & Beauty</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link pb-0" href="#">Brands</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link pb-0 dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Brands
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <?php
+                                foreach ($brands as $brand) {
+                                    echo "<li><a class='dropdown-item' href='?page=products&brand=$brand[id]'>$brand[name]</a></li>";
+                                }
+                                ?>
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link pb-0" href="?page=about">About us</a>

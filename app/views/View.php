@@ -13,8 +13,10 @@ class View
      * Render customerNav as default. 
      * Pass true as argument to render adminNav.
      */
-    protected function renderNav($admin = false)
+    protected function renderNav($brands = [])
     {
+        $page = isset($_GET['page']) ? explode("/", $_GET['page'])[0] : "";
+        $admin = $page === "admin";
         if ($admin) {
             include_once "app/views/partials/adminNav.php";
         } else {
