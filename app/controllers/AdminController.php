@@ -131,7 +131,7 @@ class AdminController extends Controller
             } else {
                 //To prevent storing the password in session storage
                 $admin["password"] = null;
-                $_SESSION["loggedinadmin"] = $admin;
+                $_SESSION["admin"] = $admin;
                 $this->goToPageWithAlert(
                     "Successfully Logged In!",
                     "page=admin",
@@ -146,7 +146,7 @@ class AdminController extends Controller
 
     private function logOutAdmin()
     {
-        $_SESSION["loggedinadmin"] = null;
+        unset($_SESSION["admin"]);
         $this->goToPageWithAlert(
             "Successfully Logged Out!",
             "page=admin/login",
@@ -156,7 +156,7 @@ class AdminController extends Controller
 
     private function ensureAuthenticated()
     {
-        if (empty($_SESSION["loggedinadmin"])) {
+        if (empty($_SESSION["admin"])) {
             $this->goToPageWithAlert(
                 "You need to be logged in to access this page.",
                 "page=admin/login"

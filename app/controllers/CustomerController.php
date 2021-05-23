@@ -192,14 +192,18 @@ class CustomerController extends Controller
             $current_page = $_POST["current_page"];
             if (empty($_POST["email"]) || empty($_POST["password"])) {
                 $this->goToPageWithAlert(
-                    "Please enter username and password.", $current_page
+                    "Please enter username and password.",
+                    $current_page
                 );
             }
             $customer = $this->customer_model->fetchCustomerByEmail(
                 $_POST["email"]
             );
             if (!$customer) {
-                $this->goToPageWithAlert("Incorrect username/email.", $current_page);
+                $this->goToPageWithAlert(
+                    "Incorrect username/email.",
+                    $current_page
+                );
             }
             $hashed_password = $customer["password"];
             $entered_password = $_POST["password"];
@@ -208,7 +212,7 @@ class CustomerController extends Controller
             } else {
                 //To prevent storing the password in session storage
                 $customer["password"] = null;
-                $_SESSION["loggedinuser"] = $customer;
+                $_SESSION["customer"] = $customer;
                 $this->goToPageWithAlert(
                     "Successfully Logged In!",
                     $current_page,
@@ -223,8 +227,12 @@ class CustomerController extends Controller
 
     private function logOutCustomer()
     {
-        $_SESSION["loggedinuser"] = null;
-        $this->goToPageWithAlert("Successfully Logged Out!", "page=index", "success");
+        unset($_SESSION["customer"]);
+        $this->goToPageWithAlert(
+            "Successfully Logged Out!",
+            "page=index",
+            "success"
+        );
     }
 
     private function initializeShoppingCartAdd()
@@ -270,7 +278,7 @@ class CustomerController extends Controller
 
     private function getShoppingCartDetailsAndCustomer()
     {
-        $customer = $_SESSION["loggedinuser"] ?? false;
+        $customer = $_SESSION["customer"] ?? false;
         $shopping_cart = $_SESSION["shopping_cart"];
         $total_price = 0;
         $products = [];
@@ -289,7 +297,7 @@ class CustomerController extends Controller
      */
     private function processNewOrder()
     {
-        $customer = $_SESSION["loggedinuser"];
+        $customer = $_SESSION["customer"];
         $shopping_cart = $_SESSION["shopping_cart"];
 
         try {
