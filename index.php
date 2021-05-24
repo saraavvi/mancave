@@ -65,6 +65,7 @@ $routes = [
     "admin/products/update" => [$admin_controller, "handleProductUpdate"],
     "admin/products/delete" => [$admin_controller, "handleProductDelete"],
     "admin/orders" => [$admin_controller, "handleOrderList"],
+    "admin/orders/details" => [$admin_controller, "handleOrderDetails"],
     "admin/orders/delete" => [$admin_controller, "handleOrderDelete"],
 ];
 
