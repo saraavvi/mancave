@@ -1,8 +1,5 @@
 <?php
 session_start();
-if (empty($_SESSION["shopping_cart"])) {
-    $_SESSION["shopping_cart"] = [];
-}
 
 //Model
 require_once "app/models/Database.php";
