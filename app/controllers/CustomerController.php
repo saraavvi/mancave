@@ -289,6 +289,7 @@ class CustomerController extends Controller
             foreach ($shopping_cart as $product_id => $qty) {
                 $product = $this->product_model->fetchProductById($product_id);
                 if ($product["stock"] >= $qty) {
+                    $product["qty"] = $qty;
                     array_push($available_products, $product);
                 } else {
                     $this->setAlert(
@@ -307,8 +308,8 @@ class CustomerController extends Controller
                         $current_price = $product["price"];
                         $this->order_model->createNewOrderContent(
                             $order_id,
-                            $product_id,
-                            $qty,
+                            $product["id"],
+                            $product["qty"],
                             $current_price
                         );
                     } catch (Exception $e) {

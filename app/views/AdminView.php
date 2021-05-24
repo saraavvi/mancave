@@ -117,8 +117,8 @@ class AdminView extends View
                 "Order row ID",
                 "Product ID",
                 "Name",
-                "Row total",
                 "Price each",
+                "Row total",
                 "Quantity",
                 "Delete Order Row"
             ]);
