@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="public/styles/styles.css" type="text/css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/styles/styles.css" type="text/css">
 </head>
 
 <body class="d-flex flex-column min-vh-100">

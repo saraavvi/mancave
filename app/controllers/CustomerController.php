@@ -75,7 +75,7 @@ class CustomerController extends Controller
     public function handleProducts() {
         $this->initializeShoppingCartAdd();
         $brands = $this->getBrands();
-        if (isset($_GET['category'])) {
+        if (isset($_SESSION['firstparam'])) {
             [$products, $title] = $this->getProductsByCategory();
             $this->customer_view->renderProductPage($products, $title, $brands);
         } else if (isset($_GET['brand'])) {
@@ -333,7 +333,7 @@ class CustomerController extends Controller
      */
     private function getProductsByCategory()
     {
-        $category = (int)$this->sanitize($_GET["category"]);
+        $category = (int)$this->sanitize($_SESSION['firstparam']);
         $products = [];
         $title = "Category";
         if ($category) {

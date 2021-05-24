@@ -7,7 +7,7 @@ class Router
     private $routes;
 
 
-    /**
+    /***
      *
      */
     public function __construct($customer_controller, $admin_controller, $routes)
@@ -21,7 +21,16 @@ class Router
     //ROUTER METHODS:
     private function resolveRoute()
     {
-        $page = $_GET["page"] ?? "";
+        $url = $this->getArrayFromUrl();
+        $page = $url[0] ?? "";
+        $firstparam = $url[1] ?? "";
+        $_SESSION['firstparam'] = $firstparam;
+        /* $secondparam = $url[2] ?? "";
+        $_SESSION['secondparam'] = $secondparam; */
+        /* echo $page;
+        echo $param;
+        exit; */
+        /* $page = $_GET["page"] ?? ""; */
 
         $function = $this->routes[$page] ?? null; // 'create'
 
@@ -35,6 +44,17 @@ class Router
         if ($condition) {
             echo "Page not found";
             exit();
+        }
+    }
+
+    private function getArrayFromUrl()
+    {
+        if (isset($_GET['url'])) {
+            $url = rtrim($_GET['url'], '/');
+            $url = filter_var($url, FILTER_SANITIZE_URL);
+            $url = explode('/', $url);
+            //print_r($url);
+            return $url;
         }
     }
 }

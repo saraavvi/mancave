@@ -96,6 +96,7 @@ class CustomerView extends View
         $this->renderAlerts();
         $this->renderCustomerProductList($products);
         $this->renderFooter();
+        unset($_SESSION['firstparam']);
     }
 
     public function renderDetailPage($product, $brand, $brands)

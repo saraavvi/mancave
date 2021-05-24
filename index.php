@@ -4,6 +4,8 @@ if (empty($_SESSION["shopping_cart"])) {
     $_SESSION["shopping_cart"] = [];
 }
 
+define('URLROOT', 'http://localhost:8888/mancave');
+
 //Model
 require_once "app/models/Database.php";
 require_once "app/models/OrderModel.php";
@@ -49,7 +51,7 @@ $routes = [
     "register" => [$customer_controller, "handleRegister"],
     "login" => [$customer_controller, "handleLogin"],
     "logout" => [$customer_controller, "handleLogout"],
-    "products" => [$customer_controller, "handleProducts"],
+    "productcategory" => [$customer_controller, "handleProducts"],
     "products/details" => [$customer_controller, "handleProductDetails"],
     "shoppingcart" => [$customer_controller, "handleShoppingCart"],
     "checkout" => [$customer_controller, "handleCheckout"],

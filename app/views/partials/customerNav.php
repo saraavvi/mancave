@@ -47,10 +47,10 @@ if (!empty($_SESSION["customer"])) {
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <!-- hämta kategorier från från databasen och skriv ut här istället sen -->
-                                <li><a class="dropdown-item" href="?page=products&category=1">Hobbies</a></li>
-                                <li><a class="dropdown-item" href="?page=products&category=2">Books</a></li>
-                                <li><a class="dropdown-item" href="?page=products&category=3">Interior</a></li>
-                                <li><a class="dropdown-item" href="?page=products&category=4">Health & Beauty</a></li>
+                                <li><a class="dropdown-item" href="<?= URLROOT ?>/productcategory/1">Hobbies</a></li>
+                                <li><a class="dropdown-item" href="<?= URLROOT ?>/productcategory/2">Books</a></li>
+                                <li><a class="dropdown-item" href="<?= URLROOT ?>/productcategory/3">Interior</a></li>
+                                <li><a class="dropdown-item" href="<?= URLROOT ?>/productcategory/4">Health & Beauty</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
