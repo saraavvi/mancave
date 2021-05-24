@@ -209,6 +209,25 @@ class AdminController extends Controller
         }
     }
 
+    private function initializeProductUpdateById($id)
+    {
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $product_data = [];
+            try {
+                $product_data = $this->validateProductForm();
+                $this->product_model->updateProductById($id, $product_data);
+                $this->setAlert("success", "Product successfully updated");
+                header("Location: ?page=admin/products");
+                exit();
+            } catch (Exception $error) {
+                $errors_array = json_decode($error->getMessage(), true);
+                foreach ($errors_array as $message) {
+                    $this->setAlert("danger", $message);
+                }
+            }
+        }
+    }
+
     private function validateProductForm()
     {
         $errors = [];
@@ -222,19 +241,14 @@ class AdminController extends Controller
         $specification = $this->getAndValidatePost("specification");
 
         $chosen_brand = $this->getAndValidatePost("brand_id", true);
-        $new_brand_chosen = $this->getAndValidatePost("brand_id") === "NEW";
         $new_brand = $this->getAndValidatePost("new_brand");
 
-        if (
-            (!$new_brand_chosen && $new_brand) ||
-            ($new_brand_chosen && !$new_brand) ||
-            (!$chosen_brand && !$new_brand)
-        ) {
+        if (!$chosen_brand && !$new_brand) {
             array_push(
                 $errors,
-                "To add a new brand, please pick option 'Add New Brand' and enter a brand name below."
+                "Please add a new brand or choose an existing one."
             );
-        } elseif ($new_brand_chosen && $new_brand) {
+        } else if ($new_brand) {
             $product_data["brand_id"] = $this->product_model->createBrand(
                 $new_brand
             );
@@ -258,25 +272,6 @@ class AdminController extends Controller
             return $product_data;
         } else {
             throw new Exception(json_encode($errors));
-        }
-    }
-
-    private function initializeProductUpdateById($id)
-    {
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            $product_data = [];
-            try {
-                $product_data = $this->validateProductForm();
-                $this->product_model->updateProductById($id, $product_data);
-                $this->setAlert("success", "Product successfully updated");
-                header("Location: ?page=admin/products");
-                exit();
-            } catch (Exception $error) {
-                $errors_array = json_decode($error->getMessage(), true);
-                foreach ($errors_array as $message) {
-                    $this->setAlert("danger", $message);
-                }
-            }
         }
     }
 
