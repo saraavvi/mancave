@@ -1,8 +1,8 @@
 <?php
-if (!empty($_SESSION["loggedinuser"])) {
-    $username = $_SESSION["loggedinuser"]["first_name"];
+if (!empty($_SESSION["customer"])) {
+    $username = $_SESSION["customer"]["first_name"];
     $username .= " ";
-    $username .= $_SESSION["loggedinuser"]["last_name"];
+    $username .= $_SESSION["customer"]["last_name"];
 }
 ?>
 
@@ -11,7 +11,7 @@ if (!empty($_SESSION["loggedinuser"])) {
     <div class=" border-bottom d-flex justify-content-end bg-light">
         <div class="d-flex px-3">
             <?php
-            if (empty($_SESSION["loggedinuser"])) {
+            if (empty($_SESSION["customer"])) {
                 echo '<div class="d-flex">
                             <!-- Button trigger modal -->
                             <button type="button" class="btn fw-bold" data-bs-toggle="modal" data-bs-target="#loginModal">
@@ -33,15 +33,16 @@ if (!empty($_SESSION["loggedinuser"])) {
     </div>
     <div class="bg-white rounded">
         <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="container-fluid text-center">
-                <a class="navbar-brand fs-1 mx-5" href="?page=index"><span class="brand">ManCave.</span></a>
+            <div class="container-fluid text-center align-items-end">
+                <a class="navbar-brand fs-1 mx-5 mt-5" href="?page=index">
+                    <span class="brand">ManCave.<span class="brand-by">by</span><span class="brand-founder">Bob Franker Transatlantic Fellows</span></span></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link pb-0 dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Products
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -52,8 +53,20 @@ if (!empty($_SESSION["loggedinuser"])) {
                                 <li><a class="dropdown-item" href="?page=products&category=4">Health & Beauty</a></li>
                             </ul>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link pb-0 dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Brands
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <?php
+                                foreach ($brands as $brand) {
+                                    echo "<li><a class='dropdown-item' href='?page=products&brand=$brand[id]'>$brand[name]</a></li>";
+                                }
+                                ?>
+                            </ul>
+                        </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Brands</a>
+                            <a class="nav-link pb-0" href="?page=about">About us</a>
                         </li>
                     </ul>
 
@@ -69,7 +82,7 @@ if (!empty($_SESSION["loggedinuser"])) {
 </header>
 
 <?php
-if (empty($_SESSION["loggedinuser"])) {
+if (empty($_SESSION["customer"])) {
     include_once "app/views/partials/loginModal.php";
 }
 ?>

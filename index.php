@@ -45,10 +45,11 @@ $routes = [
     // Customer routes
     "" => [$customer_controller, "handleIndex"], // In case no /?page=...
     "index" => [$customer_controller, "handleIndex"],
+    "about" => [$customer_controller, "handleAbout"],
     "register" => [$customer_controller, "handleRegister"],
     "login" => [$customer_controller, "handleLogin"],
     "logout" => [$customer_controller, "handleLogout"],
-    "products" => [$customer_controller, "handleProductsByCategory"],
+    "products" => [$customer_controller, "handleProducts"],
     "products/details" => [$customer_controller, "handleProductDetails"],
     "shoppingcart" => [$customer_controller, "handleShoppingCart"],
     "checkout" => [$customer_controller, "handleCheckout"],

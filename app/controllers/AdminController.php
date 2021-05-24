@@ -31,12 +31,17 @@ class AdminController extends Controller
 
     public function handleLogin()
     {
-        $this->validateLoginForm();
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $admin = $this->admin_model->fetchAdminByEmail($_POST["email"]);
+            $this->validateLoginForm($admin, "admin", "page=admin");
+        }
+        $this->admin_view->renderLoginPage();
+        exit();
     }
 
     public function handleLogout()
     {
-        $this->logOutAdmin();
+        $this->logOutAndGoToPage("admin", "page=admin/login");
     }
 
     public function handleIndex()
@@ -70,7 +75,9 @@ class AdminController extends Controller
         $categories = $this->product_model->fetchAllCategories();
         $product_data = $this->product_model->fetchProductById($id);
         //TODO: Better error handling
-        if (!$product_data) echo 'Product id does not exist.';
+        if (!$product_data) {
+            echo "Product id does not exist.";
+        }
         $this->admin_view->renderProductUpdatePage(
             $brands,
             $categories,
@@ -103,55 +110,14 @@ class AdminController extends Controller
 
     // HELPER METHODS:
 
-    private function validateLoginForm()
-    {
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            if (empty($_POST["email"]) || empty($_POST["password"])) {
-                $this->returnToLoginWithAlert(
-                    "Please enter username and password."
-                );
-            }
-            $admin = $this->admin_model->fetchAdminByEmail($_POST["email"]);
-            if (!$admin) {
-                $this->returnToLoginWithAlert("Incorrect username/email.");
-            }
-            $hashed_password = $admin["password"];
-            $entered_password = $_POST["password"];
-            if (!password_verify($entered_password, $hashed_password)) {
-                $this->returnToLoginWithAlert("Incorrect password.");
-            } else {
-                //To prevent storing the password in session storage
-                $admin["password"] = null;
-                $_SESSION["loggedinadmin"] = $admin;
-                $this->setAlert("success", "Successfully Logged In!");
-                header("Location: ?page=admin");
-                exit;
-            }
-            $this->returnToLoginWithAlert("Unexpected error!");
-        }
-        $this->admin_view->renderLoginPage();
-        exit();
-    }
-
-    private function logOutAdmin()
-    {
-        $_SESSION["loggedinadmin"] = null;
-        $this->returnToLoginWithAlert("Successfully Logged Out!", "success");
-    }
-
     private function ensureAuthenticated()
     {
-        if (empty($_SESSION["loggedinadmin"])) {
-            $this->admin_view->renderLoginPage();
-            exit();
+        if (empty($_SESSION["admin"])) {
+            $this->goToPageWithAlert(
+                "You need to be logged in to access this page.",
+                "page=admin/login"
+            );
         }
-    }
-
-    private function returnToLoginWithAlert($message, $style = "danger")
-    {
-        $this->setAlert($style, $message);
-        $this->admin_view->renderLoginPage();
-        exit();
     }
 
     private function initializeAddToStock()
@@ -210,6 +176,25 @@ class AdminController extends Controller
         }
     }
 
+    private function initializeProductUpdateById($id)
+    {
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $product_data = [];
+            try {
+                $product_data = $this->validateProductForm();
+                $this->product_model->updateProductById($id, $product_data);
+                $this->setAlert("success", "Product successfully updated");
+                header("Location: ?page=admin/products");
+                exit();
+            } catch (Exception $error) {
+                $errors_array = json_decode($error->getMessage(), true);
+                foreach ($errors_array as $message) {
+                    $this->setAlert("danger", $message);
+                }
+            }
+        }
+    }
+
     private function validateProductForm()
     {
         $errors = [];
@@ -223,22 +208,24 @@ class AdminController extends Controller
         $specification = $this->getAndValidatePost("specification");
 
         $chosen_brand = $this->getAndValidatePost("brand_id", true);
-        $new_brand_chosen = $this->getAndValidatePost("brand_id") === "NEW";
         $new_brand = $this->getAndValidatePost("new_brand");
 
-        if (
-            (!$new_brand_chosen && $new_brand) ||
-            ($new_brand_chosen && !$new_brand) ||
-            (!$chosen_brand && !$new_brand)
-        ) {
+        if (!$chosen_brand && !$new_brand) {
             array_push(
                 $errors,
-                "To add a new brand, please pick option 'Add New Brand' and enter a brand name below."
+                "Please add a new brand or choose an existing one."
             );
-        } elseif ($new_brand_chosen && $new_brand) {
-            $product_data["brand_id"] = $this->product_model->createBrand(
-                $new_brand
-            );
+        } else if ($new_brand) {
+            try {
+                $product_data["brand_id"] = $this->product_model->createBrand(
+                    $new_brand
+                );
+            } catch (Exception $e) {
+                array_push(
+                    $errors,
+                    "Failed to create new brand, please try again later."
+                );
+            }
         } else {
             $product_data["brand_id"] = $chosen_brand;
         }
@@ -259,25 +246,6 @@ class AdminController extends Controller
             return $product_data;
         } else {
             throw new Exception(json_encode($errors));
-        }
-    }
-
-    private function initializeProductUpdateById($id)
-    {
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            $product_data = [];
-            try {
-                $product_data = $this->validateProductForm();
-                $this->product_model->updateProductById($id, $product_data);
-                $this->setAlert("success", "Product successfully updated");
-                header("Location: ?page=admin/products");
-                exit();
-            } catch (Exception $error) {
-                $errors_array = json_decode($error->getMessage(), true);
-                foreach ($errors_array as $message) {
-                    $this->setAlert("danger", $message);
-                }
-            }
         }
     }
 
@@ -328,8 +296,8 @@ class AdminController extends Controller
 
     private function handleOrderStatusUpdate()
     {
-        $order_id = (int) $this->sanitize($_GET["id"]);
-        $status_id = (int) $this->sanitize($_GET["status_id"]);
+        $order_id = (int)$this->sanitize($_GET["id"]);
+        $status_id = (int)$this->sanitize($_GET["status_id"]);
         if ($order_id && $status_id) {
             if ($status_id === 2) {
                 $this->order_model->updateOrderShippedDate($order_id);
@@ -346,7 +314,7 @@ class AdminController extends Controller
     private function deleteOrder()
     {
         try {
-            $order_id = (int) $_GET["id"];
+            $order_id = (int)$_GET["id"];
             if ($order_id) {
                 $row_count = $this->order_model->deleteOrder($order_id);
                 if ($row_count > 0) {

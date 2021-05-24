@@ -11,8 +11,9 @@ body {
     color: black;
 }
 .brand {
-    font-size: 3.5rem;
+    font-size: 4.2rem;
     font-family: var(--large);
+    line-height: .2;
 }
 
 .fa {
@@ -20,4 +21,49 @@ body {
         black;
 }
 
+a.navbar-brand {
+    text-align: left !important;
+}
 
+a span.brand-by {
+    font-size: 0.3em;
+}
+
+a span.brand-founder {
+    display: block;
+    font-size: .3em;
+}
+
+a {
+    text-decoration: none;
+    color: unset;
+}
+
+#navbarSupportedContent {
+    max-width: max-content;
+    margin-right: 1em;
+}
+
+@media only screen and (max-width: 575px) {
+    .navbar-brand {
+        margin-left: 4vw !important;
+    }
+    .brand {
+        font-size: 10vw;
+        font-family: var(--large);
+        line-height: .2;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+
+    footer.mancave-footer {
+        font-size: 2vw;
+        padding: 2vw !important;
+    }
+
+    footer .btn {
+        font-size: 2vw;
+    }
+
+  }
