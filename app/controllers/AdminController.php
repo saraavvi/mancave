@@ -249,9 +249,16 @@ class AdminController extends Controller
                 "Please add a new brand or choose an existing one."
             );
         } else if ($new_brand) {
-            $product_data["brand_id"] = $this->product_model->createBrand(
-                $new_brand
-            );
+            try {
+                $product_data["brand_id"] = $this->product_model->createBrand(
+                    $new_brand
+                );
+            } catch (Exception $e) {
+                array_push(
+                    $errors,
+                    "Failed to create new brand, please try again later."
+                );
+            }
         } else {
             $product_data["brand_id"] = $chosen_brand;
         }
