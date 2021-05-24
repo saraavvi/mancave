@@ -329,8 +329,8 @@ class AdminController extends Controller
 
     private function handleOrderStatusUpdate()
     {
-        $order_id = (int) $this->sanitize($_GET["id"]);
-        $status_id = (int) $this->sanitize($_GET["status_id"]);
+        $order_id = (int)$this->sanitize($_GET["id"]);
+        $status_id = (int)$this->sanitize($_GET["status_id"]);
         if ($order_id && $status_id) {
             if ($status_id === 2) {
                 $this->order_model->updateOrderShippedDate($order_id);
@@ -347,7 +347,7 @@ class AdminController extends Controller
     private function deleteOrder()
     {
         try {
-            $order_id = (int) $_GET["id"];
+            $order_id = (int)$_GET["id"];
             if ($order_id) {
                 $row_count = $this->order_model->deleteOrder($order_id);
                 if ($row_count > 0) {

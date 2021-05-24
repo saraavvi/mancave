@@ -268,7 +268,7 @@ class CustomerController extends Controller
     private function initializeShoppingCartDelete()
     {
         if (isset($_GET["action"]) && $_GET["action"] === "delete") {
-            $id = $_GET["id"];
+            $id = $this->sanitize($_GET["id"]);
             unset($_SESSION["shopping_cart"][$id]);
             $this->setAlert("success", "Removed from shopping cart");
         }
