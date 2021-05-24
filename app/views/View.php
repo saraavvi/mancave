@@ -28,7 +28,7 @@ class View
     {
         $page = isset($_GET['page']) ? explode("/", $_GET['page'])[0] : "";
         $link = $page === "admin" ? "?page=index" : "?page=admin";
-        $name = $page === "admin" ? "Man Cave" : "Admin";
+        $name = $page === "admin" ? "ManCave" : "Admin";
 
         include_once "app/views/partials/footer.php";
     }
