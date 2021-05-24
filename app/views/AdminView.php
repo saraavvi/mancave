@@ -101,8 +101,39 @@ class AdminView extends View
         $this->renderFooter();
     }
 
-    // HELPER METHODS:
+    public function renderOrderDetails($order, $order_content)
+    {
+        $this->renderHead("Admin - Order Details");
+        $this->renderNav();
+        $this->renderButton(
+            "Go back to order list",
+            "?page=admin/orders",
+            "secondary"
+        );
 
+        $this->renderAlerts();
+        if (!empty($order)) {
+            $this->renderListStart([
+                "Order row ID",
+                "Product ID",
+                "Name",
+                "Row total",
+                "Price each",
+                "Quantity",
+                "Delete Order Row"
+            ]);
+            foreach ($order_content as $order_row) {
+                include "partials/list/adminOrderDetails.php";
+            }
+        
+            include_once "partials/list/adminOrderSummary.php";
+            $this->renderListEnd();
+        }
+
+        $this->renderFooter();
+    }
+
+    // HELPER METHODS:
     public function renderListStart($column_name_array)
     {
         include_once "app/views/partials/list/listStart.php";

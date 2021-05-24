@@ -18,7 +18,7 @@ foreach ($orders as $order) {
                 </ul>
             </td>
             <td>
-                <a href="#" class="btn btn-sm btn-outline-primary">View Order</a>
+                <a href="?page=admin/orders/details&id=$order[id]" class="btn btn-sm btn-outline-primary">View Order</a>
             </td>
             <td>
                 <a href="?page=admin/orders/delete&id={$order['id']}" class="btn btn-sm btn-outline-danger">Delete Order</a>

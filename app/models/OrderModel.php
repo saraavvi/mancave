@@ -14,7 +14,15 @@ class OrderModel
      */
     public function fetchOrderContentsByOrderId($id)
     {
-        $statement = "SELECT orders.id, products.name, order_contents.id AS order_contents_id, order_contents.quantity, order_contents.price_each, order_contents.product_id, (order_contents.quantity * order_contents.price_each) AS row_total
+        $statement = "SELECT orders.id, 
+            orders.status_id,
+            products.name, 
+            products.stock,
+            order_contents.id AS order_contents_id, 
+            order_contents.quantity, 
+            order_contents.price_each, 
+            order_contents.product_id, 
+            (order_contents.quantity * order_contents.price_each) AS row_total
         FROM `orders`
         INNER JOIN order_contents ON orders.id = order_contents.order_id
         INNER JOIN products ON order_contents.product_id = products.id
@@ -139,10 +147,25 @@ class OrderModel
         $this->db->update($statement, $params);
     }
 
+    public function updateOrderContentQuantity($id, $qty) {
+        $statement = "UPDATE order_contents 
+            SET quantity = :qty
+            WHERE order_contents.id = :id;";
+        $params = array(':id' => $id, ':qty' => $qty);
+        $this->db->update($statement, $params);
+    }
+
     public function deleteOrder($order_id) {
         
-        $statement = "DELETE FROM `orders` WHERE `orders`.`id` = :order_id;";
+        $statement = "DELETE FROM orders WHERE orders.id = :order_id;";
         $params = array(':order_id' => $order_id);
+        $row_count = $this->db->update($statement, $params);
+        return $row_count;
+    }
+
+    public function deleteOrderContent($id) {
+        $statement = "DELETE FROM order_contents WHERE order_contents.id = :id;";
+        $params = array(':id' => $id);
         $row_count = $this->db->update($statement, $params);
         return $row_count;
     }

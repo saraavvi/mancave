@@ -102,6 +102,14 @@ class AdminController extends Controller
         $this->admin_view->renderOrderListPage($orders);
     }
 
+    public function handleOrderDetails()
+    {
+        $this->ensureAuthenticated();
+        $this->initializeOrderUpdate();
+        [$order, $order_content] = $this->getOrderDetails();
+        $this->admin_view->renderOrderDetails($order, $order_content);
+    }
+
     public function handleOrderDelete()
     {
         $this->ensureAuthenticated();
@@ -309,6 +317,46 @@ class AdminController extends Controller
             return $row_count;
         }
         return false;
+    }
+
+    private function getOrderDetails()
+    {
+        if (isset($_GET['id'])) {
+            $order_id = (int)$this->sanitize($_GET['id']);
+            try {
+                $order = $this->order_model->fetchOrderById($order_id);
+                $order_content = $this->order_model->fetchOrderContentsByOrderId($order_id);
+                return [$order, $order_content];
+            } catch (Exception $error) {
+                $this->goToPageWithAlert("No order details to show.", "page=admin/orders");
+            }
+        } else {
+            $this->goToPageWithAlert("Order ID not found", "page=admin/orders");
+        }
+    }
+
+    private function initializeOrderUpdate() {
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            if (isset($_POST['delete_row_id'])) {
+                $id = $this->getAndValidatePost('delete_row_id', true);
+                try {
+                    $this->order_model->deleteOrderContent($id);
+                    $this->setAlert("success", "Order row deleted.");
+                } catch (Exception $error) {
+                    $this->setAlert("danger", "Order row could now be deleted.");
+                }
+            }
+            if (isset($_POST['update_row_qty_id'])) {
+                $id = $this->getAndValidatePost('update_row_qty_id', true);
+                $qty = $this->getAndValidatePost('qty', true);
+                try {
+                    $this->order_model->updateOrderContentQuantity($id, $qty);
+                    $this->setAlert("success", "Order row quantity updated.");
+                } catch (Exception $error) {
+                    $this->setAlert("danger", "Order row could now be updated.");
+                }
+            }
+        }
     }
 
     private function deleteOrder()

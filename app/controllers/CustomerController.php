@@ -156,8 +156,11 @@ class CustomerController extends Controller
                 $customer_id = $this->customer_model->createCustomer(
                     $customer_data
                 );
+                //Log in new customer
+                $customer_data["password"] = null;
+                $_SESSION['customer'] = $customer_data;
                 $this->goToPageWithAlert(
-                    "Customer successfully created! New customer id: $customer_id. Please Log In.",
+                    "Customer successfully created! New customer id: $customer_id.",
                     "page=index",
                     "success"
                 );
