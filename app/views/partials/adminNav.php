@@ -1,5 +1,5 @@
 <?php
-$adminname = $_SESSION["loggedinadmin"]["name"]; ?>
+$adminname = $_SESSION["admin"]["name"]; ?>
 
 <header>
     <h1 class="text-center mt-5"><a href="?page=admin" class="header-name">ManCave ADMIN</a></h1>

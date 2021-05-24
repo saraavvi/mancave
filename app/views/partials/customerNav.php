@@ -1,8 +1,8 @@
 <?php
-if (!empty($_SESSION["loggedinuser"])) {
-    $username = $_SESSION["loggedinuser"]["first_name"];
+if (!empty($_SESSION["customer"])) {
+    $username = $_SESSION["customer"]["first_name"];
     $username .= " ";
-    $username .= $_SESSION["loggedinuser"]["last_name"];
+    $username .= $_SESSION["customer"]["last_name"];
 }
 ?>
 
@@ -11,7 +11,7 @@ if (!empty($_SESSION["loggedinuser"])) {
     <div class=" border-bottom d-flex justify-content-end bg-light">
         <div class="d-flex px-3">
             <?php
-            if (empty($_SESSION["loggedinuser"])) {
+            if (empty($_SESSION["customer"])) {
                 echo '<div class="d-flex">
                             <!-- Button trigger modal -->
                             <button type="button" class="btn fw-bold" data-bs-toggle="modal" data-bs-target="#loginModal">
@@ -82,7 +82,7 @@ if (!empty($_SESSION["loggedinuser"])) {
 </header>
 
 <?php
-if (empty($_SESSION["loggedinuser"])) {
+if (empty($_SESSION["customer"])) {
     include_once "app/views/partials/loginModal.php";
 }
 ?>

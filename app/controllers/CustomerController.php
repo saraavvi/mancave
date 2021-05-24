@@ -7,6 +7,9 @@ require_once "Controller.php";
 // getAndValidatePost()
 // sanitize()
 // setAlert()
+// goToPageWithAlert()
+// validateLoginForm()
+// logOutAndGoToPage()
 
 class CustomerController extends Controller
 {
@@ -50,15 +53,27 @@ class CustomerController extends Controller
 
     public function handleLogin()
     {
-        $this->validateLoginForm();
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $customer = $this->customer_model->fetchCustomerByEmail(
+                $_POST["email"]
+            );
+            $this->validateLoginForm(
+                $customer,
+                "customer",
+                $_POST["current_page"]
+            );
+        }
+        echo "Page not found";
+        exit();
     }
 
     public function handleLogout()
     {
-        $this->logOutCustomer();
+        $this->logOutAndGoToPage();
     }
 
     public function handleProducts() {
+        $this->initializeShoppingCartAdd();
         $brands = $this->getBrands();
         if (isset($_GET['category'])) {
             [$products, $title] = $this->getProductsByCategory();
@@ -80,9 +95,9 @@ class CustomerController extends Controller
         $this->initializeShoppingCartAdd();
         $id = $this->sanitize($_GET["id"]);
         $product = $this->product_model->fetchProductById($id);
-        $brand = $this->product_model->fetchBrandById($product['brand_id']);
+        $brand = $this->product_model->fetchBrandById($product["brand_id"]);
         if (!$product) {
-            $this->rerenderPageWithAlert("Product id does not exist.");
+            $this->goToPageWithAlert("Product id does not exist.");
         }
         $this->customer_view->renderDetailPage($product, $brand, $brands);
     }
@@ -141,8 +156,9 @@ class CustomerController extends Controller
                 $customer_id = $this->customer_model->createCustomer(
                     $customer_data
                 );
-                $this->returnToIndexWithAlert(
+                $this->goToPageWithAlert(
                     "Customer successfully created! New customer id: $customer_id. Please Log In.",
+                    "page=index",
                     "success"
                 );
             } catch (Exception $error) {
@@ -198,45 +214,6 @@ class CustomerController extends Controller
         }
     }
 
-    private function validateLoginForm()
-    {
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            if (empty($_POST["email"]) || empty($_POST["password"])) {
-                $this->rerenderPageWithAlert(
-                    "Please enter username and password."
-                );
-            }
-            $customer = $this->customer_model->fetchCustomerByEmail(
-                $_POST["email"]
-            );
-            if (!$customer) {
-                $this->rerenderPageWithAlert("Incorrect username/email.");
-            }
-            $hashed_password = $customer["password"];
-            $entered_password = $_POST["password"];
-            if (!password_verify($entered_password, $hashed_password)) {
-                $this->rerenderPageWithAlert("Incorrect password.");
-            } else {
-                //To prevent storing the password in session storage
-                $customer["password"] = null;
-                $_SESSION["loggedinuser"] = $customer;
-                $this->rerenderPageWithAlert(
-                    "Successfully Logged In!",
-                    "success"
-                );
-            }
-            $this->rerenderPageWithAlert("Unexpected error!");
-        }
-        echo "Page not found";
-        exit();
-    }
-
-    private function logOutCustomer()
-    {
-        $_SESSION["loggedinuser"] = null;
-        $this->returnToIndexWithAlert("Successfully Logged Out!", "success");
-    }
-
     private function initializeShoppingCartAdd()
     {
         // If add button is klicked, get info from $_POST and add to cart in session.
@@ -249,7 +226,11 @@ class CustomerController extends Controller
             } else {
                 $_SESSION["shopping_cart"][$id]++;
             }
-            $this->rerenderPageWithAlert("$name added to cart", "info");
+            $this->goToPageWithAlert(
+                "$name added to cart",
+                $_POST["current_page"],
+                "info"
+            );
         }
     }
 
@@ -276,7 +257,7 @@ class CustomerController extends Controller
 
     private function getShoppingCartDetailsAndCustomer()
     {
-        $customer = $_SESSION["loggedinuser"] ?? false;
+        $customer = $_SESSION["customer"] ?? false;
         $shopping_cart = $_SESSION["shopping_cart"];
         $total_price = 0;
         $products = [];
@@ -295,7 +276,7 @@ class CustomerController extends Controller
      */
     private function processNewOrder()
     {
-        $customer = $_SESSION["loggedinuser"];
+        $customer = $_SESSION["customer"];
         $shopping_cart = $_SESSION["shopping_cart"];
 
         try {
@@ -303,7 +284,7 @@ class CustomerController extends Controller
             $available_products = [];
             foreach ($shopping_cart as $product_id => $qty) {
                 $product = $this->product_model->fetchProductById($product_id);
-                if ($product['stock'] >= $qty) {
+                if ($product["stock"] >= $qty) {
                     array_push($available_products, $product);
                 } else {
                     $this->setAlert(
@@ -336,7 +317,7 @@ class CustomerController extends Controller
             } else {
                 // send back to shopping cart with alert(s).
                 header("Location: ?page=shoppingcart");
-                exit;
+                exit();
             }
         } catch (Exception $e) {
             $this->setAlert(
@@ -352,7 +333,6 @@ class CustomerController extends Controller
      */
     private function getProductsByCategory()
     {
-        $this->initializeShoppingCartAdd();
         $category = (int)$this->sanitize($_GET["category"]);
         $products = [];
         $title = "Category";
@@ -393,20 +373,5 @@ class CustomerController extends Controller
     private function getBrands() {
         $brands = $this->product_model->fetchAllBrands();
         return $brands;
-    }
-
-    private function rerenderPageWithAlert($message, $style = "danger")
-    {
-        $this->setAlert($style, $message);
-        $current_page = $_POST["current_page"] ?? "";
-        header("Location: ?$current_page");
-        exit();
-    }
-    
-    private function returnToIndexWithAlert($message, $style = "danger")
-    {
-        $this->setAlert($style, $message);
-        $this->customer_view->renderIndexPage();
-        exit();
     }
 }
