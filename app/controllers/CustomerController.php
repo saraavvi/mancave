@@ -34,13 +34,21 @@ class CustomerController extends Controller
 
     public function handleIndex()
     {
-        $this->customer_view->renderIndexPage();
+        $brands = $this->getBrands();
+        $this->customer_view->renderIndexPage($brands);
+    }
+
+    public function handleAbout()
+    {
+        $brands = $this->getBrands();
+        $this->customer_view->renderAboutPage($brands);
     }
 
     public function handleRegister()
     {
+        $brands = $this->getBrands();
         $customer_data = $this->processRegisterForm();
-        $this->customer_view->renderRegisterPage($customer_data);
+        $this->customer_view->renderRegisterPage($customer_data, $brands);
     }
 
     public function handleLogin()
@@ -64,18 +72,18 @@ class CustomerController extends Controller
         $this->logOutAndGoToPage();
     }
 
-    /**
-     * list all products from the chosen category.
-     */
-    public function handleProductsByCategory()
-    {
+    public function handleProducts() {
         $this->initializeShoppingCartAdd();
-        $category = $this->sanitize($_GET["category"]);
-        $products = $this->product_model->fetchProductsByCategory($category);
-        if (!$products) {
-            $this->goToPageWithAlert("Category id does not exist.");
+        $brands = $this->getBrands();
+        if (isset($_GET['category'])) {
+            [$products, $title] = $this->getProductsByCategory();
+            $this->customer_view->renderProductPage($products, $title, $brands);
+        } else if (isset($_GET['brand'])) {
+            [$products, $title] = $this->getProductsByBrand();
+            $this->customer_view->renderProductPage($products, $title, $brands);
+        } else {
+            header('Location: ?page=index');
         }
-        $this->customer_view->renderProductPage($products);
     }
 
     /**
@@ -83,6 +91,7 @@ class CustomerController extends Controller
      */
     public function handleProductDetails()
     {
+        $brands = $this->getBrands();
         $this->initializeShoppingCartAdd();
         $id = $this->sanitize($_GET["id"]);
         $product = $this->product_model->fetchProductById($id);
@@ -90,7 +99,7 @@ class CustomerController extends Controller
         if (!$product) {
             $this->goToPageWithAlert("Product id does not exist.");
         }
-        $this->customer_view->renderDetailPage($product, $brand);
+        $this->customer_view->renderDetailPage($product, $brand, $brands);
     }
 
     /**
@@ -98,14 +107,16 @@ class CustomerController extends Controller
      */
     public function handleShoppingCart()
     {
+        $brands = $this->getBrands();
         $this->initializeShoppingCartQtyUpdate();
         $this->initializeShoppingCartDelete();
         [$products, $customer] = $this->getShoppingCartDetailsAndCustomer();
-        $this->customer_view->renderShoppingCartPage($products, $customer);
+        $this->customer_view->renderShoppingCartPage($products, $customer, $brands);
     }
 
     public function handleCheckout()
     {
+        $brands = $this->getBrands();
         [
             $products,
             $customer,
@@ -114,17 +125,20 @@ class CustomerController extends Controller
         $this->customer_view->renderCheckoutPage(
             $products,
             $customer,
-            $total_price
+            $total_price,
+            $brands
         );
     }
 
     public function handlePlaceOrder()
     {
+        $brands = $this->getBrands();
         [$customer, $order_id] = $this->processNewOrder();
         if ($order_id) {
             $this->customer_view->renderOrderConfirmationPage(
                 $customer,
-                $order_id
+                $order_id,
+                $brands
             );
         } else {
             header("Location: ?page=checkout");
@@ -235,7 +249,7 @@ class CustomerController extends Controller
     private function initializeShoppingCartDelete()
     {
         if (isset($_GET["action"]) && $_GET["action"] === "delete") {
-            $id = $_GET["id"];
+            $id = $this->sanitize($_GET["id"]);
             unset($_SESSION["shopping_cart"][$id]);
             $this->setAlert("success", "Removed from shopping cart");
         }
@@ -312,5 +326,52 @@ class CustomerController extends Controller
             );
             return false;
         }
+    }
+
+    /**
+     * list all products from the chosen category.
+     */
+    private function getProductsByCategory()
+    {
+        $category = (int)$this->sanitize($_GET["category"]);
+        $products = [];
+        $title = "Category";
+        if ($category) {
+            $products = $this->product_model->fetchProductsByCategory($category);
+            if (!$products) {
+                $this->setAlert("warning", "No products found in this category.");
+            } else {
+                $title = $products[0]['category_name'];
+            }
+        } else {
+            $this->setAlert("warning", "Category id does not exist.");
+        }
+        return [$products, $title];
+    }
+
+    /**
+     * get all products from the chosen brand.
+     */
+    private function getProductsByBrand()
+    {
+        $brand = (int)$this->sanitize($_GET["brand"]);
+        $products = [];
+        $title = "Brand";
+        if ($brand) {
+            $products = $this->product_model->fetchProductsByBrand($brand);
+            if (!$products) {
+                $this->setAlert("warning", "No products found by this brand.");
+            } else {
+                $title = $products[0]['brand_name'];
+            }
+        } else {
+            $this->setAlert("warning", "Brand id does not exist.");
+        }
+        return [$products, $title];
+    }
+
+    private function getBrands() {
+        $brands = $this->product_model->fetchAllBrands();
+        return $brands;
     }
 }

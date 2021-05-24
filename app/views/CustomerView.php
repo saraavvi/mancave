@@ -4,7 +4,7 @@ require_once "View.php";
 
 // INHERITED METHODS:
 // renderHead()
-// renderNav()
+// renderNav($brands)
 // renderFooter()
 // renderAlerts()
 // renderButton()
@@ -13,19 +13,28 @@ class CustomerView extends View
 {
     //CUSTOMER MAIN METHODS:
 
-    public function renderIndexPage()
+    public function renderIndexPage($brands)
     {
         $this->renderHead("Mancave - Home");
-        $this->renderNav();
+        $this->renderNav($brands);
         $this->renderAlerts();
         include_once "app/views/partials/indexContent.php";
         $this->renderFooter();
     }
 
-    public function renderRegisterPage($customer_data = null)
+    public function renderAboutPage($brands)
+    {
+        $this->renderHead("Mancave - About");
+        $this->renderNav($brands);
+        $this->renderAlerts();
+        include_once "app/views/partials/about.php";
+        $this->renderFooter();
+    }
+
+    public function renderRegisterPage($customer_data = null, $brands)
     {
         $this->renderHead("Mancave - New Customer");
-        $this->renderNav();
+        $this->renderNav($brands);
         $this->renderAlerts();
         $this->renderRegisterForm($customer_data);
         $this->renderFooter();
@@ -33,10 +42,10 @@ class CustomerView extends View
     /**
      * display the whole shopping cart page
      */
-    public function renderShoppingCartPage($products, $customer = false)
+    public function renderShoppingCartPage($products, $customer = false, $brands)
     {
         $this->renderHead("ManCave - Shopping Cart");
-        $this->renderNav();
+        $this->renderNav($brands);
         $this->renderAlerts();
 
         if (empty($_SESSION["shopping_cart"])) {
@@ -54,11 +63,11 @@ class CustomerView extends View
         $this->renderFooter();
     }
 
-    public function renderCheckoutPage($products, $customer, $total)
+    public function renderCheckoutPage($products, $customer, $total, $brands)
     {
         $column_name_array = ["Product name", "Amount", "Price each"];
         $this->renderHead("Mancave - Checkout");
-        $this->renderNav();
+        $this->renderNav($brands);
         $this->renderAlerts();
         include_once "partials/list/listStart.php";
         foreach ($products as $product) {
@@ -72,13 +81,33 @@ class CustomerView extends View
         $this->renderFooter();
     }
 
-    public function renderOrderConfirmationPage($customer, $order_id)
+    public function renderOrderConfirmationPage($customer, $order_id, $brands)
     {
         $this->renderHead("Mancave - Order Successful");
-        $this->renderNav();
+        $this->renderNav($brands);
         include_once "app/views/partials/orderConfirmation.php";
         $this->renderFooter();
     }
+
+    public function renderProductPage($products, $title, $brands)
+    {
+        $this->renderHead("Mancave - $title");
+        $this->renderNav($brands);
+        $this->renderAlerts();
+        $this->renderCustomerProductList($products);
+        $this->renderFooter();
+    }
+
+    public function renderDetailPage($product, $brand, $brands)
+    {
+        $this->renderHead("Mancave - Product Details");
+        $this->renderNav($brands);
+        $this->renderAlerts();
+        $this->renderProductDetails($product, $brand);
+        $this->renderFooter();
+    }
+
+    //CUSTOMER HELPER METHODS:
 
     /**
      * help method for shopping cart page - lists all products in the cart.
@@ -101,26 +130,6 @@ class CustomerView extends View
         include_once "partials/list/listEnd.php";
         return $items_in_stock;
     }
-
-    public function renderProductPage($products)
-    {
-        $this->renderHead("Mancave - Products");
-        $this->renderNav();
-        $this->renderAlerts();
-        $this->renderCustomerProductList($products);
-        $this->renderFooter();
-    }
-
-    public function renderDetailPage($product, $brand)
-    {
-        $this->renderHead("Mancave - Product Details");
-        $this->renderNav();
-        $this->renderAlerts();
-        $this->renderProductDetails($product, $brand);
-        $this->renderFooter();
-    }
-
-    //CUSTOMER HELPER METHODS:
 
     private function renderRegisterForm($customer_data = null)
     {

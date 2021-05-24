@@ -48,7 +48,12 @@ class ProductModel
      */
     public function fetchProductsByCategory($category)
     {
-        $statement = "SELECT * FROM products WHERE category_id = :category";
+        $statement = "SELECT 
+                products.*, 
+                categories.name AS category_name 
+            FROM products 
+            LEFT JOIN categories ON products.category_id = categories.id
+            WHERE products.category_id = :category";
         $params = array(":category" => $category);
         $products = $this->db->select($statement, $params);
 
@@ -56,8 +61,25 @@ class ProductModel
         return $products ?? false;
     }
 
-    public function updateProductById($id, $data)
+    /***
+     * Fetch products from a specific brand, return an array with all products.
+     */
+    public function fetchProductsByBrand($brand)
+    {
+        $statement = "SELECT 
+                products.*, 
+                brands.name AS brand_name 
+            FROM products 
+            LEFT JOIN brands ON products.brand_id = brands.id
+            WHERE products.brand_id = :brand";
+        $params = array(":brand" => $brand);
+        $products = $this->db->select($statement, $params);
 
+        // return to controller
+        return $products ?? false;
+    }
+
+    public function updateProductById($id, $data)
     {
         $statement = "UPDATE products SET
             name = :name, 

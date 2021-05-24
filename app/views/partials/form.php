@@ -15,12 +15,12 @@ $image = $data['image'] ?? "";
         <form action="#" method="POST">
             <div class="mb-3">
                 <label for="name" class="form-label">Name:</label>
-                <input type="text" class="form-control" id="name" name="name" value="<?= $name ?>">
+                <input required type="text" class="form-control" id="name" name="name" value="<?= $name ?>">
             </div>
             <div class="mb-3">
                 <label for="category_id" class="form-label">Category:</label>
-                <select class="form-select" id="category_id" name="category_id">
-                    <option selected value="" disabled hidden>Make a selection</option>
+                <select required class="form-select" id="category_id" name="category_id">
+                    <option selected value="" disabled hidden>Make a selection:</option>
                     <?php
                     foreach ($categories as $category) {
                         $selected = ($data['category_id'] === $category['id']) ? "selected" : "";
@@ -32,14 +32,13 @@ $image = $data['image'] ?? "";
             <div class="mb-3">
                 <label for="brand_id" class="form-label">Brand:</label>
                 <select id="brand_id" name="brand_id" class="form-select">
-                    <option selected value="" disabled hidden>Make a selection or add new</option>
+                    <option selected value="" disabled hidden>Make a selection:</option>
                     <?php
                     foreach ($brands as $brand) {
                         $selected = ($data['brand_id'] === $brand['id']) ? "selected" : "";
                         echo "<option value='$brand[id]' $selected >$brand[name]</option>";
                     }
                     ?>
-                    <option value='NEW'>Add New Brand</option>
                 </select>
             </div>
             <div class='mb-3'>
@@ -47,7 +46,7 @@ $image = $data['image'] ?? "";
                 <input type='text' class='form-control' id='new_brand' name='new_brand'>
             </div>
             <div class="mb-3">
-                <label for="price" class="form-label">Price:</label>
+                <label required for="price" class="form-label">Price:</label>
                 <input type="number" class="form-control" id="price" name="price" value="<?= $price ?>">
             </div>
             <div class="mb-3">
