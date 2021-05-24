@@ -74,7 +74,6 @@ class AdminController extends Controller
         $brands = $this->product_model->fetchAllBrands();
         $categories = $this->product_model->fetchAllCategories();
         $product_data = $this->product_model->fetchProductById($id);
-        //TODO: Better error handling
         if (!$product_data) {
             echo "Product id does not exist.";
         }
