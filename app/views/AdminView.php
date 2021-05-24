@@ -17,7 +17,7 @@ class AdminView extends View
     {
         $this->renderHead("Admin - Log in");
         $this->renderAlerts();
-        include_once "partials/adminLogin.php";
+        include_once "pages/adminLogin.php";
         $this->renderFooter();
     }
 
@@ -118,7 +118,7 @@ class AdminView extends View
      */
     public function renderForm($brands, $categories, $data = null)
     {
-        include_once "app/views/partials/form.php";
+        include_once "app/views/partials/form/form.php";
     }
 
     public function renderListItemsOrders($orders)

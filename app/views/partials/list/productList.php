@@ -11,7 +11,7 @@ foreach ($products as $product) {
             <td>
                 <form method="post" action="#" style="display: flex">
                     <input  type="hidden" name="id" value="$product[id]"/>
-                    <input type="number" name="qty" class="form-control" style="max-width: 6em;"></input>
+                    <input type="number" name="qty" class="form-control" style="max-width: 6em;">
                     <button type="submit" class="btn btn-sm btn-outline-primary">Add</button>
                 </form>
             </td>

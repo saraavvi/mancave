@@ -18,9 +18,9 @@ class View
         $page = isset($_GET['page']) ? explode("/", $_GET['page'])[0] : "";
         $admin = $page === "admin";
         if ($admin) {
-            include_once "app/views/partials/adminNav.php";
+            include_once "app/views/partials/nav/adminNav.php";
         } else {
-            include_once "app/views/partials/customerNav.php";
+            include_once "app/views/partials/nav/customerNav.php";
         }
     }
 

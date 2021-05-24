@@ -83,7 +83,7 @@ if (!empty($_SESSION["customer"])) {
 
 <?php
 if (empty($_SESSION["customer"])) {
-    include_once "app/views/partials/loginModal.php";
+    include_once "app/views/partials/login/loginModal.php";
 }
 ?>
 

@@ -18,7 +18,7 @@ class CustomerView extends View
         $this->renderHead("Mancave - Home");
         $this->renderNav($brands);
         $this->renderAlerts();
-        include_once "app/views/partials/indexContent.php";
+        include_once "app/views/pages/indexContent.php";
         $this->renderFooter();
     }
 
@@ -27,7 +27,7 @@ class CustomerView extends View
         $this->renderHead("Mancave - About");
         $this->renderNav($brands);
         $this->renderAlerts();
-        include_once "app/views/partials/about.php";
+        include_once "app/views/pages/about.php";
         $this->renderFooter();
     }
 
@@ -85,7 +85,7 @@ class CustomerView extends View
     {
         $this->renderHead("Mancave - Order Successful");
         $this->renderNav($brands);
-        include_once "app/views/partials/orderConfirmation.php";
+        include_once "app/views/pages/orderConfirmation.php";
         $this->renderFooter();
     }
 
@@ -125,7 +125,7 @@ class CustomerView extends View
                 $items_in_stock = false;
             }
             
-            include "partials/shoppingCartItem.php";
+            include "partials/list/shoppingCartItem.php";
         }
         include_once "partials/list/listEnd.php";
         return $items_in_stock;
@@ -133,17 +133,17 @@ class CustomerView extends View
 
     private function renderRegisterForm($customer_data = null)
     {
-        include_once "app/views/partials/registerform.php";
+        include_once "app/views/partials/form/registerform.php";
     }
 
     private function renderCustomerProductList($products)
     {
-        include_once "app/views/partials/customerProductList.php";
+        include_once "app/views/partials/list/customerProductList.php";
     }
 
     private function renderProductDetails($product, $brand)
     {
-        include_once "app/views/partials/productDetails.php";
+        include_once "app/views/pages/productDetails.php";
     }
 
     private function renderModalButton()
