@@ -1,5 +1,10 @@
 <?php
 foreach ($products as $product) {
+    // print_r($product['stock']);
+    $status = "";
+    if (!$product['stock'] > 0) {
+        $status = 'disabled';
+    }
     echo "
         <div class='col-xl-3 col-lg-4 col-md-5 col-sm-6 mt-3 mb-5'>
             <div class='card bg-light border-0' style='min-height: 30vh; height: 100%;'>
@@ -13,7 +18,7 @@ foreach ($products as $product) {
                         <input type='hidden' name='product_id' value='$product[id]'>
                         <input type='hidden' name='product_name' value='$product[name]'>
                         <input type='hidden' name='current_page' value='$_SERVER[QUERY_STRING]'>
-                        <button type='submit' name='add_to_cart' class='btn btn-outline-dark'>Add to Cart</button>
+<button type='submit' name='add_to_cart' class='btn btn-outline-dark' $status>Add to Cart</button>
                     </form>
                 </div>
             </div>
