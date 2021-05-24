@@ -23,10 +23,10 @@ class Router
     {
         $page = $_GET["page"] ?? "";
 
-        $function = $this->routes[$page] ?? null; // 'create'
+        $function = $this->routes[$page] ?? null;
 
         $this->conditionForExit(!$function);
-        echo call_user_func($function);
+        call_user_func($function);
     }
 
     // flytta ev till helper class
