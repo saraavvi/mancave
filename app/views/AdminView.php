@@ -154,7 +154,6 @@ class AdminView extends View
 
     public function renderListItemsOrders($orders)
     {
-        //TODO: needs to be fixed = "/mancave/?page=admin/orders&id=1&status_id=1&id=3&status_id=2&id=1&status_id=2"
         include_once "app/views/partials/list/orderList.php";
     }
 
