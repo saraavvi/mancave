@@ -31,12 +31,17 @@ class AdminController extends Controller
 
     public function handleLogin()
     {
-        $this->validateLoginForm();
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $admin = $this->admin_model->fetchAdminByEmail($_POST["email"]);
+            $this->validateLoginForm($admin, "admin", "page=admin");
+        }
+        $this->admin_view->renderLoginPage();
+        exit();
     }
 
     public function handleLogout()
     {
-        $this->logOutAdmin();
+        $this->logOutAndGoToPage("admin", "page=admin/login");
     }
 
     public function handleIndex()
@@ -70,7 +75,9 @@ class AdminController extends Controller
         $categories = $this->product_model->fetchAllCategories();
         $product_data = $this->product_model->fetchProductById($id);
         //TODO: Better error handling
-        if (!$product_data) echo 'Product id does not exist.';
+        if (!$product_data) {
+            echo "Product id does not exist.";
+        }
         $this->admin_view->renderProductUpdatePage(
             $brands,
             $categories,
@@ -103,55 +110,14 @@ class AdminController extends Controller
 
     // HELPER METHODS:
 
-    private function validateLoginForm()
-    {
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            if (empty($_POST["email"]) || empty($_POST["password"])) {
-                $this->returnToLoginWithAlert(
-                    "Please enter username and password."
-                );
-            }
-            $admin = $this->admin_model->fetchAdminByEmail($_POST["email"]);
-            if (!$admin) {
-                $this->returnToLoginWithAlert("Incorrect username/email.");
-            }
-            $hashed_password = $admin["password"];
-            $entered_password = $_POST["password"];
-            if (!password_verify($entered_password, $hashed_password)) {
-                $this->returnToLoginWithAlert("Incorrect password.");
-            } else {
-                //To prevent storing the password in session storage
-                $admin["password"] = null;
-                $_SESSION["loggedinadmin"] = $admin;
-                $this->setAlert("success", "Successfully Logged In!");
-                header("Location: ?page=admin");
-                exit;
-            }
-            $this->returnToLoginWithAlert("Unexpected error!");
-        }
-        $this->admin_view->renderLoginPage();
-        exit();
-    }
-
-    private function logOutAdmin()
-    {
-        $_SESSION["loggedinadmin"] = null;
-        $this->returnToLoginWithAlert("Successfully Logged Out!", "success");
-    }
-
     private function ensureAuthenticated()
     {
-        if (empty($_SESSION["loggedinadmin"])) {
-            $this->admin_view->renderLoginPage();
-            exit();
+        if (empty($_SESSION["admin"])) {
+            $this->goToPageWithAlert(
+                "You need to be logged in to access this page.",
+                "page=admin/login"
+            );
         }
-    }
-
-    private function returnToLoginWithAlert($message, $style = "danger")
-    {
-        $this->setAlert($style, $message);
-        $this->admin_view->renderLoginPage();
-        exit();
     }
 
     private function initializeAddToStock()
