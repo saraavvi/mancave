@@ -6,7 +6,7 @@ class View
 
     protected function renderHead($title)
     {
-        include_once "partials/head.php";
+        include_once "partials/utils/head.php";
     }
 
     /**
@@ -30,7 +30,7 @@ class View
         $link = $page === "admin" ? "?page=index" : "?page=admin";
         $name = $page === "admin" ? "ManCave" : "Admin";
 
-        include_once "app/views/partials/footer.php";
+        include_once "app/views/partials/utils/footer.php";
     }
 
     protected function renderAlerts()
@@ -39,7 +39,7 @@ class View
 
         foreach ($alerts as $category => $messages) {
             foreach ($messages as $message) {
-                include "partials/alert.php";
+                include "partials/utils/alert.php";
             }
         }
         $this->cleanAlerts();

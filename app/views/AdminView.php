@@ -118,7 +118,7 @@ class AdminView extends View
      */
     public function renderForm($brands, $categories, $data = null)
     {
-        include_once "app/views/partials/form/form.php";
+        include_once "app/views/partials/form/productForm.php";
     }
 
     public function renderListItemsOrders($orders)

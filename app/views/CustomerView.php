@@ -49,7 +49,7 @@ class CustomerView extends View
         $this->renderAlerts();
 
         if (empty($_SESSION["shopping_cart"])) {
-            include_once "app/views/partials/emptyCart.php";
+            include_once "app/views/partials/utils/emptyCart.php";
         } else {
             $items_in_stock = $this->renderShoppingCartList($products);
             if ($customer && $items_in_stock) {
@@ -76,7 +76,7 @@ class CustomerView extends View
         }
         include_once "partials/list/productCheckoutTotal.php";
         include_once "partials/list/listEnd.php";
-        include_once "partials/customerCheckoutInfo.php";
+        include_once "partials/utils/customerCheckoutInfo.php";
         $this->renderButton("Confirm Order", "?page=checkout/process-order");
         $this->renderFooter();
     }
