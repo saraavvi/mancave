@@ -328,12 +328,13 @@ class AdminController extends Controller
             try {
                 $order = $this->order_model->fetchOrderById($order_id);
                 $order_content = $this->order_model->fetchOrderContentsByOrderId($order_id);
+                if (!$order || !$order_content) {
+                    $this->goToPageWithAlert("Order ID not found", "page=admin/orders");
+                }
                 return [$order, $order_content];
             } catch (Exception $error) {
                 $this->goToPageWithAlert("No order details to show.", "page=admin/orders");
             }
-        } else {
-            $this->goToPageWithAlert("Order ID not found", "page=admin/orders");
         }
     }
 
