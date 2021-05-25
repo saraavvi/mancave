@@ -8,6 +8,7 @@ require_once "View.php";
 // renderFooter()
 // renderAlerts()
 // renderButton()
+// cleanAlerts()
 
 class CustomerView extends View
 {

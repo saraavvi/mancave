@@ -8,7 +8,7 @@ require_once 'View.php';
 // renderFooter()
 // renderAlerts()
 // renderButton()
-
+// cleanAlerts()
 class AdminView extends View
 {
     // MAIN METHODS:
