@@ -7,6 +7,9 @@ require_once "Controller.php";
 // getAndValidatePost()
 // sanitize()
 // setAlert()
+// goToPageWithAlert()
+// validateLoginForm()
+// logOutAndGoToPage()
 
 class AdminController extends Controller
 {
@@ -74,7 +77,6 @@ class AdminController extends Controller
         $brands = $this->product_model->fetchAllBrands();
         $categories = $this->product_model->fetchAllCategories();
         $product_data = $this->product_model->fetchProductById($id);
-        //TODO: Better error handling
         if (!$product_data) {
             echo "Product id does not exist.";
         }
@@ -326,12 +328,13 @@ class AdminController extends Controller
             try {
                 $order = $this->order_model->fetchOrderById($order_id);
                 $order_content = $this->order_model->fetchOrderContentsByOrderId($order_id);
+                if (!$order || !$order_content) {
+                    $this->goToPageWithAlert("Order ID not found", "page=admin/orders");
+                }
                 return [$order, $order_content];
             } catch (Exception $error) {
                 $this->goToPageWithAlert("No order details to show.", "page=admin/orders");
             }
-        } else {
-            $this->goToPageWithAlert("Order ID not found", "page=admin/orders");
         }
     }
 

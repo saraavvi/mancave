@@ -72,7 +72,8 @@ class CustomerController extends Controller
         $this->logOutAndGoToPage();
     }
 
-    public function handleProducts() {
+    public function handleProducts()
+    {
         $this->initializeShoppingCartAdd();
         $brands = $this->getBrands();
         if (isset($_GET['category'])) {
@@ -158,6 +159,7 @@ class CustomerController extends Controller
                 );
                 //Log in new customer
                 $customer_data["password"] = null;
+                $customer_data["id"] = $customer_id;
                 $_SESSION['customer'] = $customer_data;
                 $this->goToPageWithAlert(
                     "Customer successfully created! New customer id: $customer_id.",
@@ -239,6 +241,9 @@ class CustomerController extends Controller
 
     private function initializeShoppingCartQtyUpdate()
     {
+        if (empty($_SESSION["shopping_cart"])) {
+            $_SESSION["shopping_cart"] = [];
+        }
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $id = $this->getAndValidatePost("id", true);
             $qty = $this->getAndValidatePost("qty", true);
@@ -279,8 +284,11 @@ class CustomerController extends Controller
      */
     private function processNewOrder()
     {
-        $customer = $_SESSION["customer"];
-        $shopping_cart = $_SESSION["shopping_cart"];
+        $customer = isset($_SESSION["customer"]) ? $_SESSION["customer"] : array();
+        $shopping_cart = isset($_SESSION["shopping_cart"]) ? $_SESSION["shopping_cart"] : array();
+        if (!$shopping_cart || !$customer) {
+            header('Location: ?page=shoppingcart');
+        }
 
         try {
             // check each products stock against shopping cart quantity
@@ -288,6 +296,7 @@ class CustomerController extends Controller
             foreach ($shopping_cart as $product_id => $qty) {
                 $product = $this->product_model->fetchProductById($product_id);
                 if ($product["stock"] >= $qty) {
+                    $product["qty"] = $qty;
                     array_push($available_products, $product);
                 } else {
                     $this->setAlert(
@@ -306,14 +315,14 @@ class CustomerController extends Controller
                         $current_price = $product["price"];
                         $this->order_model->createNewOrderContent(
                             $order_id,
-                            $product_id,
-                            $qty,
+                            $product["id"],
+                            $product["qty"],
                             $current_price
                         );
                     } catch (Exception $e) {
                         throw new Exception($e->getMessage());
                     }
-                    $this->product_model->reduceProductStock($product_id, $qty);
+                    $this->product_model->reduceProductStock($product["id"], $product["qty"]);
                 }
                 unset($_SESSION["shopping_cart"]);
                 return [$customer, $order_id];
@@ -373,7 +382,8 @@ class CustomerController extends Controller
         return [$products, $title];
     }
 
-    private function getBrands() {
+    private function getBrands()
+    {
         $brands = $this->product_model->fetchAllBrands();
         return $brands;
     }
