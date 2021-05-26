@@ -31,15 +31,15 @@ if (!empty($_SESSION["customer"])) {
             </a>
         </div>
     </div>
-    <div class="bg-white rounded">
+    <div class="bg-white rounded pb-4">
         <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="container-fluid text-center align-items-end">
-                <a class="navbar-brand fs-1 mx-5 mt-5" href="?page=index">
+            <div class="container align-items-end">
+                <a class="navbar-brand fs-1 ms-5 mt-5" href="?page=index">
                     <span class="brand">ManCave.<span class="brand-by">by</span><span class="brand-founder">Bob Franker Transatlantic Fellows</span></span></a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler me-5" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="collapse navbar-collapse mt-3 ms-5" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item dropdown">
                             <a class="nav-link pb-0 dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
