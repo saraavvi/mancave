@@ -16,7 +16,7 @@ require_once "app/controllers/CustomerController.php";
 require_once "app/controllers/Router.php";
 
 //Model
-$database = new Database("mancaveshop_db");
+$database = new Database();
 $order_model = new OrderModel($database);
 $product_model = new ProductModel($database);
 $customer_model = new CustomerModel($database);
