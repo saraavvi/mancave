@@ -9,3 +9,8 @@ This is a group project for a PHP course. The asignment was to build a webshop w
 * Bootstrap
 * CSS
 
+##view it live
+
+:scream: åäö not working - will fix this when I have time
+https://mancave-shop.herokuapp.com/
+
