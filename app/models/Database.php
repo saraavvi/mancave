@@ -12,11 +12,9 @@ class Database
         $cleardb_username = $cleardb_url["user"];
         $cleardb_password = $cleardb_url["pass"];
         $cleardb_db = substr($cleardb_url["path"], 1);
-        $active_group = 'default';
-        $query_builder = TRUE;
 
         try {
-            $this->connection = new PDO($cleardb_server, $cleardb_username, $cleardb_password, $cleardb_db);
+            $this->connection = new PDO("mysql:host=" . $cleardb_server . "; dbname=" . $cleardb_db, $cleardb_username, $cleardb_password);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
